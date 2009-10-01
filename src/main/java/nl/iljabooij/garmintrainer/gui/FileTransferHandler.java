@@ -19,6 +19,7 @@
 package nl.iljabooij.garmintrainer.gui;
 
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
 import java.io.IOException;
@@ -76,9 +77,31 @@ public class FileTransferHandler extends TransferHandler {
         }
 
         /* return true if and only if the drop contains a list of files */
-        return supp.isDataFlavorSupported(uriListDataFlavor);
+        return (supp.isDataFlavorSupported(uriListDataFlavor) ||
+        		supp.isDataFlavorSupported(DataFlavor.javaFileListFlavor));
     }
 
+    @SuppressWarnings("unchecked")
+	private List<File> getFileListFromJavaFileList(final Transferable transferable) throws UnsupportedFlavorException, IOException {
+    	return (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
+    	
+    }
+    
+    private List<File> getFileListFromUriList(final Transferable transferable) throws UnsupportedFlavorException, IOException, URISyntaxException {
+        final Object data = transferable.getTransferData(uriListDataFlavor);
+        logger.debug("dropped file list = {}", data);
+
+        final String uriList = (String) data;
+        final StringTokenizer stringTokenizer = new StringTokenizer(uriList, "\n");
+        final List<File> files = Lists.newArrayListWithCapacity(stringTokenizer.countTokens());
+        while (stringTokenizer.hasMoreTokens()) {
+            files.add(new File(new URI(stringTokenizer.nextToken().trim())));
+        }
+        
+        return files;
+
+    }
+    
     public boolean importData(final TransferSupport supp) {
         if (!canImport(supp)) {
             return false;
@@ -86,24 +109,17 @@ public class FileTransferHandler extends TransferHandler {
         logger.debug("importData, can import!");
 
         try {
-            /* fetch the data from the Transferable */
-            final Object data = supp.getTransferable().getTransferData(
-                    uriListDataFlavor);
-            logger.debug("dropped file list = {}", data);
-
-            final String uriList = (String) data;
-            try {
-                final StringTokenizer stringTokenizer = new StringTokenizer(
-                        uriList, "\n");
-                final List<URI> uris = Lists.newArrayListWithCapacity(stringTokenizer.countTokens());
-                while (stringTokenizer.hasMoreTokens()) {
-                    uris.add(new URI(stringTokenizer.nextToken().trim()));
-                }
-                parseFiles(uris);
-
-            } catch (URISyntaxException e) {
+        	final Transferable transferable = supp.getTransferable();
+        	List<File> files = Lists.newArrayList();
+        	if (supp.isDataFlavorSupported(uriListDataFlavor)) {
+        		files = getFileListFromUriList(transferable);
+        	} else if (supp.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+        		files = getFileListFromJavaFileList(transferable);
+        	}
+        	parseFiles(files);
+        }
+        catch (URISyntaxException e) {
                 logger.debug("URI syntax not supported. Cannot accept drop");
-            }
         } catch (UnsupportedFlavorException e) {
             logger.debug("Can't accept drop");
             return false;
@@ -114,14 +130,13 @@ public class FileTransferHandler extends TransferHandler {
         return true;
     }
 
-    private void parseFiles(final List<URI> uris) {
+    private void parseFiles(final List<File> files) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                for (URI uri : uris) {
+                for (File file : files) {
                     // Create the table model
                     try {
-                        final File file = new File(uri);
                         tcxImporter.importTcx(file);
                     } catch (TcxImportException ex) {
                         applicationState.setErrorMessage(ex.getMessage());
