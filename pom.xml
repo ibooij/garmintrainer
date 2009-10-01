@@ -6,6 +6,12 @@
 	<name>Garmin Trainer</name>
 	<version>0.0.1-SNAPSHOT</version>
 	<description>Program to use for analyzing Garmin Tcx files</description>
+	<url>http://code.google.com/p/garmintrainer/</url>
+	<scm>
+    	     <connection>scm:hg:https://garmintrainer.googlecode.com/hg/</connection>
+             <developerConnection>scm:hg:https://garmintrainer.googlecode.com/hg/</developerConnection>
+             <url>http://code.google.com/p/garmintrainer/source/browse/</url>
+  </scm>
 	<dependencies>
 		<dependency>
 			<groupId>commons-digester</groupId>
