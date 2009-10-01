@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
+import nl.iljabooij.garmintrainer.model.Activity;
 import nl.iljabooij.garmintrainer.model.ApplicationState;
 import nl.iljabooij.garmintrainer.model.TrackPoint;
 
@@ -131,11 +132,6 @@ public class ChartComponent extends JPanel {
 				trackPoint.getAltitude().getValueInMeters());
 	}
 
-	private TimeSeriesDataItem createHeartRateSample(final TrackPoint trackPoint) {
-		return new TimeSeriesDataItem(extractSecondFromTrackPoint(trackPoint),
-				trackPoint.getHeartRate());
-	}
-
 	//
 	private TimeSeriesCollection createDataset() {
 		final TimeSeriesCollection dataset = new TimeSeriesCollection();
@@ -151,27 +147,28 @@ public class ChartComponent extends JPanel {
 		}
 		dataset.addSeries(altitudePerTime);
 
-		final TimeSeries heartRatePerTime = new TimeSeries("Heart Rate",
-				Second.class);
-
-		if (applicationState.getCurrentActivity() != null) {
-			for (TrackPoint trackPoint : applicationState.getCurrentActivity()
-					.getTrackPoints()) {
-				heartRatePerTime.add(createHeartRateSample(trackPoint));
-			}
-		}
-		dataset.addSeries(heartRatePerTime);
-
 		return dataset;
 	}
 
+	/** 
+	 * Listener that will react to changes of the currently active {@link Activity}.
+	 * @author ilja
+	 *
+	 */
 	private class ActivityChangedListener implements PropertyChangeListener,
 			Runnable {
+		/**
+		 * Call redraw chart.
+		 */
 		@Override
 		public void run() {
 			redrawChart();
 		}
 
+		/**
+		 * React to change of current Activity
+		 * @param evt {@link PropertyChangeEvent} that indicates change of current {@link Activity}.
+		 */
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
 			SwingUtilities.invokeLater(this);

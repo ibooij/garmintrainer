@@ -18,7 +18,6 @@
  */
 package nl.iljabooij.garmintrainer.gui;
 
-import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -54,7 +53,6 @@ public class SummaryPanel extends JPanel implements PropertyChangeListener {
 	SummaryPanel(final ApplicationState applicationState) {
 		super(new SpringLayout());
 		setName("Summary");
-		setPreferredSize(new Dimension(800, 600));
 		applicationState.addPropertyChangeListener(
 				ApplicationState.Property.CurrentActivity, this);
 

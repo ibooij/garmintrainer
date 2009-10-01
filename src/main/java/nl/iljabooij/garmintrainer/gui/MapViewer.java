@@ -20,6 +20,7 @@ package nl.iljabooij.garmintrainer.gui;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.SwingUtilities;
@@ -30,6 +31,7 @@ import nl.iljabooij.garmintrainer.model.TrackPoint;
 import nl.iljabooij.garmintrainer.model.ApplicationState.Property;
 
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
+import org.openstreetmap.gui.jmapviewer.OsmFileCacheTileLoader;
 import org.openstreetmap.gui.jmapviewer.OsmTileSource;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 
@@ -44,6 +46,9 @@ import com.google.inject.Inject;
 public class MapViewer extends JMapViewer implements PropertyChangeListener {
 	private static final long serialVersionUID = 1L;
 	private transient final ApplicationState applicationState;
+	
+	private static final File CACHE_DIR = new File(new File(System.getProperty("user.home"), ".garminTrainer")
+		, "tileCache");
 
 	/**
 	 * Create a new {@link MapViewer}. Normally, this constructor is called
@@ -59,6 +64,8 @@ public class MapViewer extends JMapViewer implements PropertyChangeListener {
 		this.applicationState = applicationState;
 		this.applicationState.addPropertyChangeListener(
 				Property.CurrentActivity, this);
+		
+		setTileLoader(new OsmFileCacheTileLoader(this, CACHE_DIR));
 	}
 
 	/**

@@ -56,7 +56,7 @@ public class MainGui implements PropertyChangeListener {
 	private static final String TITLE_PREFIX = "Garmin Trainer";
 
 	@Inject
-	private SummaryPanel summaryPanel;
+	private OverviewPanel overviewPanel;
 	@Inject
 	private MapViewer mapViewer;
 	@Inject
@@ -80,7 +80,7 @@ public class MainGui implements PropertyChangeListener {
 		pane.setLayout(new BorderLayout());
 		
 		JTabbedPane tabs = new JTabbedPane();
-		tabs.add(summaryPanel);
+		tabs.add(overviewPanel);
 		tabs.add(mapViewer);
 		tabs.setMnemonicAt(0, KeyEvent.VK_M);
 		tabs.add(chartComponent);
