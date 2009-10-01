@@ -8,8 +8,8 @@
 	<description>Program to use for analyzing Garmin Tcx files</description>
 	<url>http://code.google.com/p/garmintrainer/</url>
 	<scm>
-    	     <connection>scm:hg:https://ibooij@garmintrainer.googlecode.com/hg/</connection>
-             <developerConnection>scm:hg:https://ibooij@garmintrainer.googlecode.com/hg/</developerConnection>
+    	     <connection>scm:hg:https://garmintrainer.googlecode.com/hg/</connection>
+             <developerConnection>scm:hg:https://garmintrainer.googlecode.com/hg/</developerConnection>
              <url>http://code.google.com/p/garmintrainer/source/browse/</url>
   </scm>
 	<dependencies>
@@ -137,6 +137,15 @@
 					</archive>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<goals>install</goals>
+				</configuration>
+			</plugin>
+		
+		
 		</plugins>
 	</build>
 
