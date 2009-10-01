@@ -7,8 +7,8 @@
 	<description>Program to use for analyzing Garmin Tcx files</description>
 	<url>http://code.google.com/p/garmintrainer/</url>
 	<scm>
-    	     <connection>scm:hg:file://${basedir}</connection>
-             <developerConnection>scm:hg:${basedir}</developerConnection>
+    	     <connection>scm:hg:file:https://ibooij@garmintrainer.googlecode.com/hg/</connection>
+             <developerConnection>scm:hg:https://ibooij@garmintrainer.googlecode.com/hg/</developerConnection>
              <url>http://code.google.com/p/garmintrainer/source/browse/</url>
   </scm>
 	<dependencies>
