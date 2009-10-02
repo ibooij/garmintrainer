@@ -3,7 +3,9 @@ package org.openstreetmap.gui.jmapviewer;
 //License: GPL. Copyright 2008 by Jan Peter Stotz
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -14,60 +16,25 @@ import java.util.concurrent.TimeUnit;
  * ends itself.
  * 
  * @author Jan Peter Stotz
+ * @author Ilja Booij (Changed to using an {@link ExecutorService})
  */
 public class JobDispatcher {
 
-    private static JobDispatcher instance;
+    private final static JobDispatcher INSTANCE = new JobDispatcher();
+    
+    private final BlockingQueue<Runnable> jobQueue = new LinkedBlockingQueue<Runnable>(100);
+    private final ExecutorService executor;
 
     /**
-     * @return the singelton instance of the {@link JobDispatcher}
+     * @return the singleton instance of the {@link JobDispatcher}
      */
     public static JobDispatcher getInstance() {
-        // for speed reasons we check if the instance has been created
-        // one time before we enter the synchronized section...
-        if (instance != null)
-            return instance;
-        synchronized (JobDispatcher.class) {
-            // ... and for thread safety reasons one time inside the
-            // synchronized section.
-            if (instance != null)
-                return instance;
-            new JobDispatcher();
-            return instance;
-        }
+    	return INSTANCE;
     }
-
+     
     private JobDispatcher() {
-        instance = this;
-        addWorkerThread().firstThread = true;
+    	executor = new ThreadPoolExecutor(1, 8, 30, TimeUnit.SECONDS, jobQueue);
     }
-
-    protected BlockingQueue<Runnable> jobQueue = new LinkedBlockingQueue<Runnable>();
-
-    public static int WORKER_THREAD_MAX_COUNT = 8;
-
-    /**
-     * Specifies the time span in seconds that a worker thread waits for new
-     * jobs to perform. If the time span has elapsed the worker thread
-     * terminates itself. Only the first worker thread works differently, it
-     * ignores the timeout and will never terminate itself.
-     */
-    public static int WORKER_THREAD_TIMEOUT = 30;
-
-    /**
-     * Total number of worker threads currently idle or active
-     */
-    protected int workerThreadCount = 0;
-
-    /**
-     * Number of worker threads currently idle
-     */
-    protected int workerThreadIdleCount = 0;
-
-    /**
-     * Just an id for identifying an worker thread instance
-     */
-    protected int workerThreadId = 0;
 
     /**
      * Removes all jobs from the queue that are currently not being processed.
@@ -76,70 +43,7 @@ public class JobDispatcher {
         jobQueue.clear();
     }
 
-    public void addJob(Runnable job) {
-        try {
-            jobQueue.put(job);
-            if (workerThreadIdleCount == 0 && workerThreadCount < WORKER_THREAD_MAX_COUNT)
-                addWorkerThread();
-        } catch (InterruptedException e) {
-        }
+    public void addJob(final Runnable job) {
+    	executor.execute(job);
     }
-
-    protected JobThread addWorkerThread() {
-        JobThread jobThread = new JobThread(++workerThreadId);
-        synchronized (this) {
-            workerThreadCount++;
-        }
-        return jobThread;
-    }
-
-    public class JobThread extends Thread {
-
-        Runnable job;
-        boolean firstThread = false;
-
-        public JobThread(int threadId) {
-            super("OSMJobThread " + threadId);
-            setDaemon(true);
-            job = null;
-            start();
-        }
-
-        @Override
-        public void run() {
-            executeJobs();
-            synchronized (instance) {
-                workerThreadCount--;
-            }
-        }
-
-        protected void executeJobs() {
-            while (!isInterrupted()) {
-                try {
-                    synchronized (instance) {
-                        workerThreadIdleCount++;
-                    }
-                    if (firstThread)
-                        job = jobQueue.take();
-                    else
-                        job = jobQueue.poll(WORKER_THREAD_TIMEOUT, TimeUnit.SECONDS);
-                } catch (InterruptedException e1) {
-                    return;
-                } finally {
-                    synchronized (instance) {
-                        workerThreadIdleCount--;
-                    }
-                }
-                if (job == null)
-                    return;
-                try {
-                    job.run();
-                    job = null;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
 }
