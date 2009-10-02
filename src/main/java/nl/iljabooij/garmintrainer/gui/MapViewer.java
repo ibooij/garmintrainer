@@ -18,6 +18,14 @@
  */
 package nl.iljabooij.garmintrainer.gui;
 
+import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.geom.Path2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -92,17 +100,63 @@ public class MapViewer extends JMapViewer implements PropertyChangeListener {
 	}
 
 	/**
+	 * Paint the track of the {@link Activity} on the map. The map itself is 
+	 * painted in {@link JMapViewer}, the superclass of this class.
+	 * @param g the {@link Graphics} object used for drawing.
+	 * @see JMapViewer#paintComponents(Graphics)
+	 */
+	@Override
+	protected void paintComponent(final Graphics g) {
+		super.paintComponent(g);
+		
+		// if there is no current Activity, there is no sense in drawing 
+		// anything.
+		if (applicationState.getCurrentActivity() == null) {
+			return;
+		}
+		
+		final Path2D path = new Path2D.Double();
+		for (TrackPoint trackPoint: applicationState.getCurrentActivity().getTrackPoints()) {
+			if (trackPoint.hasPosition()) {
+				Point p = getMapPosition(trackPoint.getLatitude(), trackPoint.getLongitude(), false);
+				if (path.getCurrentPoint() == null) {
+					path.moveTo(p.x, p.y);
+				} else {
+					path.lineTo(p.x, p.y);
+				}
+			}
+		}
+		
+		final Graphics2D g2d = (Graphics2D) g;
+		Composite originalComposite = g2d.getComposite();
+	
+		// use Alpha factor for drawing.
+		int type = AlphaComposite.SRC_OVER;
+	    g2d.setComposite(AlphaComposite.getInstance(type, 0.5f));
+	    
+		g2d.setStroke(new BasicStroke(8, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+		
+		g2d.setColor(Color.RED);
+		g2d.draw(path);
+		
+		// return to original composite
+		g2d.setComposite(originalComposite);
+	}
+	
+	/**
 	 * Update the map using a new list of markers.
 	 * @param markers markers to use in the map.
-	 */
+	 */ 
 	private void updateMap(final ArrayList<MapMarker> markers) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
+				// we don't want to show the markers, just use them to set the
+				// region of the map that we want to show.
 				setMapMarkerVisible(false);
 				setMapMarkerList(markers);
-				setMapMarkerVisible(true);
 				setDisplayToFitMapMarkers();
+				repaint();
 			}
 		});
 	}
