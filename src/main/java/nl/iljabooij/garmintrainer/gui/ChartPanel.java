@@ -19,92 +19,19 @@
 package nl.iljabooij.garmintrainer.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-import org.slf4j.Logger;
-
-import nl.iljabooij.garmintrainer.model.Activity;
-import nl.iljabooij.garmintrainer.model.ApplicationState;
-import nl.iljabooij.garmintrainer.util.InjectLogger;
 
 import com.google.inject.Inject;
 
-public class ChartPanel extends JPanel {
-	@InjectLogger
-	private Logger logger;
-	
+public class ChartPanel extends JPanel {	
 	private static final long serialVersionUID = 1L;
 
-	private transient final ApplicationState applicationState;
-
 	@Inject
-	public ChartPanel(final ApplicationState applicationState) {
+	public ChartPanel(final ChartComponent chartComponent) {
 		super(new BorderLayout());
 		setName("Chart");
 
-		this.applicationState = applicationState;
-		applicationState.addPropertyChangeListener(
-				ApplicationState.Property.CurrentActivity,
-				new ActivityChangedListener());
+		this.add(chartComponent, BorderLayout.CENTER);
 	}
-	
-	private int getLeft() { 
-		return getInsets().left;
-	}
-	
-	private int getRight() {
-		return getWidth() - getLeft() - getInsets().right;
-	}
-	
-	
-	@Override
-	protected void paintComponent(final Graphics graphics) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("painting chart {}x{}", new Object[] {getWidth(), getHeight()});
-		}
-		super.paintComponent(graphics);
-		
-		graphics.setColor(Color.white);
-		
-		Insets insets = getInsets();
-		graphics.fillRect(getLeft(), insets.top, getRight(), 
-				getHeight() - insets.top - insets.bottom);
-		
-	}
-		
-
-
-	/** 
-	 * Listener that will react to changes of the currently active {@link Activity}.
-	 * @author ilja
-	 *
-	 */
-	private class ActivityChangedListener implements PropertyChangeListener,
-			Runnable {
-		/**
-		 * Call redraw chart.
-		 */
-		@Override
-		public void run() {
-			repaint();
-		}
-
-		/**
-		 * React to change of current Activity
-		 * @param evt {@link PropertyChangeEvent} that indicates change of current {@link Activity}.
-		 */
-		@Override
-		public void propertyChange(PropertyChangeEvent evt) {
-			SwingUtilities.invokeLater(this);
-
-		}
-	}
-
 }

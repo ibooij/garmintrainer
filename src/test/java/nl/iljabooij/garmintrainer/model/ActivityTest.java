@@ -213,17 +213,17 @@ public class ActivityTest {
 	public void testEmptyLapsShouldCouseIAE() {
 		new Activity(START_TIME, new ArrayList<Lap>());
 	}
-	
+
 	@Test
 	public void testGetAltitudeGain() {
-		// first half of points in lap go up by 2.0 meters, other half go down 
+		// first half of points in lap go up by 2.0 meters, other half go down
 		final Length gain = Length.createLengthInMeters(3.0);
 		final Length loss = Length.createLengthInMeters(-3.0);
-		
+
 		Lap[] laps = new Lap[2];
 		for (int i = 0; i < laps.length; i++) {
 			laps[i] = mock(Lap.class);
-			
+
 			TrackPoint[] trackPoints = new TrackPoint[10];
 			for (int j = 0; j < trackPoints.length; j++) {
 				trackPoints[j] = mock(TrackPoint.class);
@@ -233,40 +233,98 @@ public class ActivityTest {
 					when(trackPoints[j].getAltitudeDelta()).thenReturn(loss);
 				}
 			}
-			when(laps[i].getTrackPoints()).thenReturn(ImmutableList.copyOf(Arrays.asList(trackPoints)));
+			when(laps[i].getTrackPoints()).thenReturn(
+					ImmutableList.copyOf(Arrays.asList(trackPoints)));
 		}
-		
+
 		Activity activity = new Activity(START_TIME, Arrays.asList(laps));
-		
+
 		// test gain
-		double totalGain = laps.length * (laps[0].getTrackPoints().size() / 2) * gain.getValueInMeters();
-		assertEquals(Length.createLengthInMeters(totalGain), activity.getAltitudeGain());
+		double totalGain = laps.length * (laps[0].getTrackPoints().size() / 2)
+				* gain.getValueInMeters();
+		assertEquals(Length.createLengthInMeters(totalGain), activity
+				.getAltitudeGain());
 	}
-	
+
 	/**
-	 * Test which checks if altitude gain correctly filters out any noise. 
+	 * Test which checks if altitude gain correctly filters out any noise.
 	 */
 	@Test
 	public void testFilterAltitudeDeltaNoise() {
 		// values go up and down every trackpoint.
 		final Length gain = Length.createLengthInMeters(4.0);
 		final Length loss = Length.createLengthInMeters(-4.0);
-		
+
 		Lap[] laps = new Lap[1];
 		for (int i = 0; i < laps.length; i++) {
 			laps[i] = mock(Lap.class);
-			
+
 			TrackPoint[] trackPoints = new TrackPoint[10];
 			for (int j = 0; j < trackPoints.length; j++) {
 				trackPoints[j] = mock(TrackPoint.class);
 				Length delta = (j % 2 == 0) ? gain : loss;
 				when(trackPoints[j].getAltitudeDelta()).thenReturn(delta);
 			}
-			when(laps[i].getTrackPoints()).thenReturn(ImmutableList.copyOf(Arrays.asList(trackPoints)));
+			when(laps[i].getTrackPoints()).thenReturn(
+					ImmutableList.copyOf(Arrays.asList(trackPoints)));
 		}
-		
+
 		Activity activity = new Activity(START_TIME, Arrays.asList(laps));
-		
-		assertEquals(Length.createLengthInMeters(0.0), activity.getAltitudeGain());
+
+		assertEquals(Length.createLengthInMeters(0.0), activity
+				.getAltitudeGain());
+	}
+
+	@Test
+	public void testGetMaxAndMinAltitude() {
+		final double[] altitudes = new double[] { 1.0, 2.0, 3.0, 2.0 };
+
+		Lap[] laps = new Lap[1];
+		for (int i = 0; i < laps.length; i++) {
+			laps[i] = mock(Lap.class);
+
+			TrackPoint[] trackPoints = new TrackPoint[altitudes.length];
+			for (int j = 0; j < trackPoints.length; j++) {
+				trackPoints[j] = mock(TrackPoint.class);
+				when(trackPoints[j].getAltitude()).thenReturn(
+						Length.createLengthInMeters(altitudes[j]));
+			}
+			when(laps[i].getTrackPoints()).thenReturn(
+					ImmutableList.copyOf(Arrays.asList(trackPoints)));
+		}
+
+		Activity activity = new Activity(START_TIME, Arrays.asList(laps));
+
+		assertEquals(Length.createLengthInMeters(3.0), activity
+				.getMaximumAltitude());
+		assertEquals(Length.createLengthInMeters(1.0), activity
+				.getMinimumAltitude());
+	}
+
+	/**
+	 * test the getMaximumSpeed() method
+	 */
+	@Test
+	public void testGetMaximumSpeed() {
+		final double[] speeds = new double[] { 1.0, 2.0, 3.0, 2.0 };
+
+		Lap[] laps = new Lap[1];
+		for (int i = 0; i < laps.length; i++) {
+			laps[i] = mock(Lap.class);
+
+			TrackPoint[] trackPoints = new TrackPoint[speeds.length];
+			for (int j = 0; j < trackPoints.length; j++) {
+				trackPoints[j] = mock(TrackPoint.class);
+				when(trackPoints[j].getSpeed()).thenReturn(
+						Speed.createExactSpeedInMetersPerSecond(speeds[j]));
+			}
+			when(laps[i].getTrackPoints()).thenReturn(
+					ImmutableList.copyOf(Arrays.asList(trackPoints)));
+		}
+
+		Activity activity = new Activity(START_TIME, Arrays.asList(laps));
+
+		assertEquals(Speed.createExactSpeedInMetersPerSecond(3.0), activity
+				.getMaximumSpeed());
 	}
 }
