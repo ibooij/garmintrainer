@@ -60,7 +60,7 @@ public class MainGui implements PropertyChangeListener {
 	@Inject
 	private MapViewer mapViewer;
 	@Inject
-	private ChartComponent chartComponent;
+	private ChartPanel chartPanel;
 	@Inject
 	private SampleTablePanel sampleTablePanel;
 	@Inject
@@ -83,7 +83,7 @@ public class MainGui implements PropertyChangeListener {
 		tabs.add(overviewPanel);
 		tabs.add(mapViewer);
 		tabs.setMnemonicAt(0, KeyEvent.VK_M);
-		tabs.add(chartComponent);
+		tabs.add(chartPanel);
 		tabs.setMnemonicAt(1, KeyEvent.VK_C);
 		tabs.add(sampleTablePanel);
 		tabs.setMnemonicAt(2, KeyEvent.VK_S);

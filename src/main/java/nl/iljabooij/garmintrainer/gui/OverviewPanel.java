@@ -27,7 +27,7 @@ public class OverviewPanel extends JPanel {
 	@Inject
 	public OverviewPanel(final SummaryPanel summaryPanel,
 			final MapViewer mapViewer,
-			final ChartComponent chartComponent) {
+			final ChartPanel chartComponent) {
 			
 		super();
 		setLayout(new GridLayout(2, 2, 5, 5));
