@@ -68,6 +68,56 @@ public class Activity implements Comparable<Activity>, Serializable {
 	}
 	
 	/**
+	 * Get maximum altitude of activity.
+	 * @return maximum altitude
+	 */
+	public Length getMaximumAltitude() {
+		Length maximum = null;
+		for (TrackPoint trackPoint: getTrackPoints()) {
+			if (maximum == null || trackPoint.getAltitude().compareTo(maximum) > 0) {
+				maximum = trackPoint.getAltitude();
+			}
+		}
+		// maximum should never be null, because list of track points should never
+		// be empty.
+		assert(maximum != null);
+		return maximum;
+	}
+	
+	/**
+	 * Get minimum altitude of activity.
+	 * @return minimum altitude
+	 */
+	public Length getMinimumAltitude() {
+		Length minimum = null;
+		for (TrackPoint trackPoint: getTrackPoints()) {
+			if (minimum == null || trackPoint.getAltitude().compareTo(minimum) < 0) {
+				minimum = trackPoint.getAltitude();
+			}
+		}
+		// minimum should never be null, because list of track points should never
+		// be empty.
+		assert(minimum != null);
+		return minimum;
+	}
+	
+	/**
+	 * Get Maximum Speed of Exercise
+	 */
+	public Speed getMaximumSpeed() {
+		Speed maximum = null;
+		for (TrackPoint trackPoint: getTrackPoints()) {
+			if (maximum == null || trackPoint.getSpeed().compareTo(maximum) > 0) {
+				maximum = trackPoint.getSpeed();
+			}
+		}
+		// maximum should never be null, because list of track points should never
+		// be empty.
+		assert(maximum != null);
+		return maximum;
+	}
+	
+	/**
 	 * Get gross duration (from start time to time of last measurement) of the
 	 * Activity.
 	 * @return gross duration
