@@ -29,6 +29,11 @@ import nl.iljabooij.garmintrainer.model.Speed;
 import nl.iljabooij.garmintrainer.model.TrackPoint;
 import nl.iljabooij.garmintrainer.model.Length.Unit;
 
+/**
+ * Table Model for the Table holding the information of each sample (TrackPoint).
+ * @author ilja
+ *
+ */
 public class SamplesTableModel extends AbstractTableModel {
     private static final long serialVersionUID = 1L;
 
@@ -37,11 +42,22 @@ public class SamplesTableModel extends AbstractTableModel {
      * @author ilja
      */
     private enum Column {
-    	Time,
-    	Distance,
-    	Altitude,
-    	AltitudeDelta,
-    	Speed;
+    	Time("Time"),
+    	Distance("Distance"),
+    	Altitude("Altitude"),
+    	AltitudeDelta("Altitude Gain"),
+    	Speed("Speed"),
+    	HeartRate("Heart Rate");
+    	
+    	private final String header;
+    	
+    	private Column(final String header) {
+    		this.header = header;
+    	}
+    	
+    	public String getHeader() {
+    		return header;
+    	}
     }
 
     /** The Activity used for the data */ 
@@ -68,7 +84,7 @@ public class SamplesTableModel extends AbstractTableModel {
 
     @Override
     public String getColumnName(final int index) {
-        return Column.values()[index].name();
+        return Column.values()[index].getHeader();
     }
 
     @Override
@@ -93,6 +109,8 @@ public class SamplesTableModel extends AbstractTableModel {
         	return trackPoint.getAltitude().convert(Unit.Meter);
         case AltitudeDelta:
         	return trackPoint.getAltitudeDelta().convert(Unit.Meter);
+        case HeartRate:
+        	return trackPoint.getHeartRate();
         default:
             return null;
         }
