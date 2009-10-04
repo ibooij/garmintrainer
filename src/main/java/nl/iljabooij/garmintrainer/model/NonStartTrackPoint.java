@@ -20,11 +20,14 @@ package nl.iljabooij.garmintrainer.model;
 
 import java.io.Serializable;
 
+import net.jcip.annotations.Immutable;
+
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+@Immutable
 public class NonStartTrackPoint extends TrackPoint implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private final TrackPoint previousTrackPoint;

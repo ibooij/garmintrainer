@@ -22,9 +22,12 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+import net.jcip.annotations.Immutable;
+
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.joda.time.Duration;
 
+@Immutable
 public final class Speed implements Comparable<Speed>, Serializable {
     private static final long serialVersionUID = 1L;
 

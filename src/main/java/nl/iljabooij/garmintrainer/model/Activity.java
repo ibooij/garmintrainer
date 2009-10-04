@@ -22,6 +22,8 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.jcip.annotations.Immutable;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.joda.time.DateTime;
@@ -32,6 +34,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
+@Immutable
 public class Activity implements Comparable<Activity>, Serializable {
     private static final long serialVersionUID = 1L;
 	private final DateTime startTime;

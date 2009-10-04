@@ -21,6 +21,8 @@ package nl.iljabooij.garmintrainer.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import net.jcip.annotations.GuardedBy;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,8 +39,10 @@ public class ApplicationStateImpl implements ApplicationState {
     private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(
             this);
 
+    @GuardedBy("this")
     private Activity currentActivity = null;
 
+    @GuardedBy("this")
     private String errorMessage;
 
     /*
