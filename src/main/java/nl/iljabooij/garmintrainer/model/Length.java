@@ -22,12 +22,15 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+import net.jcip.annotations.Immutable;
+
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * Implements a measurement of Length. A Length object is immutable.
  * @author ilja booij <ibooij@gmail.com>
  */
+@Immutable
 public final class Length implements Comparable<Length>, Serializable {
     private static final long serialVersionUID = 1L;
     

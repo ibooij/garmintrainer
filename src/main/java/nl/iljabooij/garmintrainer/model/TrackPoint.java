@@ -20,6 +20,8 @@ package nl.iljabooij.garmintrainer.model;
 
 import java.io.Serializable;
 
+import net.jcip.annotations.Immutable;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.joda.time.DateTime;
 
@@ -28,6 +30,7 @@ import org.joda.time.DateTime;
  * @author "Ilja Booij <ibooij@gmail.com>"
  *
  */
+@Immutable
 public abstract class TrackPoint implements Serializable {
 	private static final long serialVersionUID = 1L;
 	

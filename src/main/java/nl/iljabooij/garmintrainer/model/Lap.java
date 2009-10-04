@@ -21,6 +21,8 @@ package nl.iljabooij.garmintrainer.model;
 import java.io.Serializable;
 import java.util.List;
 
+import net.jcip.annotations.Immutable;
+
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
@@ -34,6 +36,7 @@ import com.google.common.collect.PeekingIterator;
  * @author ilja
  *
  */
+@Immutable
 public class Lap implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private final DateTime startTime;

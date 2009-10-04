@@ -18,6 +18,8 @@
  */
 package nl.iljabooij.garmintrainer.model;
 
+import net.jcip.annotations.Immutable;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.joda.time.DateTime;
@@ -29,6 +31,7 @@ import com.google.common.base.Preconditions;
  * @author ilja
  *
  */
+@Immutable
 public class Pause {
 	private final DateTime startTime;
 	private final DateTime endTime;

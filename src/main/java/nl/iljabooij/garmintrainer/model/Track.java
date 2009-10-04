@@ -21,6 +21,8 @@ package nl.iljabooij.garmintrainer.model;
 import java.io.Serializable;
 import java.util.List;
 
+import net.jcip.annotations.Immutable;
+
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
@@ -32,6 +34,7 @@ import com.google.common.collect.Iterables;
  * a Track is a stretch of a Lap that is recorded without interruption.
  * @author ilja
  */
+@Immutable
 public class Track implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private ImmutableList<TrackPoint> trackPoints;
