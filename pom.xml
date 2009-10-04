@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.iljabooij</groupId>
 	<artifactId>garmintrainer</artifactId>
@@ -7,10 +8,10 @@
 	<description>Program to use for analyzing Garmin Tcx files</description>
 	<url>http://code.google.com/p/garmintrainer/</url>
 	<scm>
-    	     <connection>scm:hg:https://garmintrainer.googlecode.com/hg/</connection>
-             <developerConnection>scm:hg:https://garmintrainer.googlecode.com/hg/</developerConnection>
-             <url>http://code.google.com/p/garmintrainer/source/browse/</url>
-  </scm>
+		<connection>scm:hg:https://garmintrainer.googlecode.com/hg/</connection>
+		<developerConnection>scm:hg:https://garmintrainer.googlecode.com/hg/</developerConnection>
+		<url>http://code.google.com/p/garmintrainer/source/browse/</url>
+	</scm>
 	<dependencies>
 		<dependency>
 			<groupId>commons-digester</groupId>
@@ -74,6 +75,11 @@
 			<groupId>com.google.collections</groupId>
 			<artifactId>google-collections</artifactId>
 			<version>1.0-rc2</version>
+		</dependency>
+		<dependency>
+			<groupId>net.jcip</groupId>
+			<artifactId>jcip-annotations</artifactId>
+			<version>1.0</version>
 		</dependency>
 	</dependencies>
 	<reporting>
@@ -143,8 +149,8 @@
 					<goals>install</goals>
 				</configuration>
 			</plugin>
-		
-		
+
+
 		</plugins>
 	</build>
 
