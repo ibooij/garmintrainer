@@ -54,23 +54,19 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable, A
 		this.laps = ImmutableList.copyOf(laps);
 	}
 
-	/* (non-Javadoc)
-	 * @see nl.iljabooij.garmintrainer.model.Activity#getStartTime()
+	/**
+	 * {@inheritDoc}
 	 */
 	public DateTime getStartTime() {
 		return startTime;
 	}
 	
-	/* (non-Javadoc)
-	 * @see nl.iljabooij.garmintrainer.model.Activity#getEndTime()
-	 */
+	/** {@inheritDoc} */
 	public DateTime getEndTime() {
 		return getLastTrackPoint().getTime();	
 	}
 	
-	/* (non-Javadoc)
-	 * @see nl.iljabooij.garmintrainer.model.Activity#getMaximumAltitude()
-	 */
+	/** {@inheritDoc} */
 	public Length getMaximumAltitude() {
 		Length maximum = null;
 		for (TrackPoint trackPoint: getTrackPoints()) {
@@ -84,9 +80,7 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable, A
 		return maximum;
 	}
 	
-	/* (non-Javadoc)
-	 * @see nl.iljabooij.garmintrainer.model.Activity#getMinimumAltitude()
-	 */
+	/** {@inheritDoc} */
 	public Length getMinimumAltitude() {
 		Length minimum = null;
 		for (TrackPoint trackPoint: getTrackPoints()) {
@@ -100,9 +94,7 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable, A
 		return minimum;
 	}
 	
-	/* (non-Javadoc)
-	 * @see nl.iljabooij.garmintrainer.model.Activity#getMaximumSpeed()
-	 */
+	/** {@inheritDoc} */
 	public Speed getMaximumSpeed() {
 		Speed maximum = null;
 		for (TrackPoint trackPoint: getTrackPoints()) {
@@ -116,16 +108,12 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable, A
 		return maximum;
 	}
 	
-	/* (non-Javadoc)
-	 * @see nl.iljabooij.garmintrainer.model.Activity#getGrossDuration()
-	 */
+	/** {@inheritDoc} */
 	public Duration getGrossDuration() {
 		return new Duration(startTime, getLastTrackPoint().getTime());
 	}
 	
-	/* (non-Javadoc)
-	 * @see nl.iljabooij.garmintrainer.model.Activity#getNetDuration()
-	 */
+	/** {@inheritDoc} */
 	public Duration getNetDuration() {
 		// start with the difference between start time and first lap start time.
 		Duration netDuration = new Duration(startTime, laps.get(0).getStartTime());
@@ -135,9 +123,7 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable, A
 		return netDuration;
 	}
 	
-	/* (non-Javadoc)
-	 * @see nl.iljabooij.garmintrainer.model.Activity#getTrackPoints()
-	 */
+	/** {@inheritDoc} */
 	public ImmutableList<TrackPoint> getTrackPoints() {
 		ImmutableList.Builder<TrackPoint> builder = ImmutableList.builder();
 		for (Lap lap: laps) {
@@ -145,37 +131,33 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable, A
 		}
 		return builder.build();
 	}
-	
+
+	/** {@inheritDoc} */
 	private TrackPoint getLastTrackPoint() {
 		Lap lastLap = Iterables.getLast(laps);
 		return Iterables.getLast(lastLap.getTrackPoints());
 	}
 	
-	/* (non-Javadoc)
-	 * @see nl.iljabooij.garmintrainer.model.Activity#getLaps()
-	 */
+	/** {@inheritDoc} */
 	public ImmutableList<Lap> getLaps() {
 		return laps;
 	}
 	
-	/* (non-Javadoc)
-	 * @see nl.iljabooij.garmintrainer.model.Activity#toString()
+
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {
 		return "Activity [start time=" + startTime + ", #trackPoints=" + laps.size() + "]";
 	}
 
-	/* (non-Javadoc)
-	 * @see nl.iljabooij.garmintrainer.model.Activity#getDistance()
-	 */
+	/** {@inheritDoc} */
 	public Length getDistance() {
 		return getLastTrackPoint().getDistance();
 	}
 	
-	/* (non-Javadoc)
-	 * @see nl.iljabooij.garmintrainer.model.Activity#getAltitudeGain()
-	 */
+	/** {@inheritDoc} */
 	public Length getAltitudeGain() {
 		final Length minimumGain = Length.createLengthInMeters(5.0);
 		Length totalGain = Length.createLengthInMeters(0.0);
@@ -200,9 +182,7 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable, A
 		return totalGain;
 	}
 	
-	/* (non-Javadoc)
-	 * @see nl.iljabooij.garmintrainer.model.Activity#equals(java.lang.Object)
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object o) {
 		if (o == this) {
@@ -223,9 +203,7 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable, A
 			.isEquals();	
 	}
 	
-	/* (non-Javadoc)
-	 * @see nl.iljabooij.garmintrainer.model.Activity#hashCode()
-	 */
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder(31, 43)
@@ -234,9 +212,7 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable, A
 			.toHashCode();
 	}
 	
-	/* (non-Javadoc)
-	 * @see nl.iljabooij.garmintrainer.model.Activity#compareTo(nl.iljabooij.garmintrainer.model.ActivityImpl)
-	 */
+	/** {@inheritDoc} */
     @Override
     public int compareTo(final Activity o) {
         if (o == null) {
