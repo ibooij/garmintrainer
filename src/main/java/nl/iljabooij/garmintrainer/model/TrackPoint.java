@@ -25,6 +25,8 @@ import net.jcip.annotations.Immutable;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.joda.time.DateTime;
 
+import com.google.common.collect.Ordering;
+
 /**
  * Represents a single track point sample.
  * @author "Ilja Booij <ibooij@gmail.com>"
@@ -107,4 +109,24 @@ public abstract class TrackPoint implements Serializable {
 	 * @return the altitude delta
 	 */
 	public abstract Length getAltitudeDelta();
+	
+	/**
+	 * Ordering that can be used to order Track points according to altitude
+	 * @author ilja
+	 */
+	public static class AltitudeOrdering extends Ordering<TrackPoint> {
+		public int compare(TrackPoint o1, TrackPoint o2) {
+			return o1.getAltitude().compareTo(o2.getAltitude());
+		}
+	}
+	
+	/**
+	 * Ordering that can be used to order Track points according to speed
+	 * @author ilja
+	 */
+	public static class SpeedOrdering extends Ordering<TrackPoint> {
+		public int compare(TrackPoint o1, TrackPoint o2) {
+			return o1.getSpeed().compareTo(o2.getSpeed());
+		}
+	}
 }
