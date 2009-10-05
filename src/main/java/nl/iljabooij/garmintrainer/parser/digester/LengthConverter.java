@@ -24,7 +24,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import org.apache.commons.beanutils.Converter;
 
-public class LengthConverter implements Converter {
+/**
+ * Convertor for {@link Length}.
+ * 
+ * Converts from String to {@link Length}.
+ * @see Converter.
+ * @author ilja
+ *
+ */
+public final class LengthConverter implements Converter {
 	/**
 	 * Convert a value to a {@link Length}.
 	 * 

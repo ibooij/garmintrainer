@@ -38,7 +38,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 public class ActivityTest {
-	private Activity activity;
+	private ActivityImpl activity;
 	private LinkedList<Lap> laps;
 	private LinkedList<TrackPoint> allTrackPoints;
 	private static final DateTime START_TIME = new DateTime(2009, 9, 17, 14,
@@ -78,7 +78,7 @@ public class ActivityTest {
 			allTrackPoints.addAll(builder.build());
 			laps.add(lap);
 		}
-		activity = new Activity(START_TIME, laps);
+		activity = new ActivityImpl(START_TIME, laps);
 	}
 
 	@Test
@@ -122,7 +122,7 @@ public class ActivityTest {
 
 			laps.add(lap);
 		}
-		Activity activity = new Activity(startTime, laps);
+		Activity activity = new ActivityImpl(startTime, laps);
 
 		// we have 10 laps of 10 minutes riding time per lap, so there should be
 		// 100 minutes of riding time, plus the first second (difference between
@@ -150,14 +150,14 @@ public class ActivityTest {
 		assertTrue("equal to itself", activity.equals(activity));
 
 		/* same content, different object */
-		assertTrue("equal to same object", activity.equals(new Activity(
+		assertTrue("equal to same object", activity.equals(new ActivityImpl(
 				START_TIME, laps)));
 
 		/* differently filled objects, should all differ */
-		assertFalse("different date time", activity.equals(new Activity(
+		assertFalse("different date time", activity.equals(new ActivityImpl(
 				START_TIME.plusMinutes(1), laps)));
 		List<Lap> oneLess = laps.subList(0, 2);
-		assertFalse("different laps", activity.equals(new Activity(START_TIME,
+		assertFalse("different laps", activity.equals(new ActivityImpl(START_TIME,
 				oneLess)));
 	}
 
@@ -201,17 +201,17 @@ public class ActivityTest {
 
 	@Test(expected = NullPointerException.class)
 	public void testNullStartTimeShouldCauseNPE() {
-		new Activity(null, laps);
+		new ActivityImpl(null, laps);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testNullLapsShouldCauseNPE() {
-		new Activity(START_TIME, null);
+		new ActivityImpl(START_TIME, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testEmptyLapsShouldCouseIAE() {
-		new Activity(START_TIME, new ArrayList<Lap>());
+		new ActivityImpl(START_TIME, new ArrayList<Lap>());
 	}
 
 	@Test
@@ -237,7 +237,7 @@ public class ActivityTest {
 					ImmutableList.copyOf(Arrays.asList(trackPoints)));
 		}
 
-		Activity activity = new Activity(START_TIME, Arrays.asList(laps));
+		Activity activity = new ActivityImpl(START_TIME, Arrays.asList(laps));
 
 		// test gain
 		double totalGain = laps.length * (laps[0].getTrackPoints().size() / 2)
@@ -269,7 +269,7 @@ public class ActivityTest {
 					ImmutableList.copyOf(Arrays.asList(trackPoints)));
 		}
 
-		Activity activity = new Activity(START_TIME, Arrays.asList(laps));
+		Activity activity = new ActivityImpl(START_TIME, Arrays.asList(laps));
 
 		assertEquals(Length.createLengthInMeters(0.0), activity
 				.getAltitudeGain());
@@ -293,7 +293,7 @@ public class ActivityTest {
 					ImmutableList.copyOf(Arrays.asList(trackPoints)));
 		}
 
-		Activity activity = new Activity(START_TIME, Arrays.asList(laps));
+		Activity activity = new ActivityImpl(START_TIME, Arrays.asList(laps));
 
 		assertEquals(Length.createLengthInMeters(3.0), activity
 				.getMaximumAltitude());
@@ -322,7 +322,7 @@ public class ActivityTest {
 					ImmutableList.copyOf(Arrays.asList(trackPoints)));
 		}
 
-		Activity activity = new Activity(START_TIME, Arrays.asList(laps));
+		Activity activity = new ActivityImpl(START_TIME, Arrays.asList(laps));
 
 		assertEquals(Speed.createExactSpeedInMetersPerSecond(3.0), activity
 				.getMaximumSpeed());
