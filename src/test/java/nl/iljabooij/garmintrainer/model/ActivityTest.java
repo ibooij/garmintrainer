@@ -38,7 +38,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 public class ActivityTest {
-	private ActivityImpl activity;
+	private Activity activity;
 	private LinkedList<Lap> laps;
 	private LinkedList<TrackPoint> allTrackPoints;
 	private static final DateTime START_TIME = new DateTime(2009, 9, 17, 14,
