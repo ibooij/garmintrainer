@@ -185,12 +185,12 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable, A
 	}
 	
 	/** Seeds for {@link HashCodeBuilder}. */
-	private int[] hashCodeSeeds = new int[] {31, 43};
+	private static final int[] HASH_CODE_SEEDS = new int[] {31, 43};
 	
 	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder(hashCodeSeeds[0], hashCodeSeeds[1])
+		return new HashCodeBuilder(HASH_CODE_SEEDS[0], HASH_CODE_SEEDS[1])
 			.append(startTime)
 			.append(true)
 			.toHashCode();
