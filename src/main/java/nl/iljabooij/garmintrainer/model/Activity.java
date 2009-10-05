@@ -197,10 +197,10 @@ public class Activity implements Comparable<Activity>, Serializable {
 			} else {
 				Length gain = Length.createLengthInMeters(0.0);
 				for (TrackPoint climbingTrackPoint: climbingStretch) {
-					gain = gain.add(climbingTrackPoint.getAltitudeDelta());
+					gain = gain.plus(climbingTrackPoint.getAltitudeDelta());
 				}
 				if (gain.compareTo(minimumGain) > 0) {
-					totalGain = totalGain.add(gain);
+					totalGain = totalGain.plus(gain);
 				}
 				climbingStretch.clear();
 			}

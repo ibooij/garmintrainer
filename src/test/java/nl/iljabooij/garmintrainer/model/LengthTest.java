@@ -117,11 +117,11 @@ public class LengthTest {
 	
 	@Test
 	public void testSubtraction() {
-		final Length afterFirst = _5km.substract(_2km);
+		final Length afterFirst = _5km.minus(_2km);
 		assertEquals("result is 3km", 3.0, afterFirst.getValue(), DELTA);
 		assertEquals("result is 3000 meters", 3000.0,
 				afterFirst.getValue(Unit.Meter), DELTA);
-		final Length afterSecond = afterFirst.substract(_200m);
+		final Length afterSecond = afterFirst.minus(_200m);
 		assertEquals("result is 2.8km", 2.8, afterSecond.getValue(), DELTA);
 		assertEquals("result is 2800 meters", 2800.0,
 				afterSecond.getValue(Unit.Meter), DELTA);
@@ -130,25 +130,25 @@ public class LengthTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void testSubtractThrowIAEOnNullSubtractor() {
-		_5km.substract(null);
+		_5km.minus(null);
 	}
 	
 	/**
-	 * Test the {@link Length#add(Length)} method.
+	 * Test the {@link Length#plus(Length)} method.
 	 */
 	@Test
 	public void testAddition() {
-		final Length afterFirst = _5km.add(_2km);
+		final Length afterFirst = _5km.plus(_2km);
 		assertEquals("result is 7km", 7.0, afterFirst.getValue(), DELTA);
 		assertEquals("unit is Km", Unit.Kilometer, afterFirst.getUnit());
-		final Length afterSecond = _200m.add(afterFirst);
+		final Length afterSecond = _200m.plus(afterFirst);
 		assertEquals("result is 7200m", 7200.0, afterSecond.getValue(), DELTA);
 		assertEquals("unit is Km", Unit.Meter, afterSecond.getUnit());	
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testAdditionThrowIAEOnNullSubtractor() {
-		_5km.add(null);
+		_5km.plus(null);
 	}
 	@Test
 	public void testEquals() {

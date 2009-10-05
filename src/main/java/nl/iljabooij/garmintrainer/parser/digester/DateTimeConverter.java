@@ -18,26 +18,25 @@
  */
 package nl.iljabooij.garmintrainer.parser.digester;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import org.apache.commons.beanutils.Converter;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-public class DateTimeConverter implements Converter {
+public final class DateTimeConverter implements Converter {
 	private static DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTimeNoMillis();
-	
 	
 	@SuppressWarnings("unchecked")
     @Override
 	public Object convert(final Class type, final Object value) {
-		if (type == null) 
-			throw new NullPointerException("type cannot be null");
-		if (value == null)
-			throw new NullPointerException("value cannot be null");
-		if (type != DateTime.class)
-			throw new IllegalArgumentException("wrong type class");
-		if (!String.class.isAssignableFrom(value.getClass())) 
-			throw new IllegalArgumentException("wrong value class");
+		checkNotNull(type, "type cannot be null");
+		checkNotNull(value, "Value cannot be null");
+		checkArgument(type == DateTime.class, "Conversion target should be org.joda.time.DateTime, but is %s", type.getClass());
+		checkArgument(String.class.isAssignableFrom(value.getClass()),
+				"Value should be a string, but is a %s", value.getClass());
 		
 		return dateTimeFormatter.parseDateTime((String) value);
 	}

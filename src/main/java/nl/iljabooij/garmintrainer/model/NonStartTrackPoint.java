@@ -43,7 +43,7 @@ public class NonStartTrackPoint extends TrackPoint implements Serializable {
 	 */
 	@Override
 	public Speed getSpeed() {
-		Length distanceTravelled = getDistance().substract(previousTrackPoint.getDistance());
+		Length distanceTravelled = getDistance().minus(previousTrackPoint.getDistance());
 		Duration timeTravelled = new Duration(previousTrackPoint.getTime(), getTime());
 		
 		return Speed.createSpeedInMetersPerSecond(distanceTravelled, timeTravelled);
@@ -54,6 +54,6 @@ public class NonStartTrackPoint extends TrackPoint implements Serializable {
 	 */
 	@Override
 	public Length getAltitudeDelta() {
-		return getAltitude().substract(previousTrackPoint.getAltitude());
+		return getAltitude().minus(previousTrackPoint.getAltitude());
 	}
 }

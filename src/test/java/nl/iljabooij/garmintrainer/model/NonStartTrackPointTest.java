@@ -59,7 +59,7 @@ public class NonStartTrackPointTest {
 	@Test
 	public void testSpeedInSecondSample() {
 		Duration duration = new Duration(first.getTime(), second.getTime());
-		Length distance = second.getDistance().substract(first.getDistance());
+		Length distance = second.getDistance().minus(first.getDistance());
 		Speed speed = Speed.createSpeedInMetersPerSecond(distance, duration);
 
 		assertEquals(speed, second.getSpeed());
@@ -73,7 +73,7 @@ public class NonStartTrackPointTest {
 	
 	@Test
 	public void testGetAltitudeDelta() {
-		Length gain = SECOND_ALTITUDE.substract(FIRST_ALTITUDE);
+		Length gain = SECOND_ALTITUDE.minus(FIRST_ALTITUDE);
 		assertEquals(gain, second.getAltitudeDelta());
 	}
 }

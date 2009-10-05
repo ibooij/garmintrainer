@@ -69,7 +69,7 @@ public class ActivityTest {
 				TrackPoint trackPoint = mock(TrackPoint.class);
 				Length tpDistance = Length.createLengthInMeters(distances[i]);
 				when(trackPoint.getDistance()).thenReturn(
-						lapStartDistance.add(tpDistance));
+						lapStartDistance.plus(tpDistance));
 				when(trackPoint.getTime()).thenReturn(
 						lapStartTime.plusSeconds(i * SECONDS_PER_POINT));
 				builder.add(trackPoint);

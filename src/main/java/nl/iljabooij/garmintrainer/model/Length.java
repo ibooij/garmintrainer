@@ -148,9 +148,9 @@ public final class Length implements Comparable<Length>, Serializable {
 	 * @return the sum of the Lengths
 	 * @throws IllegalArgumentException if other is null. 
 	 */
-	public Length add(final Length other) {
+	public Length plus(final Length other) {
 		if (other == null) {
-			throw new IllegalArgumentException("subtractor should not be null");
+			throw new IllegalArgumentException("other should not be null");
 		}
 		return createLengthInMeters(this.value + other.value).convert(this.unit);
 	}
@@ -160,7 +160,7 @@ public final class Length implements Comparable<Length>, Serializable {
 	 * @param subtractor the Length to subtract from this {@link Length}.
 	 * @return a new {@link Length} which is the result of the subtraction.
 	 */
-	public Length substract(final Length subtractor) {
+	public Length minus(final Length subtractor) {
 		if (subtractor == null) {
 			throw new IllegalArgumentException("subtractor should not be null");
 		}
