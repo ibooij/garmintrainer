@@ -143,22 +143,37 @@ public class ActivityTest {
 	 * Simple tests for equals
 	 */
 	@Test
-	public void testEquals() {
+	public void testEqualsAndHashCode() {
 		assertFalse("not equal to null", activity.equals(null));
 		assertFalse("not equal to unrelated Object", activity
 				.equals(new Object()));
 		assertTrue("equal to itself", activity.equals(activity));
+		assertEquals(activity.hashCode(), activity.hashCode());
 
 		/* same content, different object */
+		Activity sameActivity = new ActivityImpl(START_TIME, laps);
 		assertTrue("equal to same object", activity.equals(new ActivityImpl(
 				START_TIME, laps)));
+		assertEquals(activity.hashCode(), sameActivity.hashCode());
 
 		/* differently filled objects, should all differ */
 		assertFalse("different date time", activity.equals(new ActivityImpl(
 				START_TIME.plusMinutes(1), laps)));
 		List<Lap> oneLess = laps.subList(0, 2);
-		assertFalse("different laps", activity.equals(new ActivityImpl(START_TIME,
-				oneLess)));
+		assertFalse("different laps", activity.equals(new ActivityImpl(
+				START_TIME, oneLess)));
+	}
+
+	/**
+	 * Test if hashCode() works according to the rules.
+	 */
+	@Test
+	public void testHashCodeRepeatsResult() {
+		// check that hashCode returns the same result over and over
+		int hash = activity.hashCode();
+		for (int i = 0; i < 20; i++) {
+			assertEquals(hash, activity.hashCode());
+		}
 	}
 
 	/**
