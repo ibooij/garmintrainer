@@ -35,44 +35,41 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 @Immutable
-public class Activity implements Comparable<Activity>, Serializable {
+public final class ActivityImpl implements Comparable<Activity>, Serializable, Activity {
     private static final long serialVersionUID = 1L;
 	private final DateTime startTime;
 	private final ImmutableList<Lap> laps;
 	
 	/**
-	 * Create a new {@link Activity}. 
+	 * Create a new {@link ActivityImpl}. 
 	 * @param startTime start time of the activity
 	 * @param laps laps in the activity, cannot be empty
 	 * @throws NullPointerException if any of the arguments are null
 	 * @throws IllegalArgumentException if laps is empty.
 	 */
-	public Activity(final DateTime startTime, final List<Lap> laps) {
+	public ActivityImpl(final DateTime startTime, final List<Lap> laps) {
 		this.startTime = Preconditions.checkNotNull(startTime);
 		Preconditions.checkNotNull(laps);
 		Preconditions.checkArgument(!laps.isEmpty(), "laps must not be empty.");
 		this.laps = ImmutableList.copyOf(laps);
 	}
 
-	/**
-	 * Get start time of {@link Activity}.
-	 * @return start time
+	/* (non-Javadoc)
+	 * @see nl.iljabooij.garmintrainer.model.Activity#getStartTime()
 	 */
 	public DateTime getStartTime() {
 		return startTime;
 	}
 	
-	/**
-	 * Get end time of activity
-	 * @return the end time of the activity.
+	/* (non-Javadoc)
+	 * @see nl.iljabooij.garmintrainer.model.Activity#getEndTime()
 	 */
 	public DateTime getEndTime() {
 		return getLastTrackPoint().getTime();	
 	}
 	
-	/**
-	 * Get maximum altitude of activity.
-	 * @return maximum altitude
+	/* (non-Javadoc)
+	 * @see nl.iljabooij.garmintrainer.model.Activity#getMaximumAltitude()
 	 */
 	public Length getMaximumAltitude() {
 		Length maximum = null;
@@ -87,9 +84,8 @@ public class Activity implements Comparable<Activity>, Serializable {
 		return maximum;
 	}
 	
-	/**
-	 * Get minimum altitude of activity.
-	 * @return minimum altitude
+	/* (non-Javadoc)
+	 * @see nl.iljabooij.garmintrainer.model.Activity#getMinimumAltitude()
 	 */
 	public Length getMinimumAltitude() {
 		Length minimum = null;
@@ -104,8 +100,8 @@ public class Activity implements Comparable<Activity>, Serializable {
 		return minimum;
 	}
 	
-	/**
-	 * Get Maximum Speed of Exercise
+	/* (non-Javadoc)
+	 * @see nl.iljabooij.garmintrainer.model.Activity#getMaximumSpeed()
 	 */
 	public Speed getMaximumSpeed() {
 		Speed maximum = null;
@@ -120,19 +116,15 @@ public class Activity implements Comparable<Activity>, Serializable {
 		return maximum;
 	}
 	
-	/**
-	 * Get gross duration (from start time to time of last measurement) of the
-	 * Activity.
-	 * @return gross duration
+	/* (non-Javadoc)
+	 * @see nl.iljabooij.garmintrainer.model.Activity#getGrossDuration()
 	 */
 	public Duration getGrossDuration() {
 		return new Duration(startTime, getLastTrackPoint().getTime());
 	}
 	
-	/**
-	 * Get net duration (from start time to time of last measurement, minus
-	 * pauses) of the {@link Activity}.
-	 * @return net duration
+	/* (non-Javadoc)
+	 * @see nl.iljabooij.garmintrainer.model.Activity#getNetDuration()
 	 */
 	public Duration getNetDuration() {
 		// start with the difference between start time and first lap start time.
@@ -143,6 +135,9 @@ public class Activity implements Comparable<Activity>, Serializable {
 		return netDuration;
 	}
 	
+	/* (non-Javadoc)
+	 * @see nl.iljabooij.garmintrainer.model.Activity#getTrackPoints()
+	 */
 	public ImmutableList<TrackPoint> getTrackPoints() {
 		ImmutableList.Builder<TrackPoint> builder = ImmutableList.builder();
 		for (Lap lap: laps) {
@@ -156,33 +151,30 @@ public class Activity implements Comparable<Activity>, Serializable {
 		return Iterables.getLast(lastLap.getTrackPoints());
 	}
 	
-	/**
-	 * Get Laps in Activity
-	 * @return all laps
+	/* (non-Javadoc)
+	 * @see nl.iljabooij.garmintrainer.model.Activity#getLaps()
 	 */
 	public ImmutableList<Lap> getLaps() {
 		return laps;
 	}
 	
-	/**
-	 * {@inheritDoc}
+	/* (non-Javadoc)
+	 * @see nl.iljabooij.garmintrainer.model.Activity#toString()
 	 */
 	@Override
 	public String toString() {
 		return "Activity [start time=" + startTime + ", #trackPoints=" + laps.size() + "]";
 	}
 
-	/**
-	 * Get distance of the complete {@link Activity}.
-	 * @return total distance.
+	/* (non-Javadoc)
+	 * @see nl.iljabooij.garmintrainer.model.Activity#getDistance()
 	 */
 	public Length getDistance() {
 		return getLastTrackPoint().getDistance();
 	}
 	
-	/**
-	 * Get total altitude gained
-	 * @return total altitude gain
+	/* (non-Javadoc)
+	 * @see nl.iljabooij.garmintrainer.model.Activity#getAltitudeGain()
 	 */
 	public Length getAltitudeGain() {
 		final Length minimumGain = Length.createLengthInMeters(5.0);
@@ -208,8 +200,8 @@ public class Activity implements Comparable<Activity>, Serializable {
 		return totalGain;
 	}
 	
-	/**
-	 * {@inheritDoc}
+	/* (non-Javadoc)
+	 * @see nl.iljabooij.garmintrainer.model.Activity#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(final Object o) {
@@ -219,19 +211,20 @@ public class Activity implements Comparable<Activity>, Serializable {
 		if (o == null) {
 			return false;
 		}
-		if (getClass() != o.getClass()) {
+		if (!(o instanceof Activity)) {
 			return false;
 		}
+		// compare with interface Activity, not with ActivityImpl!
 		Activity other = (Activity) o;
 		
 		return new EqualsBuilder()
-			.append(other.startTime, startTime)
-			.append(other.laps, laps)
+			.append(other.getStartTime(), startTime)
+			.append(other.getLaps(), laps)
 			.isEquals();	
 	}
 	
-	/**
-	 * {@inheritDoc}
+	/* (non-Javadoc)
+	 * @see nl.iljabooij.garmintrainer.model.Activity#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -241,14 +234,14 @@ public class Activity implements Comparable<Activity>, Serializable {
 			.toHashCode();
 	}
 	
-	/**
-	 * {@inheritDoc}
+	/* (non-Javadoc)
+	 * @see nl.iljabooij.garmintrainer.model.Activity#compareTo(nl.iljabooij.garmintrainer.model.ActivityImpl)
 	 */
     @Override
     public int compareTo(final Activity o) {
         if (o == null) {
             return 1;
         }
-        return startTime.compareTo(o.startTime);
+        return startTime.compareTo(o.getStartTime());
     }
 }
