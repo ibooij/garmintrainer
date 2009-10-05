@@ -29,7 +29,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -48,9 +49,9 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable, A
 	 * @throws IllegalArgumentException if laps is empty.
 	 */
 	public ActivityImpl(final DateTime startTime, final List<Lap> laps) {
-		this.startTime = Preconditions.checkNotNull(startTime);
-		Preconditions.checkNotNull(laps);
-		Preconditions.checkArgument(!laps.isEmpty(), "laps must not be empty.");
+		this.startTime = checkNotNull(startTime);
+		checkNotNull(laps);
+		checkArgument(!laps.isEmpty(), "laps must not be empty.");
 		this.laps = ImmutableList.copyOf(laps);
 	}
 
@@ -189,9 +190,8 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable, A
 	/** {@inheritDoc} */
     @Override
     public int compareTo(final Activity o) {
-        if (o == null) {
-            return 1;
-        }
+    	checkNotNull(o);
+        
         return startTime.compareTo(o.getStartTime());
     }
 }
