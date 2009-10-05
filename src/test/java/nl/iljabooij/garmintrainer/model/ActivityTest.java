@@ -21,13 +21,17 @@ package nl.iljabooij.garmintrainer.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import net.jcip.annotations.Immutable;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -341,5 +345,70 @@ public class ActivityTest {
 
 		assertEquals(Speed.createExactSpeedInMetersPerSecond(3.0), activity
 				.getMaximumSpeed());
+	}
+	
+	/**
+	 * Test the compareTo method. It should compare by start time
+	 */
+	@Test public void compareTo() {
+		Activity sameActivity = new ActivityImpl(activity.getStartTime(), activity.getLaps());
+		assertEquals(0, activity.compareTo(sameActivity));
+		assertEquals(0, sameActivity.compareTo(activity));
+		
+		Activity laterActivity = new ActivityImpl(activity.getStartTime().plusSeconds(1), activity.getLaps());
+		assertTrue(activity.compareTo(laterActivity) < 0);
+		assertTrue(laterActivity.compareTo(activity) > 0);
+		
+		Activity earlierActivity = new ActivityImpl(activity.getStartTime().minusSeconds(1), activity.getLaps());
+		assertTrue(activity.compareTo(earlierActivity) > 0);
+		assertTrue(earlierActivity.compareTo(activity) < 0);
+	}
+	
+	@Test(expected=NullPointerException.class) 
+	public void compareToShouldThrowNPE() {
+		activity.compareTo(null);
+	}
+	
+	/**
+	 * Some simple tests to check if class is really immutable. We have no
+	 * way of actually really knowing of course, but we must at least test
+	 * if the class doesn't have setters, and if return values are immutable
+	 * as well.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test public void testIsImmutable() {
+		assertTrue(ActivityImpl.class.isAnnotationPresent(Immutable.class));
+		
+		for (Method method: ActivityImpl.class.getMethods()) {
+			assertFalse("setters are not allowed on Immutable classes", 
+					method.getName().startsWith("set"));
+			
+			// check if returned values are immutable
+			Class returnType = method.getReturnType();
+			
+			final Class[] allowedClasses = new Class[] {
+					String.class,
+					DateTime.class,
+					Duration.class,
+					ImmutableList.class,
+					Class.class
+			};
+			
+			if (returnType.isPrimitive()) {
+				continue;
+			}
+			if (returnType.isAnnotationPresent(Immutable.class)) {
+				continue;
+			}
+			boolean isKnownImmutableClass = false;
+			for (Class clazz: allowedClasses) {
+				isKnownImmutableClass =  isKnownImmutableClass || (clazz == returnType);  
+			}
+			if (isKnownImmutableClass) {
+				continue;
+			}
+			
+			fail("return types should be immutable: " + returnType);
+		}
 	}
 }
