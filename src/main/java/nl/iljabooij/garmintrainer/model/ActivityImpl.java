@@ -66,46 +66,20 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable, A
 		return getLastTrackPoint().getTime();	
 	}
 	
+	
 	/** {@inheritDoc} */
 	public Length getMaximumAltitude() {
-		Length maximum = null;
-		for (TrackPoint trackPoint: getTrackPoints()) {
-			if (maximum == null || trackPoint.getAltitude().compareTo(maximum) > 0) {
-				maximum = trackPoint.getAltitude();
-			}
-		}
-		// maximum should never be null, because list of track points should never
-		// be empty.
-		assert(maximum != null);
-		return maximum;
+		return new TrackPoint.AltitudeOrdering().max(getTrackPoints()).getAltitude();
 	}
 	
 	/** {@inheritDoc} */
 	public Length getMinimumAltitude() {
-		Length minimum = null;
-		for (TrackPoint trackPoint: getTrackPoints()) {
-			if (minimum == null || trackPoint.getAltitude().compareTo(minimum) < 0) {
-				minimum = trackPoint.getAltitude();
-			}
-		}
-		// minimum should never be null, because list of track points should never
-		// be empty.
-		assert(minimum != null);
-		return minimum;
+		return new TrackPoint.AltitudeOrdering().min(getTrackPoints()).getAltitude();
 	}
 	
 	/** {@inheritDoc} */
 	public Speed getMaximumSpeed() {
-		Speed maximum = null;
-		for (TrackPoint trackPoint: getTrackPoints()) {
-			if (maximum == null || trackPoint.getSpeed().compareTo(maximum) > 0) {
-				maximum = trackPoint.getSpeed();
-			}
-		}
-		// maximum should never be null, because list of track points should never
-		// be empty.
-		assert(maximum != null);
-		return maximum;
+		return new TrackPoint.SpeedOrdering().max(getTrackPoints()).getSpeed();
 	}
 	
 	/** {@inheritDoc} */
