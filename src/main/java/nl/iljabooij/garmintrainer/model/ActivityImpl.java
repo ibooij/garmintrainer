@@ -35,6 +35,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
+/**
+ * Implementation of {@link Activity}. Note that instances of ActivityImpl
+ * are immutable (hence the @Immutable annotation). 
+ * 
+ * @author ilja
+ */
 @Immutable
 public final class ActivityImpl implements Comparable<Activity>, Serializable, Activity {
     private static final long serialVersionUID = 1L;
@@ -178,10 +184,13 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable, A
 			.isEquals();	
 	}
 	
+	/** Seeds for {@link HashCodeBuilder}. */
+	private int[] hashCodeSeeds = new int[] {31, 43};
+	
 	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder(31, 43)
+		return new HashCodeBuilder(hashCodeSeeds[0], hashCodeSeeds[1])
 			.append(startTime)
 			.append(true)
 			.toHashCode();
