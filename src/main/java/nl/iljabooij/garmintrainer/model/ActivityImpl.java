@@ -130,7 +130,7 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable, A
 	 */
 	@Override
 	public String toString() {
-		return "Activity [start time=" + startTime + ", #trackPoints=" + laps.size() + "]";
+		return "Activity [start time=" + startTime + ", #laps=" + laps.size() + "]";
 	}
 
 	/** {@inheritDoc} */
