@@ -117,6 +117,7 @@ public class TcxImporterImplTest extends JUnitBaseGuice {
 	 * @throws TcxImportException
 	 *             if everything works as planned.
 	 */
+	@Test(expected=TcxImportException.class)
 	public void testWithParserThrowingException() throws Exception {
 		URI uri = getClass().getResource("/sample.tcx").toURI();
 		File file = new File(uri);
