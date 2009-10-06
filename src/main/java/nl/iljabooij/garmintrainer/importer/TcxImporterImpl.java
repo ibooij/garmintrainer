@@ -38,19 +38,27 @@ import com.google.inject.Provider;
 public class TcxImporterImpl implements TcxImporter {
 	@InjectLogger private Logger logger;
 	
-	@Inject
 	private ApplicationState applicationState;
-
-	@Inject
 	private ActivityStorage activityStorage;
-	
-	/**
-	 * tcxParserProvider acts as a factory for {@link TcxParser}s. It's completely
-	 * created by Guice, nothing we have to do about it (yes, I'm lazy).
-	 */
-	@Inject
 	private Provider<TcxParser> tcxParserProvider;
 
+	/**
+	 * Create a {@link TcxImporterImpl}. This is usually handled by Guice, so 
+	 * it does not need to be called from any code, other than Unit testing code.
+	 * This means it can be package-private.
+	 * @param applicationState state of the application
+	 * @param activityStorage store for activities
+	 * @param tcxParserProvider provider (factory) for {@link TcxParser} objects.
+	 */
+	@Inject
+	public TcxImporterImpl(final ApplicationState applicationState,
+			final ActivityStorage activityStorage, 
+			final Provider<TcxParser> tcxParserProvider) {
+		this.applicationState = applicationState;
+		this.activityStorage = activityStorage;
+		this.tcxParserProvider = tcxParserProvider;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -101,5 +109,4 @@ public class TcxImporterImpl implements TcxImporter {
 			return activities.get(0);
 		}
 	}
-
 }
