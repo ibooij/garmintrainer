@@ -35,7 +35,7 @@ import org.slf4j.Logger;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-public class TcxImporterImpl implements TcxImporter {
+public final class TcxImporterImpl implements TcxImporter {
 	@InjectLogger private Logger logger;
 	
 	private ApplicationState applicationState;
