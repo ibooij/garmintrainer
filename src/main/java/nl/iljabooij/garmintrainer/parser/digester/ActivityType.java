@@ -23,10 +23,10 @@ import java.util.List;
 
 import nl.iljabooij.garmintrainer.model.Activity;
 import nl.iljabooij.garmintrainer.model.ActivityImpl;
-import nl.iljabooij.garmintrainer.model.CachingActivityWrapper;
 import nl.iljabooij.garmintrainer.model.Lap;
 import nl.iljabooij.garmintrainer.model.Track;
 import nl.iljabooij.garmintrainer.model.TrackPoint;
+import nl.iljabooij.garmintrainer.util.Memoizer;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
@@ -75,7 +75,10 @@ public final class ActivityType {
         	laps.add(new Lap(lapType.getStartTime(), tracks));
         }
          
-        return new CachingActivityWrapper(new ActivityImpl(dateTimeForId, laps));
+        return Memoizer.memoize(new ActivityImpl(dateTimeForId, laps), Activity.class);
+        
+//        return (Activity) memoizer;
+//        return new CachingActivityWrapper(new ActivityImpl(dateTimeForId, laps));
     }
 
     /**
