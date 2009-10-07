@@ -11,6 +11,7 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 
@@ -204,12 +205,27 @@ public class Tile {
         return "Tile " + key;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Tile))
             return false;
         Tile tile = (Tile) obj;
         return (xtile == tile.xtile) && (ytile == tile.ytile) && (zoom == tile.zoom);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+    	return new HashCodeBuilder(13, 23)
+    		.append(xtile)
+    		.append(ytile)
+    		.append(zoom)
+    		.toHashCode();
     }
 
     public static String getTileKey(TileSource source, int xtile, int ytile, int zoom) {

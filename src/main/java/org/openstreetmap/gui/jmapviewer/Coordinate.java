@@ -16,7 +16,8 @@ import java.io.Serializable;
  * 
  */
 public class Coordinate implements Serializable {
-    private transient Point2D.Double data;
+	private static final long serialVersionUID = 1L;
+	private transient Point2D.Double data;
 
     public Coordinate(double lat, double lon) {
         data = new Point2D.Double(lon, lat);
@@ -26,16 +27,8 @@ public class Coordinate implements Serializable {
         return data.y;
     }
 
-    public void setLat(double lat) {
-        data.y = lat;
-    }
-
     public double getLon() {
         return data.x;
-    }
-
-    public void setLon(double lon) {
-        data.x = lon;
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {

@@ -37,7 +37,7 @@ import com.google.common.collect.Iterables;
 @Immutable
 public class Track implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private ImmutableList<TrackPoint> trackPoints;
+	private final ImmutableList<TrackPoint> trackPoints;
 	
 	/**
 	 * Create a new Track with a list of track points.
