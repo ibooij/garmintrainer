@@ -5,6 +5,11 @@ import org.slf4j.Marker;
 
 /**
  * Empty Logger. Will be used for creating Loggers for classes that are being tested.
+ * 
+ * the isXXXEnabled() methods all return true. This enables code that calls
+ * them to always also call the log method itself. This helps preventing 
+ * test coverage reports to not report lower test coverage because logging
+ * code will always be reached. 
  *  @author ilja
  */
 public class FakeLogger implements Logger {
@@ -198,61 +203,61 @@ public class FakeLogger implements Logger {
 	@Override
 	public boolean isDebugEnabled() {
 		// Nothing to be done: Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isDebugEnabled(Marker arg0) {
 		// Nothing to be done: Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isErrorEnabled() {
 		// Nothing to be done: Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isErrorEnabled(Marker arg0) {
 		// Nothing to be done: Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isInfoEnabled() {
 		// Nothing to be done: Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isInfoEnabled(Marker arg0) {
 		// Nothing to be done: Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isTraceEnabled() {
 		// Nothing to be done: Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isTraceEnabled(Marker arg0) {
 		// Nothing to be done: Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isWarnEnabled() {
 		// Nothing to be done: Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isWarnEnabled(Marker arg0) {
 		// Nothing to be done: Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
