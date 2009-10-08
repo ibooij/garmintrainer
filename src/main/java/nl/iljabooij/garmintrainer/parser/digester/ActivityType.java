@@ -39,7 +39,7 @@ import com.google.common.collect.Lists;
  * 
  * @author "Ilja Booij"
  */
-public final class ActivityType {
+public class ActivityType {
     /** id of activity. */
     private String id;
     /** list of lap builder to build Laps from. */
