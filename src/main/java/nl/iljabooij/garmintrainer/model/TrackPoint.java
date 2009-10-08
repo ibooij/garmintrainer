@@ -19,13 +19,12 @@
 package nl.iljabooij.garmintrainer.model;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 import net.jcip.annotations.Immutable;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.joda.time.DateTime;
-
-import com.google.common.collect.Ordering;
 
 /**
  * Represents a single track point sample.
@@ -114,7 +113,9 @@ public abstract class TrackPoint implements Serializable {
 	 * Ordering that can be used to order Track points according to altitude
 	 * @author ilja
 	 */
-	public static class AltitudeOrdering extends Ordering<TrackPoint> {
+	public static class AltitudeComparator implements Comparator<TrackPoint>, Serializable {
+		private static final long serialVersionUID = 1L;
+
 		public int compare(TrackPoint o1, TrackPoint o2) {
 			return o1.getAltitude().compareTo(o2.getAltitude());
 		}
@@ -124,7 +125,9 @@ public abstract class TrackPoint implements Serializable {
 	 * Ordering that can be used to order Track points according to speed
 	 * @author ilja
 	 */
-	public static class SpeedOrdering extends Ordering<TrackPoint> {
+	public static class SpeedComparator implements Comparator<TrackPoint>, Serializable {
+		private static final long serialVersionUID = 1L;
+		
 		public int compare(TrackPoint o1, TrackPoint o2) {
 			return o1.getSpeed().compareTo(o2.getSpeed());
 		}
