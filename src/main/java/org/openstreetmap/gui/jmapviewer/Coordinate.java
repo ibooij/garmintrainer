@@ -19,6 +19,11 @@ public class Coordinate implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private transient Point2D.Double data;
 
+	/**
+	 * Create a new Coordinate with 
+	 * @param lat
+	 * @param lon
+	 */
     public Coordinate(double lat, double lon) {
         data = new Point2D.Double(lon, lat);
     }
