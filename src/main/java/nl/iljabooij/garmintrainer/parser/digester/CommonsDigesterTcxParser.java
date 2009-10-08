@@ -46,13 +46,13 @@ import com.google.inject.Provider;
  * @author ilja
  *
  */
-public class CommonsDigesterTcxParser implements TcxParser {
+public final class CommonsDigesterTcxParser implements TcxParser {
 	@InjectLogger private Logger logger;
 	
-	private final static String ACTIVITY = "TrainingCenterDatabase/Activities/Activity";
-	private final static String LAP = ACTIVITY + "/Lap";
-	private final static String TRACK = LAP + "/Track";
-	private final static String TRACK_POINT = TRACK + "/Trackpoint";
+	private static final String ACTIVITY = "TrainingCenterDatabase/Activities/Activity";
+	private static final String LAP = ACTIVITY + "/Lap";
+	private static final String TRACK = LAP + "/Track";
+	private static final String TRACK_POINT = TRACK + "/Trackpoint";
 	
 	private Provider<Digester> digesterProvider;
 	
