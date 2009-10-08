@@ -27,12 +27,12 @@ public class SpeedUnitTest {
 	@Test
 	public void conversionValueForMPerSIs1() {
 		assertEquals("conversion value for m/s should be one", 1,
-				Unit.MetersPerSecond.conversionValue, 0.00001);
+				Unit.MetersPerSecond.getConversionValue(), 0.00001);
 	}
 
 	@Test
 	public void conversionValueForKmPHerSIs3Point6() {
 		assertEquals("conversion value for km/h should be 3.6", 3.6,
-				Unit.KilometersPerHour.conversionValue, 0.00001);
+				Unit.KilometersPerHour.getConversionValue(), 0.00001);
 	}
 }
