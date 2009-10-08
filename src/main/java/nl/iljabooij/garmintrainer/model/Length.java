@@ -40,9 +40,9 @@ public final class Length implements Comparable<Length>, Serializable {
 		Foot(0.3048f, "ft", 1),
 		Mile(1609.344f, "mi", 3);
 		
-		public final float conversionValue;
-		public final String suffix;
-		public final NumberFormat format;
+		private final float conversionValue;
+		private final String suffix;
+		private final NumberFormat format;
 		
 		private Unit(final float conversionValue, final String suffix, final int scale) {
 			this.conversionValue = conversionValue;
@@ -53,6 +53,14 @@ public final class Length implements Comparable<Length>, Serializable {
 				sb.append('0');
 			}
 			format = new DecimalFormat(sb.toString());
+		}
+
+		/** Get the conversion value for this specific Unit. 
+		 * 
+		 * @return the conversion value
+		 */
+		public float getConversionValue() {
+			return conversionValue;
 		}
 	}
 	
@@ -65,7 +73,7 @@ public final class Length implements Comparable<Length>, Serializable {
 			throw new IllegalArgumentException("unit should be non-null");
 		}
 	
-		this.value = value * unit.conversionValue;
+		this.value = value * unit.getConversionValue();
 		this.unit = unit;
 	}
 	
@@ -116,7 +124,7 @@ public final class Length implements Comparable<Length>, Serializable {
 		if (unit == null) {
 			throw new IllegalArgumentException("unit should not be null");
 		}
-		return value / unit.conversionValue;
+		return value / unit.getConversionValue();
 	}
 
 
@@ -138,7 +146,7 @@ public final class Length implements Comparable<Length>, Serializable {
 		if (unit == null) 
 			throw new IllegalArgumentException("unit cannot be null");
 		
-		return createLength(value / unit.conversionValue, unit);
+		return createLength(value / unit.getConversionValue(), unit);
 	}
 	
 	/**

@@ -33,21 +33,19 @@ public final class Speed implements Comparable<Speed>, Serializable {
 
     public enum Unit {
 		// m/s
-		MetersPerSecond(Length.Unit.Meter.conversionValue, 1, 1, "m/s"),
+		MetersPerSecond(Length.Unit.Meter.getConversionValue(), 1, 1, "m/s"),
 		// km/h
-		KilometersPerHour(Length.Unit.Kilometer.conversionValue, 3600, 2,
+		KilometersPerHour(Length.Unit.Kilometer.getConversionValue(), 3600, 2,
 				"km/h");
 
-		public final double conversionValue;
-		public final int scale;
-		public final String suffix;
-		public final NumberFormat format;
+		private final double conversionValue;
+		private final String suffix;
+		private final NumberFormat format;
 		
 		private Unit(final double lengthConversion,
 				final int toSecondConversion, final int scale,
 				final String suffix) {
 			conversionValue = toSecondConversion / lengthConversion;
-			this.scale = scale;
 			this.suffix = suffix;
 			
 			final StringBuffer sb = new StringBuffer("#0.");
@@ -55,6 +53,14 @@ public final class Speed implements Comparable<Speed>, Serializable {
 				sb.append('0');
 			}
 			format = new DecimalFormat(sb.toString());
+		}
+
+		/**
+		 * Get the conversion value for a speed unit.
+		 * @return the conversion value.
+		 */
+		public double getConversionValue() {
+			return conversionValue;
 		}
 	}
 
@@ -68,7 +74,7 @@ public final class Speed implements Comparable<Speed>, Serializable {
 	}
 
 	private Speed(final double value, final Unit unit) {
-		this.value = value / unit.conversionValue;
+		this.value = value / unit.getConversionValue();
 		this.unit = unit;
 	}
 
@@ -151,7 +157,7 @@ public final class Speed implements Comparable<Speed>, Serializable {
 	}
 
 	public Speed convert(final Unit unit) {
-		return Speed.createExactSpeed(value * unit.conversionValue, unit);
+		return Speed.createExactSpeed(value * unit.getConversionValue(), unit);
 	}
 
 	/**
@@ -173,7 +179,7 @@ public final class Speed implements Comparable<Speed>, Serializable {
 	public double getValue(final Unit unit) {
 		if (unit == null)
 			throw new NullPointerException("unit cannot be null");
-		return value * unit.conversionValue;
+		return value * unit.getConversionValue();
 	}
 
 	/**
