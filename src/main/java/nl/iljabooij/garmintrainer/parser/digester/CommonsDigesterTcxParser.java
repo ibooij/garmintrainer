@@ -34,6 +34,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -53,8 +54,12 @@ public class CommonsDigesterTcxParser implements TcxParser {
 	private final static String TRACK = LAP + "/Track";
 	private final static String TRACK_POINT = TRACK + "/Trackpoint";
 	
-	@Inject
 	private Provider<Digester> digesterProvider;
+	
+	@Inject
+	public CommonsDigesterTcxParser(final Provider<Digester> digesterProvider) {
+		this.digesterProvider = digesterProvider;
+	}
 	
 	/**
 	 * Register our own Converter implementations with ConvertUtils of commons-beanutils.
@@ -92,14 +97,16 @@ public class CommonsDigesterTcxParser implements TcxParser {
 	
 	/**
 	 * {@inheritDoc}
+	 * @throws NullPointerException if provided {@link InputStream} is null.
 	 */
 	public List<Activity> parse(final InputStream inputStream) throws ParseException {
+		Preconditions.checkNotNull(inputStream, "inputStream should never be null");
 		if (logger.isDebugEnabled()) {
 			logger.debug("starting parsing inputStream");
 		}
 
 		Digester digester = setUpDigester();
-		final ArrayList<ActivityType> activityBuilders = Lists.newArrayList();
+		List<ActivityType> activityBuilders = Lists.newArrayList();
 		digester.push(activityBuilders);
 		
 		try {
