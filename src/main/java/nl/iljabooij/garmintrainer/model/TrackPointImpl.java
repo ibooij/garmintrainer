@@ -19,7 +19,6 @@
 package nl.iljabooij.garmintrainer.model;
 
 import java.io.Serializable;
-import java.util.Comparator;
 
 import net.jcip.annotations.Immutable;
 
@@ -32,7 +31,7 @@ import org.joda.time.DateTime;
  *
  */
 @Immutable
-public abstract class TrackPoint implements Serializable {
+public abstract class TrackPointImpl implements Serializable, TrackPoint {
 	private static final long serialVersionUID = 1L;
 	
 	private final DateTime time;
@@ -43,7 +42,7 @@ public abstract class TrackPoint implements Serializable {
 	private final double latitude;
 	private final double longitude;
 
-	public TrackPoint(final DateTime time, final int heartRate, final Length altitude,
+	public TrackPointImpl(final DateTime time, final int heartRate, final Length altitude,
 			final Length distance, final double latitude, final double longitude) {
 		this.time = time;
 		this.heartRate = heartRate;
@@ -53,6 +52,9 @@ public abstract class TrackPoint implements Serializable {
 		this.longitude = longitude;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
@@ -65,71 +67,62 @@ public abstract class TrackPoint implements Serializable {
 			.toString();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public int getHeartRate() {
 		return heartRate;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public Length getAltitude() {
 		return altitude;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public Length getDistance() {
 		return distance;
 	}
 
 	/**
-	 * Get the time at which the sample was taken.
-	 * @return the sample time.
+	 * {@inheritDoc}
 	 */
 	public DateTime getTime() {
 		return time;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public double getLatitude() {
 		return latitude;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public double getLongitude() {
 		return longitude;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean hasPosition() {
 		return (latitude != 0.0 && longitude != 0.0);
 	}
 	
 	/**
-	 * Get the speed from the last track point to this one.
-	 * @return the Speed.
+	 * {@inheritDoc}
 	 */
 	public abstract Speed getSpeed();
 	
 	/**
-	 * Get altitude gained or lost in this track point compared to the last
-	 * @return the altitude delta
+	 * {@inheritDoc}
 	 */
 	public abstract Length getAltitudeDelta();
-	
-	/**
-	 * Ordering that can be used to order Track points according to altitude
-	 * @author ilja
-	 */
-	public static class AltitudeComparator implements Comparator<TrackPoint>, Serializable {
-		private static final long serialVersionUID = 1L;
-
-		public int compare(TrackPoint o1, TrackPoint o2) {
-			return o1.getAltitude().compareTo(o2.getAltitude());
-		}
-	}
-	
-	/**
-	 * Ordering that can be used to order Track points according to speed
-	 * @author ilja
-	 */
-	public static class SpeedComparator implements Comparator<TrackPoint>, Serializable {
-		private static final long serialVersionUID = 1L;
-		
-		public int compare(TrackPoint o1, TrackPoint o2) {
-			return o1.getSpeed().compareTo(o2.getSpeed());
-		}
-	}
 }

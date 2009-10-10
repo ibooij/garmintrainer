@@ -28,11 +28,11 @@ import org.joda.time.Duration;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 @Immutable
-public class NonStartTrackPoint extends TrackPoint implements Serializable {
+public class NonStartTrackPoint extends TrackPointImpl implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private final TrackPoint previousTrackPoint;
 	
-	public NonStartTrackPoint(final TrackPoint previousTrackPoint,DateTime time, int heartRate, Length altitude,
+	public NonStartTrackPoint(final TrackPointImpl previousTrackPoint,DateTime time, int heartRate, Length altitude,
 			Length distance, double latitude, double longitude) {
 		super(time, heartRate, altitude, distance, latitude, longitude);
 		this.previousTrackPoint = checkNotNull(previousTrackPoint);

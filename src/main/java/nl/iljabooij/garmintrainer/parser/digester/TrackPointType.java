@@ -21,13 +21,13 @@ package nl.iljabooij.garmintrainer.parser.digester;
 import nl.iljabooij.garmintrainer.model.Length;
 import nl.iljabooij.garmintrainer.model.NonStartTrackPoint;
 import nl.iljabooij.garmintrainer.model.StartTrackPoint;
-import nl.iljabooij.garmintrainer.model.TrackPoint;
+import nl.iljabooij.garmintrainer.model.TrackPointImpl;
 
 import org.joda.time.DateTime;
 
 /**
- * Builder for {@link TrackPoint}. Because {@link TrackPoint} is an unmodifiable
- * object, we need a builder if we want to build a {@link TrackPoint}
+ * Builder for {@link TrackPointImpl}. Because {@link TrackPointImpl} is an unmodifiable
+ * object, we need a builder if we want to build a {@link TrackPointImpl}
  * incrementally, as with commons-digester.
  * 
  * @author "Ilja Booij <ibooij@gmail.com>"
@@ -45,9 +45,9 @@ public class TrackPointType {
 	 * Build a TrackPoint
 	 * 
 	 * @param previous the previous track point
-	 * @return the {@link TrackPoint} with all fields filled out.
+	 * @return the {@link TrackPointImpl} with all fields filled out.
 	 */
-	public NonStartTrackPoint buildNonStartTrackPoint(final TrackPoint previous) {
+	public NonStartTrackPoint buildNonStartTrackPoint(final TrackPointImpl previous) {
 		return new NonStartTrackPoint(previous, time, heartRate,
 				altitude, distance, latitude, longitude);
 	}

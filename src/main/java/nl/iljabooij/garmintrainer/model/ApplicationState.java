@@ -20,6 +20,9 @@ package nl.iljabooij.garmintrainer.model;
 
 import java.beans.PropertyChangeListener;
 
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+
 public interface ApplicationState {
 	/**
 	 * Enum holding all properties in {@link ApplicationState} that can be
@@ -28,6 +31,7 @@ public interface ApplicationState {
 	 */
 	public enum Property {
 		CurrentActivity("currentActivity"),
+		CurrentPlayingTime("currentPlayingTime"),
 		ErrorMessage("errorMessage");
 		
 		private String propertyName;
@@ -70,6 +74,17 @@ public interface ApplicationState {
 	String getErrorMessage();
 	
 	void setErrorMessage(final String message);
+	
+	/** get the current time for the playing animation.
+	 * @return the current time
+	 */
+	DateTime getCurrentPlayingTime();
+		
+	/**
+	 * Increase the current playing time by a duration.
+	 * @param duration the duration to increase the time by.
+	 */
+	void increasePlayingTime(Duration duration);
 	
 	/**
 	 * Add a {@link PropertyChangeListener} for a specific property.

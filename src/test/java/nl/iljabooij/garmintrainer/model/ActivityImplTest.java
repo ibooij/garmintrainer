@@ -41,15 +41,15 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-public class ActivityTest {
-	private Activity activity;
+public class ActivityImplTest {
+	private ActivityImpl activity;
 	private LinkedList<Lap> laps;
-	private LinkedList<TrackPoint> allTrackPoints;
+	private LinkedList<TrackPointImpl> allTrackPoints;
 	private static final DateTime START_TIME = new DateTime(2009, 9, 17, 14,
 			45, 36, 0);
 
 	private static final int NR_OF_LAPS = 4;
-	private static final int SECONDS_PER_LAP = 1000;
+	private static final int SECONDS_PER_LAP = 100;
 	private static final double[] distances = { 100.0, 200.0, 300.0, 400.0 };
 	private static final int SECONDS_PER_POINT = SECONDS_PER_LAP
 			/ distances.length;
@@ -68,9 +68,10 @@ public class ActivityTest {
 			DateTime lapStartTime = START_TIME.plusSeconds(SECONDS_PER_LAP
 					* lapNr);
 			when(lap.getStartTime()).thenReturn(lapStartTime);
-			ImmutableList.Builder<TrackPoint> builder = ImmutableList.builder();
+			ImmutableList.Builder<TrackPointImpl> builder = ImmutableList
+					.builder();
 			for (int i = 0; i < distances.length; i++) {
-				TrackPoint trackPoint = mock(TrackPoint.class);
+				TrackPointImpl trackPoint = mock(TrackPointImpl.class);
 				Length tpDistance = Length.createLengthInMeters(distances[i]);
 				when(trackPoint.getDistance()).thenReturn(
 						lapStartDistance.plus(tpDistance));
@@ -117,9 +118,9 @@ public class ActivityTest {
 			when(lap.getStartTime()).thenReturn(lapStartTime);
 			when(lap.getNetDuration()).thenReturn(netDurationPerLap);
 			// two track points per lap
-			TrackPoint tp1 = mock(TrackPoint.class);
+			TrackPointImpl tp1 = mock(TrackPointImpl.class);
 			when(tp1.getTime()).thenReturn(lapStartTime);
-			TrackPoint tp2 = mock(TrackPoint.class);
+			TrackPointImpl tp2 = mock(TrackPointImpl.class);
 			when(tp2.getTime()).thenReturn(
 					lapStartTime.plus(grossDurationPerLap));
 			when(lap.getTrackPoints()).thenReturn(ImmutableList.of(tp1, tp2));
@@ -185,7 +186,7 @@ public class ActivityTest {
 	 */
 	@Test
 	public void testGetTrackPoints() {
-		List<TrackPoint> trackPoints = Lists.newArrayList();
+		List<TrackPointImpl> trackPoints = Lists.newArrayList();
 		for (Lap lap : laps) {
 			trackPoints.addAll(lap.getTrackPoints());
 		}
@@ -200,7 +201,7 @@ public class ActivityTest {
 	@Test
 	public void testGetEndTime() {
 		Lap lastLap = laps.getLast();
-		LinkedList<TrackPoint> trackPoints = Lists.newLinkedList(lastLap
+		LinkedList<TrackPointImpl> trackPoints = Lists.newLinkedList(lastLap
 				.getTrackPoints());
 
 		assertEquals(trackPoints.getLast().getTime(), activity.getEndTime());
@@ -243,9 +244,9 @@ public class ActivityTest {
 		for (int i = 0; i < laps.length; i++) {
 			laps[i] = mock(Lap.class);
 
-			TrackPoint[] trackPoints = new TrackPoint[10];
+			TrackPointImpl[] trackPoints = new TrackPointImpl[10];
 			for (int j = 0; j < trackPoints.length; j++) {
-				trackPoints[j] = mock(TrackPoint.class);
+				trackPoints[j] = mock(TrackPointImpl.class);
 				if (j < 5) {
 					when(trackPoints[j].getAltitudeDelta()).thenReturn(gain);
 				} else {
@@ -278,9 +279,9 @@ public class ActivityTest {
 		for (int i = 0; i < laps.length; i++) {
 			laps[i] = mock(Lap.class);
 
-			TrackPoint[] trackPoints = new TrackPoint[10];
+			TrackPointImpl[] trackPoints = new TrackPointImpl[10];
 			for (int j = 0; j < trackPoints.length; j++) {
-				trackPoints[j] = mock(TrackPoint.class);
+				trackPoints[j] = mock(TrackPointImpl.class);
 				Length delta = (j % 2 == 0) ? gain : loss;
 				when(trackPoints[j].getAltitudeDelta()).thenReturn(delta);
 			}
@@ -302,9 +303,9 @@ public class ActivityTest {
 		for (int i = 0; i < laps.length; i++) {
 			laps[i] = mock(Lap.class);
 
-			TrackPoint[] trackPoints = new TrackPoint[altitudes.length];
+			TrackPointImpl[] trackPoints = new TrackPointImpl[altitudes.length];
 			for (int j = 0; j < trackPoints.length; j++) {
-				trackPoints[j] = mock(TrackPoint.class);
+				trackPoints[j] = mock(TrackPointImpl.class);
 				when(trackPoints[j].getAltitude()).thenReturn(
 						Length.createLengthInMeters(altitudes[j]));
 			}
@@ -331,9 +332,9 @@ public class ActivityTest {
 		for (int i = 0; i < laps.length; i++) {
 			laps[i] = mock(Lap.class);
 
-			TrackPoint[] trackPoints = new TrackPoint[speeds.length];
+			TrackPointImpl[] trackPoints = new TrackPointImpl[speeds.length];
 			for (int j = 0; j < trackPoints.length; j++) {
-				trackPoints[j] = mock(TrackPoint.class);
+				trackPoints[j] = mock(TrackPointImpl.class);
 				when(trackPoints[j].getSpeed()).thenReturn(
 						Speed.createExactSpeedInMetersPerSecond(speeds[j]));
 			}
@@ -346,69 +347,108 @@ public class ActivityTest {
 		assertEquals(Speed.createExactSpeedInMetersPerSecond(3.0), activity
 				.getMaximumSpeed());
 	}
-	
+
 	/**
 	 * Test the compareTo method. It should compare by start time
 	 */
-	@Test public void compareTo() {
-		Activity sameActivity = new ActivityImpl(activity.getStartTime(), activity.getLaps());
+	@Test
+	public void compareTo() {
+		Activity sameActivity = new ActivityImpl(activity.getStartTime(),
+				activity.getLaps());
 		assertEquals(0, activity.compareTo(sameActivity));
 		assertEquals(0, sameActivity.compareTo(activity));
-		
-		Activity laterActivity = new ActivityImpl(activity.getStartTime().plusSeconds(1), activity.getLaps());
+
+		Activity laterActivity = new ActivityImpl(activity.getStartTime()
+				.plusSeconds(1), activity.getLaps());
 		assertTrue(activity.compareTo(laterActivity) < 0);
 		assertTrue(laterActivity.compareTo(activity) > 0);
-		
-		Activity earlierActivity = new ActivityImpl(activity.getStartTime().minusSeconds(1), activity.getLaps());
+
+		Activity earlierActivity = new ActivityImpl(activity.getStartTime()
+				.minusSeconds(1), activity.getLaps());
 		assertTrue(activity.compareTo(earlierActivity) > 0);
 		assertTrue(earlierActivity.compareTo(activity) < 0);
 	}
-	
-	@Test(expected=NullPointerException.class) 
+
+	@Test(expected = NullPointerException.class)
 	public void compareToShouldThrowNPE() {
 		activity.compareTo(null);
 	}
-	
+
 	/**
-	 * Some simple tests to check if class is really immutable. We have no
-	 * way of actually really knowing of course, but we must at least test
-	 * if the class doesn't have setters, and if return values are immutable
-	 * as well.
+	 * Some simple tests to check if class is really immutable. We have no way
+	 * of actually really knowing of course, but we must at least test if the
+	 * class doesn't have setters, and if return values are immutable as well.
 	 */
 	@SuppressWarnings("unchecked")
-	@Test public void testIsImmutable() {
+	@Test
+	public void testIsImmutable() {
 		assertTrue(ActivityImpl.class.isAnnotationPresent(Immutable.class));
-		
-		for (Method method: ActivityImpl.class.getMethods()) {
-			assertFalse("setters are not allowed on Immutable classes", 
-					method.getName().startsWith("set"));
-			
+
+		for (Method method : ActivityImpl.class.getMethods()) {
+			assertFalse("setters are not allowed on Immutable classes", method
+					.getName().startsWith("set"));
+
 			// check if returned values are immutable
 			Class returnType = method.getReturnType();
-			
-			final Class[] allowedClasses = new Class[] {
-					String.class,
-					DateTime.class,
-					Duration.class,
-					ImmutableList.class,
-					Class.class
-			};
-			
+
+			final Class[] allowedClasses = new Class[] { String.class,
+					DateTime.class, Duration.class, ImmutableList.class,
+					Class.class };
+
 			if (returnType.isPrimitive()) {
 				continue;
 			}
 			if (returnType.isAnnotationPresent(Immutable.class)) {
 				continue;
 			}
+			/*
+			 * if the return type is an interface, we don't know for sure if the
+			 * returned value is an immutable object.
+			 */
+			if (returnType.isInterface()) {
+				continue;
+			}
+
 			boolean isKnownImmutableClass = false;
-			for (Class clazz: allowedClasses) {
-				isKnownImmutableClass =  isKnownImmutableClass || (clazz == returnType);  
+			for (Class clazz : allowedClasses) {
+				isKnownImmutableClass = isKnownImmutableClass
+						|| (clazz == returnType);
 			}
 			if (isKnownImmutableClass) {
 				continue;
 			}
-			
+
 			fail("return types should be immutable: " + returnType);
 		}
+	}
+
+	@Test
+	public void testGetTrackPointForTime() {
+		assertEquals(allTrackPoints.getFirst(), activity
+				.getTrackPointForTime(START_TIME));
+
+		// check the exact times
+		for (TrackPoint trackPoint : allTrackPoints) {
+			assertEquals(trackPoint, activity.getTrackPointForTime(trackPoint
+					.getTime()));
+			assertEquals(trackPoint, activity.getTrackPointForTime(trackPoint
+					.getTime().plus(Duration.standardSeconds(3))));
+		}
+	}
+	
+	@Test
+	public void testGetTrackPointForTimeWithTimeBeforeActivity() {
+		// too early a time should just return the first track point.
+		assertEquals(allTrackPoints.getFirst(), activity
+				.getTrackPointForTime(START_TIME.minusHours(1)));
+
+	}
+	
+	@Test
+	public void testGetTrackPointForTimeWithTimeAfterActivity() {
+		// too early a time should just return the first track point.
+		assertEquals(allTrackPoints.getLast(), activity
+				.getTrackPointForTime(activity.getEndTime().plusHours(1)));
+
 	}
 }

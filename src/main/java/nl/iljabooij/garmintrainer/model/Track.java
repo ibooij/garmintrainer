@@ -37,7 +37,7 @@ import com.google.common.collect.Iterables;
 @Immutable
 public class Track implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private final ImmutableList<TrackPoint> trackPoints;
+	private final ImmutableList<TrackPointImpl> trackPoints;
 	
 	/**
 	 * Create a new Track with a list of track points.
@@ -45,7 +45,7 @@ public class Track implements Serializable {
 	 * @throws NullPointerException if trackPoints is null
 	 * @throws IllegalArgumentException if trackPoints is empty
 	 */
-	public Track(final List<TrackPoint> trackPoints) {
+	public Track(final List<TrackPointImpl> trackPoints) {
 		Preconditions.checkNotNull(trackPoints);
 		Preconditions.checkArgument(!trackPoints.isEmpty());
 		
@@ -56,7 +56,7 @@ public class Track implements Serializable {
 	 * Get all track points
 	 * @return the track points.
 	 */
-	public ImmutableList<TrackPoint> getTrackPoints() {
+	public ImmutableList<TrackPointImpl> getTrackPoints() {
 		return trackPoints;
 	}
 

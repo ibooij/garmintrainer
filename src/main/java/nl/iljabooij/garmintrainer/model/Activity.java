@@ -78,4 +78,14 @@ public interface Activity extends Comparable<Activity> {
 	 * @return total altitude gain
 	 */
 	Length getAltitudeGain();
+	
+	/**
+	 * Get the TrackPoint for a certain point in time.
+	 * @param dateTime the time to search for
+	 * @return the TrackPoint for the time. If the time is not found in the
+	 * trackpoints, it returns the track point with the latest time before dateTime.
+	 * if the time is before the first track point's time, the first track point
+	 * is returned anyway.
+	 */
+	public TrackPoint getTrackPointForTime(final DateTime dateTime);
 }

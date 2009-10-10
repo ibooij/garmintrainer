@@ -25,7 +25,7 @@ import nl.iljabooij.garmintrainer.model.Activity;
 import nl.iljabooij.garmintrainer.model.ActivityImpl;
 import nl.iljabooij.garmintrainer.model.Lap;
 import nl.iljabooij.garmintrainer.model.Track;
-import nl.iljabooij.garmintrainer.model.TrackPoint;
+import nl.iljabooij.garmintrainer.model.TrackPointImpl;
 import nl.iljabooij.garmintrainer.util.Memoizer;
 
 import org.joda.time.DateTime;
@@ -54,14 +54,14 @@ public class ActivityType {
     public Activity build() {
     	final DateTime dateTimeForId = dateTimeFormatter.parseDateTime(id);
     	
-    	TrackPoint previousTrackPoint = null;
+    	TrackPointImpl previousTrackPoint = null;
     	ArrayList<Lap> laps = Lists.newArrayList();
         for (LapType lapType: lapBuilders) {
         	final ArrayList<Track> tracks = Lists.newArrayList();
         	for (TrackType trackType: lapType.getTracks()) {
-        		final ArrayList<TrackPoint> trackPoints = Lists.newArrayList();
+        		final ArrayList<TrackPointImpl> trackPoints = Lists.newArrayList();
         		for (TrackPointType trackPointType: trackType.getTrackPointTypes()) {
-        			TrackPoint newTrackPoint;
+        			TrackPointImpl newTrackPoint;
         			if (laps.isEmpty() && tracks.isEmpty() && trackPoints.isEmpty()) {
         				newTrackPoint = trackPointType.buildStartTrackPoint(dateTimeForId);				
         			} else {

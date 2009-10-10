@@ -23,6 +23,8 @@ import java.beans.PropertyChangeSupport;
 
 import net.jcip.annotations.GuardedBy;
 
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,13 +46,14 @@ public class ApplicationStateImpl implements ApplicationState {
 
     @GuardedBy("this")
     private String errorMessage;
+    
+    @GuardedBy("this")
+    private DateTime currentPlayingTime;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * nl.iljabooij.garmintrainer.model.ApplicationState#getCurrentActivity()
+    /**
+     * {@inheritDoc}
      */
+    @Override
     public Activity getCurrentActivity() {
         synchronized (this) {
             return currentActivity;
@@ -77,12 +80,47 @@ public class ApplicationStateImpl implements ApplicationState {
             }
             this.currentActivity = currentActivity;
         }
-
+        setCurrentPlayingTime(currentActivity.getStartTime());
         propertyChangeSupport.firePropertyChange(Property.CurrentActivity.getName(), oldActivity,
                 currentActivity);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public DateTime getCurrentPlayingTime() {
+    	synchronized (this) {
+			return currentPlayingTime;
+		}
+    }
+    
+    private void setCurrentPlayingTime(final DateTime newPlayingTime) {
+    	final DateTime oldPlayingTime;
+    	synchronized (this) {
+			oldPlayingTime = this.currentPlayingTime;
+			this.currentPlayingTime = newPlayingTime;
+		}
+    	propertyChangeSupport.firePropertyChange(Property.CurrentPlayingTime.getName(), oldPlayingTime, currentPlayingTime);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+	public void increasePlayingTime(final Duration duration) {
+    	final DateTime newPlayingTime;
+    	synchronized (this) {
+    		if (currentPlayingTime == null) {
+    			return;
+    		}
+    		newPlayingTime = currentPlayingTime.plus(duration);
+		}
+    	
+    	setCurrentPlayingTime(newPlayingTime);
+	}
 
-    /*
+	/*
      * (non-Javadoc)
      * 
      * @see

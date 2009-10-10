@@ -44,23 +44,17 @@ public class OverviewPanel extends JPanel {
 	 */
 	@Inject
 	public OverviewPanel(final SummaryPanel summaryPanel,
-			final MapViewer mapViewer,
+			final MapPanel mapPanel,
 			final ChartPanel chartComponent) {
 			
 		super();
 		setLayout(new GridLayout(2, 2, 5, 5));
 		setName("Overview");
 
-		// use a holder for the map to easily add a border. Otherwise, the
-		// map would be drawn over the border.
-		JPanel mapHolder = new JPanel(new BorderLayout());
-		mapHolder.setBorder(new TitledBorder("Map"));
-		mapHolder.add(mapViewer, BorderLayout.CENTER);
-		
 		summaryPanel.setBorder(new TitledBorder("Summary"));
 		chartComponent.setBorder(new TitledBorder("Chart"));
 		add(summaryPanel);
-		add(mapHolder);
+		add(mapPanel);
 		add(new JPanel()); // empty block
 		add(chartComponent);
 	}

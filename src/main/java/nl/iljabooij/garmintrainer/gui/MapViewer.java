@@ -51,7 +51,7 @@ import com.google.inject.Inject;
  * a collection of {@link SmallMapMarker} objects.
  * @author ilja
  */
-public class MapViewer extends JMapViewer implements PropertyChangeListener {
+public class MapViewer extends JMapViewer {
 	private static final long serialVersionUID = 1L;
 	private transient final ApplicationState applicationState;
 	
@@ -71,18 +71,14 @@ public class MapViewer extends JMapViewer implements PropertyChangeListener {
 		setTileSource(new OsmTileSource.Mapnik());
 		this.applicationState = applicationState;
 		this.applicationState.addPropertyChangeListener(
-				Property.CurrentActivity, this);
+				Property.CurrentActivity, new PropertyChangeListener() {
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+						changeMarkers();
+					}
+				});
 		
 		setTileLoader(new OsmFileCacheTileLoader(this, CACHE_DIR));
-	}
-
-	/**
-	 * Called when the the current activity is changed.
-	 * @param evt the {@link PropertyChangeEvent}.
-	 */
-	@Override
-	public void propertyChange(final PropertyChangeEvent evt) {
-		changeMarkers();
 	}
 	
 	/**
