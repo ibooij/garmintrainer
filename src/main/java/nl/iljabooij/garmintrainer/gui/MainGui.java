@@ -64,6 +64,9 @@ public class MainGui implements PropertyChangeListener {
 	@Inject
 	private SampleTablePanel sampleTablePanel;
 	@Inject
+	private CombinedMapPanel combinedMapPanel;
+	
+	@Inject
 	private ApplicationState applicationState;
 	@Inject 
 	private FileTransferHandler fileTransferHandler;
@@ -87,6 +90,7 @@ public class MainGui implements PropertyChangeListener {
 		tabs.setMnemonicAt(1, KeyEvent.VK_C);
 		tabs.add(sampleTablePanel);
 		tabs.setMnemonicAt(2, KeyEvent.VK_S);
+		tabs.add(combinedMapPanel);
 		
 		pane.add(tabs, BorderLayout.CENTER);
 		

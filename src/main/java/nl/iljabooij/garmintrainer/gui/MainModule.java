@@ -22,7 +22,7 @@
 package nl.iljabooij.garmintrainer.gui;
 
 import nl.iljabooij.garmintrainer.importer.ActivityStorage;
-import nl.iljabooij.garmintrainer.importer.ActivityStorageImpl;
+import nl.iljabooij.garmintrainer.importer.EmptyActivityStorage;
 import nl.iljabooij.garmintrainer.importer.TcxImporter;
 import nl.iljabooij.garmintrainer.importer.TcxImporterImpl;
 import nl.iljabooij.garmintrainer.model.ApplicationState;
@@ -50,7 +50,7 @@ class MainModule implements Module {
 		
 		binder.bind(ApplicationState.class).to(ApplicationStateImpl.class);
 		binder.bind(TcxImporter.class).to(TcxImporterImpl.class);
-		binder.bind(ActivityStorage.class).to(ActivityStorageImpl.class);
+		binder.bind(ActivityStorage.class).to(EmptyActivityStorage.class);
 		binder.bind(TcxParser.class).to(CommonsDigesterTcxParser.class);
 	}
 }

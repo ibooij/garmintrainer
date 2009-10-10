@@ -39,7 +39,7 @@ import com.google.common.collect.Lists;
 public class TrackTest {
 	private Track testTrack;
 	
-	private LinkedList<TrackPoint> trackPoints;
+	private LinkedList<TrackPointImpl> trackPoints;
 	private static final int NR_OF_TRACK_POINTS = 100;
 	private static final DateTime START_TIME = new DateTime();
 	
@@ -47,7 +47,7 @@ public class TrackTest {
 	public void setUpAll() {
 		trackPoints = Lists.newLinkedList();
 		for (int i = 0; i < NR_OF_TRACK_POINTS; i++) {
-			TrackPoint trackPoint = Mockito.mock(TrackPoint.class);
+			TrackPointImpl trackPoint = Mockito.mock(TrackPointImpl.class);
 			Mockito.when(trackPoint.getTime()).thenReturn(START_TIME.plusSeconds(i));
 			
 			trackPoints.add(trackPoint);
@@ -73,7 +73,7 @@ public class TrackTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testImpossibleToCreateEmptyTrack() {
-		List<TrackPoint> emptyList = Lists.newArrayList();
+		List<TrackPointImpl> emptyList = Lists.newArrayList();
 		new Track(emptyList);
 	}
 	

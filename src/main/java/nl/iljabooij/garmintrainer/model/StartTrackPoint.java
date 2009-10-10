@@ -32,7 +32,7 @@ import org.joda.time.Duration;
  * 
  */
 @Immutable
-public class StartTrackPoint extends TrackPoint implements Serializable {
+public class StartTrackPoint extends TrackPointImpl implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private final DateTime startTime; 
@@ -40,7 +40,7 @@ public class StartTrackPoint extends TrackPoint implements Serializable {
 	 * Create a new {@link StartTrackPoint}. A {@link StartTrackPoint} is used
 	 * as the first track point in an activity.
 	 * @param startTime start time of the {@link Activity}.
-	 * @param time time at which the {@link TrackPoint} was measured.
+	 * @param time time at which the {@link TrackPointImpl} was measured.
 	 * @param heartRate heart rate at the track point
 	 * @param altitude altitude at the track point
 	 * @param distance distance at the track point

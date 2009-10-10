@@ -18,7 +18,12 @@
  */
 package nl.iljabooij.garmintrainer.model;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,8 +34,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -88,13 +91,13 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable,
 
 	/** {@inheritDoc} */
 	public Length getMinimumAltitude() {
-		return Ordering.from(new TrackPoint.AltitudeComparator()).min(
+		return Ordering.from(new TrackPointImpl.AltitudeComparator()).min(
 				getTrackPoints()).getAltitude();
 	}
 
 	/** {@inheritDoc} */
 	public Speed getMaximumSpeed() {
-		return Ordering.from(new TrackPoint.SpeedComparator()).max(
+		return Ordering.from(new TrackPointImpl.SpeedComparator()).max(
 				getTrackPoints()).getSpeed();
 	}
 
@@ -124,6 +127,31 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable,
 		return builder.build();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @param dateTime
+	 * @return
+	 */
+	public TrackPoint getTrackPointForTime(final DateTime dateTime) {
+		final ArrayList<TrackPoint> trackPoints = 
+			Lists.newArrayList(getTrackPoints());
+		
+		final TrackPointBean trackPointBean = new TrackPointBean();
+		trackPointBean.setTime(dateTime);
+		
+		int index = Collections.binarySearch(trackPoints, trackPointBean, 
+				new TrackPoint.TimeComparator());
+		
+		if (index < 0) {
+			// if index < 0, no match is found. The returned value from
+			// Collections.binarySearch() is - (insertionPoint) - 1.
+			// We are looking for the place before the insertion point.
+			index = - (index + 1) - 1;
+			index = Math.max(0, index);
+		}
+		return trackPoints.get(index);
+	}
+	
 	/** {@inheritDoc} */
 	private TrackPoint getLastTrackPoint() {
 		Lap lastLap = Iterables.getLast(laps);

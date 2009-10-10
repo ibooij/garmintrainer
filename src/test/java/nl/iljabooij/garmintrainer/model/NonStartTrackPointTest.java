@@ -27,7 +27,7 @@ import org.junit.Test;
 import static org.mockito.Mockito.*;
 
 public class NonStartTrackPointTest {
-	private TrackPoint first;
+	private TrackPointImpl first;
 	private NonStartTrackPoint second;
 
 	private static final DateTime START_TIME = new DateTime();
@@ -44,7 +44,7 @@ public class NonStartTrackPointTest {
 	 */
 	@Before
 	public void setUp() {
-		first = mock(TrackPoint.class);
+		first = mock(TrackPointImpl.class);
 		when(first.getTime()).thenReturn(START_TIME);
 		when(first.getDistance()).thenReturn(Length.createLengthInMeters(0.0));
 		when(first.getAltitude()).thenReturn(FIRST_ALTITUDE);
