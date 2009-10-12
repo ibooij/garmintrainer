@@ -1,7 +1,12 @@
 package nl.iljabooij.garmintrainer.model;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.atMost;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -10,8 +15,7 @@ import org.junit.Test;
 public class TrackPointImplTest {
 	private static final double DELTA_FOR_DOUBLE_EQUALITY = 0.0001;
 	
-	private TrackPointImpl trackPointImpl;
-	private MeasuredTrackPoint previousMeasuredTrackPoint;
+	private TrackPointImpl trackPointImpl;	
 	private MeasuredTrackPoint measuredTrackPoint;
 
 	/**
@@ -24,6 +28,8 @@ public class TrackPointImplTest {
 	 *
 	 */
 	private class ConcreteTrackPointImpl extends TrackPointImpl {
+		private static final long serialVersionUID = 1L;
+
 		ConcreteTrackPointImpl(final MeasuredTrackPoint measuredTrackPoint) {
 			super(measuredTrackPoint);
 		}
