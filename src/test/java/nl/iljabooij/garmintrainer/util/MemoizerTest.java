@@ -86,6 +86,9 @@ public class MemoizerTest {
 		verify(impl, times(1)).methodWithReturnValue();
 	}
 	
+	/**
+	 * Memoizer should not cache methods with arguments.
+	 */
 	@Test
 	public void testFromBaseInterfaceWithArgument() {
 		when(impl.methodWithArgument(1)).thenReturn(1);
@@ -93,8 +96,9 @@ public class MemoizerTest {
 		assertEquals(1, memoizedImpl.methodWithArgument(1));
 		assertEquals(2, memoizedImpl.methodWithArgument(2));
 		assertEquals(2, memoizedImpl.methodWithArgument(2));
-		verify(impl, times(2)).methodWithArgument(anyInt());
+	
+		verify(impl, times(3)).methodWithArgument(anyInt());
 		verify(impl, times(1)).methodWithArgument(1);
-		verify(impl, times(1)).methodWithArgument(2);
+		verify(impl, times(2)).methodWithArgument(2);
 	}
 }
