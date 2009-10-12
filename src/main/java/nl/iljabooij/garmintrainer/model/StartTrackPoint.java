@@ -40,16 +40,10 @@ public class StartTrackPoint extends TrackPointImpl implements Serializable {
 	 * Create a new {@link StartTrackPoint}. A {@link StartTrackPoint} is used
 	 * as the first track point in an activity.
 	 * @param startTime start time of the {@link Activity}.
-	 * @param time time at which the {@link TrackPointImpl} was measured.
-	 * @param heartRate heart rate at the track point
-	 * @param altitude altitude at the track point
-	 * @param distance distance at the track point
-	 * @param latitude latitude at the track point
-	 * @param longitude longitude at the track point.
+	 * @param measuredTrackPoint track point as measured by the gps device.
 	 */
-	public StartTrackPoint(DateTime startTime, DateTime time, int heartRate,
-			Length altitude, Length distance, double latitude, double longitude) {
-		super(time, heartRate, altitude, distance, latitude, longitude);
+	public StartTrackPoint(final DateTime startTime, final MeasuredTrackPoint measuredTrackPoint) {
+		super(measuredTrackPoint);
 		this.startTime = startTime;
 	}
 

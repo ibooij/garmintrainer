@@ -24,6 +24,8 @@ import java.util.List;
 import nl.iljabooij.garmintrainer.model.Activity;
 import nl.iljabooij.garmintrainer.model.ActivityImpl;
 import nl.iljabooij.garmintrainer.model.Lap;
+import nl.iljabooij.garmintrainer.model.NonStartTrackPoint;
+import nl.iljabooij.garmintrainer.model.StartTrackPoint;
 import nl.iljabooij.garmintrainer.model.Track;
 import nl.iljabooij.garmintrainer.model.TrackPointImpl;
 import nl.iljabooij.garmintrainer.util.Memoizer;
@@ -54,21 +56,23 @@ public class ActivityType {
     public Activity build() {
     	final DateTime dateTimeForId = dateTimeFormatter.parseDateTime(id);
     	
-    	TrackPointImpl previousTrackPoint = null;
+    	DigesterMeasuredTrackPoint previousMeasuredTrackPoint = null;
     	ArrayList<Lap> laps = Lists.newArrayList();
         for (LapType lapType: lapBuilders) {
         	final ArrayList<Track> tracks = Lists.newArrayList();
         	for (TrackType trackType: lapType.getTracks()) {
         		final ArrayList<TrackPointImpl> trackPoints = Lists.newArrayList();
         		for (TrackPointType trackPointType: trackType.getTrackPointTypes()) {
+        			DigesterMeasuredTrackPoint measuredTrackPoint = 
+        				new DigesterMeasuredTrackPoint(trackPointType);
         			TrackPointImpl newTrackPoint;
         			if (laps.isEmpty() && tracks.isEmpty() && trackPoints.isEmpty()) {
-        				newTrackPoint = trackPointType.buildStartTrackPoint(dateTimeForId);				
+        				newTrackPoint = new StartTrackPoint(dateTimeForId, measuredTrackPoint);				
         			} else {
-        				newTrackPoint = trackPointType.buildNonStartTrackPoint(previousTrackPoint);
+        				newTrackPoint = new NonStartTrackPoint(previousMeasuredTrackPoint, measuredTrackPoint);
         			}
         			trackPoints.add(newTrackPoint);
-        			previousTrackPoint = newTrackPoint;
+        			previousMeasuredTrackPoint = measuredTrackPoint;
         		}
         		tracks.add(new Track(trackPoints));
         	}
@@ -76,9 +80,6 @@ public class ActivityType {
         }
          
         return Memoizer.memoize(new ActivityImpl(dateTimeForId, laps), Activity.class);
-        
-//        return (Activity) memoizer;
-//        return new CachingActivityWrapper(new ActivityImpl(dateTimeForId, laps));
     }
 
     /**

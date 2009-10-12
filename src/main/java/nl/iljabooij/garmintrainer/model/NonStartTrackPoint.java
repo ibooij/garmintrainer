@@ -22,20 +22,19 @@ import java.io.Serializable;
 
 import net.jcip.annotations.Immutable;
 
-import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.common.base.Preconditions;
 
 @Immutable
 public class NonStartTrackPoint extends TrackPointImpl implements Serializable {
-	private static final long serialVersionUID = 1L;
-	private final TrackPoint previousTrackPoint;
+	private static final long serialVersionUID = 2L;
+	private final MeasuredTrackPoint previousMeasuredTrackPoint;
 	
-	public NonStartTrackPoint(final TrackPointImpl previousTrackPoint,DateTime time, int heartRate, Length altitude,
-			Length distance, double latitude, double longitude) {
-		super(time, heartRate, altitude, distance, latitude, longitude);
-		this.previousTrackPoint = checkNotNull(previousTrackPoint);
+	public NonStartTrackPoint(final MeasuredTrackPoint previousMeasuredTrackPoint,
+			final MeasuredTrackPoint measuredTrackPoint) {
+		super(measuredTrackPoint);
+		this.previousMeasuredTrackPoint = Preconditions.checkNotNull(previousMeasuredTrackPoint);
 	}
 
 	/**
@@ -43,8 +42,8 @@ public class NonStartTrackPoint extends TrackPointImpl implements Serializable {
 	 */
 	@Override
 	public Speed getSpeed() {
-		Length distanceTravelled = getDistance().minus(previousTrackPoint.getDistance());
-		Duration timeTravelled = new Duration(previousTrackPoint.getTime(), getTime());
+		Length distanceTravelled = getDistance().minus(previousMeasuredTrackPoint.getDistance());
+		Duration timeTravelled = new Duration(previousMeasuredTrackPoint.getTime(), getTime());
 		
 		return Speed.createSpeedInMetersPerSecond(distanceTravelled, timeTravelled);
 	}
@@ -54,6 +53,6 @@ public class NonStartTrackPoint extends TrackPointImpl implements Serializable {
 	 */
 	@Override
 	public Length getAltitudeDelta() {
-		return getAltitude().minus(previousTrackPoint.getAltitude());
+		return getAltitude().minus(previousMeasuredTrackPoint.getAltitude());
 	}
 }

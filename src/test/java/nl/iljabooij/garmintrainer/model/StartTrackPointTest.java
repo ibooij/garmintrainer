@@ -19,6 +19,7 @@
 package nl.iljabooij.garmintrainer.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -35,21 +36,25 @@ public class StartTrackPointTest {
 	private static final DateTime TRACK_POINT_TIME = START_TIME.plusSeconds(10);
 	private static final Length DISTANCE = Length.createLengthInMeters(100.0);
 	
-	private StartTrackPoint startTrackPoint; 
+	private StartTrackPoint startTrackPoint;
+	private MeasuredTrackPoint measuredTrackPoint;
 	
 	@Before
 	public void setUp() {
-		startTrackPoint = new StartTrackPoint(START_TIME,
-				TRACK_POINT_TIME, 0, Length.createLengthInMeters(100.0), DISTANCE, 
-				0.0, 0.0);
+		measuredTrackPoint = mock(MeasuredTrackPoint.class);
+		startTrackPoint = new StartTrackPoint(START_TIME, measuredTrackPoint);
 	}
 	
 	@Test
 	public void testGetSpeed() {
-		
+		when (measuredTrackPoint.getTime()).thenReturn(TRACK_POINT_TIME);
+		when (measuredTrackPoint.getDistance()).thenReturn(DISTANCE);
 		// speed as calculated:
 		Speed speed = Speed.createSpeedInMetersPerSecond(DISTANCE, new Duration(START_TIME, TRACK_POINT_TIME));
 		assertEquals(speed, startTrackPoint.getSpeed());
+		
+		verify(measuredTrackPoint, times(1)).getTime();
+		verify(measuredTrackPoint, times(1)).getDistance();
 	}
 	
 	@Test
