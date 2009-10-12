@@ -42,28 +42,6 @@ public class TrackPointType {
 	private double longitude;
 
 	/**
-	 * Build a TrackPoint
-	 * 
-	 * @param previous the previous track point
-	 * @return the {@link TrackPointImpl} with all fields filled out.
-	 */
-	public NonStartTrackPoint buildNonStartTrackPoint(final TrackPointImpl previous) {
-		return new NonStartTrackPoint(previous, time, heartRate,
-				altitude, distance, latitude, longitude);
-	}
-	
-	/**
-	 * Build a start track point.
-	 * 
-	 * @param startTime time of the start of the Activity
-	 * @return the StartTrackPoint.
-	 */
-	public StartTrackPoint buildStartTrackPoint(final DateTime startTime) {
-		return new StartTrackPoint(startTime, time, heartRate,
-				altitude, distance, latitude, longitude);
-	}
-
-	/**
 	 * Set the time at which the measurement took place.
 	 * 
 	 * @param time

@@ -27,8 +27,10 @@ import org.junit.Test;
 import static org.mockito.Mockito.*;
 
 public class NonStartTrackPointTest {
-	private TrackPointImpl first;
-	private NonStartTrackPoint second;
+	private MeasuredTrackPoint first;
+	private MeasuredTrackPoint second;
+	
+	private NonStartTrackPoint nonStartTrackPoint;
 
 	private static final DateTime START_TIME = new DateTime();
 	private static final DateTime SECOND_TIME = START_TIME.plusSeconds(10);
@@ -44,13 +46,17 @@ public class NonStartTrackPointTest {
 	 */
 	@Before
 	public void setUp() {
-		first = mock(TrackPointImpl.class);
+		first = mock(MeasuredTrackPoint.class);
 		when(first.getTime()).thenReturn(START_TIME);
 		when(first.getDistance()).thenReturn(Length.createLengthInMeters(0.0));
 		when(first.getAltitude()).thenReturn(FIRST_ALTITUDE);
 		
-		second = new NonStartTrackPoint(first,
-				SECOND_TIME, 150, SECOND_ALTITUDE, SECOND_DISTANCE, 52.4, 4.2);
+		second = mock(MeasuredTrackPoint.class);
+		when(second.getTime()).thenReturn(SECOND_TIME);
+		when(second.getDistance()).thenReturn(SECOND_DISTANCE);
+		when(second.getAltitude()).thenReturn(SECOND_ALTITUDE);
+		
+		nonStartTrackPoint = new NonStartTrackPoint(first, second);
 	}
 
 	/**
@@ -58,22 +64,26 @@ public class NonStartTrackPointTest {
 	 */
 	@Test
 	public void testSpeedInSecondSample() {
-		Duration duration = new Duration(first.getTime(), second.getTime());
-		Length distance = second.getDistance().minus(first.getDistance());
+		Duration duration = new Duration(START_TIME, SECOND_TIME);
+		Length distance = SECOND_DISTANCE;
 		Speed speed = Speed.createSpeedInMetersPerSecond(distance, duration);
 
-		assertEquals(speed, second.getSpeed());
+		assertEquals(speed, nonStartTrackPoint.getSpeed());
+		
+		verify(first, times(1)).getDistance();
+		verify(first, times(1)).getTime();
+		verify(second, times(1)).getDistance();
+		verify(second, times(1)).getTime();
 	}
 	
 	@Test(expected=NullPointerException.class)
 	public void constructorFailsWithNullPrevious() {
-		new NonStartTrackPoint(null,
-				SECOND_TIME, 150, SECOND_ALTITUDE, SECOND_DISTANCE, 52.4, 4.2);
+		new NonStartTrackPoint(null, second);
 	}
 	
 	@Test
 	public void testGetAltitudeDelta() {
 		Length gain = SECOND_ALTITUDE.minus(FIRST_ALTITUDE);
-		assertEquals(gain, second.getAltitudeDelta());
+		assertEquals(gain, nonStartTrackPoint.getAltitudeDelta());
 	}
 }
