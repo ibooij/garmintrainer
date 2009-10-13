@@ -423,16 +423,32 @@ public class ActivityImplTest {
 	}
 
 	@Test
+	public void testGetTrackPointForTimeFirst() {
+		TrackPoint returnedTrackPoint = activity.getTrackPointForTime(allTrackPoints.getFirst().getTime());
+		assertEquals(allTrackPoints.getFirst(), returnedTrackPoint);
+	}
+	
+	@Test
+	public void testGetTrackPointForTimeLast() {
+		TrackPoint returnedTrackPoint = activity.getTrackPointForTime(allTrackPoints.getLast().getTime());
+		assertEquals(allTrackPoints.getLast(), returnedTrackPoint);
+	}
+	
+	@Test
 	public void testGetTrackPointForTime() {
-		assertEquals(allTrackPoints.getFirst(), activity
-				.getTrackPointForTime(START_TIME));
-
 		// check the exact times
-		for (TrackPoint trackPoint : allTrackPoints) {
-			assertEquals(trackPoint, activity.getTrackPointForTime(trackPoint
-					.getTime()));
-			assertEquals(trackPoint, activity.getTrackPointForTime(trackPoint
-					.getTime().plus(Duration.standardSeconds(3))));
+		for (TrackPoint trackPoint : allTrackPoints.subList(1, allTrackPoints.size() - 1)) {
+			TrackPoint returnedTrackPoint = activity.getTrackPointForTime(trackPoint.getTime());
+			assertTrue(returnedTrackPoint instanceof InterpolatedTrackPoint);
+			assertEquals(trackPoint.getTime(), returnedTrackPoint.getTime());
+			
+			DateTime nextTime = trackPoint.getTime().plus(Duration.standardSeconds(3));
+			TrackPoint next = activity.getTrackPointForTime(nextTime);
+			assertTrue(next instanceof InterpolatedTrackPoint);
+			InterpolatedTrackPoint interpolatedTrackPoint =
+				(InterpolatedTrackPoint) next;
+			assertEquals(nextTime, interpolatedTrackPoint.getTime());
+			assertEquals(trackPoint, interpolatedTrackPoint.getBegin());
 		}
 	}
 	

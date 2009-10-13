@@ -129,8 +129,8 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable,
 
 	/**
 	 * {@inheritDoc}
-	 * @param dateTime
-	 * @return
+	 * @param dateTime the time to search for
+	 * @return a TrackPoint with the value for the dateTime.
 	 */
 	public TrackPoint getTrackPointForTime(final DateTime dateTime) {
 		final ArrayList<TrackPoint> trackPoints = 
@@ -149,7 +149,15 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable,
 			index = - (index + 1) - 1;
 			index = Math.max(0, index);
 		}
-		return trackPoints.get(index);
+		
+		if (index == 0) {
+			return trackPoints.get(0);
+		} else if (index == trackPoints.size() - 1) {
+			return Iterables.getLast(trackPoints);
+		} else {
+			return new InterpolatedTrackPoint(dateTime, trackPoints.get(index),
+					trackPoints.get(index + 1));
+		}
 	}
 	
 	/** {@inheritDoc} */
