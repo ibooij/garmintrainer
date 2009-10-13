@@ -175,6 +175,25 @@ public final class Length implements Comparable<Length>, Serializable {
 		return createLengthInMeters(this.value - subtractor.value).convert(this.unit);
 	}
 	
+	/**
+	 * Multiply the Length by an amount. 
+	 * @param amount the amount to multiply by
+	 * @return a new Lenght, with the same unit as the original
+	 */
+	public Length times(final double amount) {
+		return createLengthInMeters(this.value * amount).convert(unit);
+	}
+	
+	/**
+	 * Divide the Length by an amount. 
+	 * @param amount the amount to divide by
+	 * @return a new Lenght, with the same unit as the original
+	 */
+	public Length divide(final double amount) {
+		return createLengthInMeters(this.value / amount).convert(unit);
+	}
+	
+	
 	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj)
