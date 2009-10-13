@@ -150,6 +150,19 @@ public class LengthTest {
 	public void testAdditionThrowIAEOnNullSubtractor() {
 		_5km.plus(null);
 	}
+	
+	@Test
+	public void testMultiply() {
+		Length _15km = Length.createLength(15.0, Length.Unit.Kilometer);
+		assertEquals(_15km, _5km.times(3.0));
+	}
+	
+	@Test
+	public void testDivide() {
+		Length _15km = Length.createLength(15.0, Length.Unit.Kilometer);
+		assertEquals(_5km, _15km.divide(3.0));
+	}
+	
 	@Test
 	public void testEquals() {
 		assertEquals("1 km and 1000 m should be equal", Length.createLength(
