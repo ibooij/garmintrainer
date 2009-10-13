@@ -1,5 +1,7 @@
 package nl.iljabooij.garmintrainer.model;
 
+import java.beans.PropertyChangeListener;
+
 import com.google.inject.ImplementedBy;
 
 /**
@@ -9,6 +11,10 @@ import com.google.inject.ImplementedBy;
  */
 @ImplementedBy(PlayerImpl.class)
 public interface Player {
+	public enum Property {
+		PLAYING;
+	}
+	
 	/**
 	 * Start playing.
 	 */
@@ -23,4 +29,11 @@ public interface Player {
 	 * @return true if player is playing, false otherwise
 	 */
 	boolean isPlaying();
+	
+	/**
+	 * Add a listener that listens for property changes on the Player.
+	 * @param property the property to listen for
+	 * @param listener the listener to add
+	 */
+	public void addPropertyChangeListener(Property property, PropertyChangeListener listener);
 }

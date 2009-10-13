@@ -21,15 +21,17 @@ package nl.iljabooij.garmintrainer.gui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 import nl.iljabooij.garmintrainer.model.Activity;
 import nl.iljabooij.garmintrainer.model.ApplicationState;
+import nl.iljabooij.garmintrainer.model.Player;
 import nl.iljabooij.garmintrainer.model.TrackPoint;
-import nl.iljabooij.garmintrainer.model.ApplicationState.Property;
 
 import org.joda.time.DateTime;
 
@@ -37,13 +39,48 @@ import com.google.inject.Inject;
 
 public class AnimatingMapViewer extends MapViewer {
 	private static final long serialVersionUID = 1L;
-	private ApplicationState applicationState;
-
+	private final ApplicationState applicationState;
+	
+	private final Timer timer = new Timer(50, new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			final TrackPoint currentTrackPoint = 
+				calculateCurrentTrackPoint();
+			if (currentTrackPoint != null) {
+				setDisplayPositionByLatLon(
+						currentTrackPoint.getLatitude(),
+						currentTrackPoint.getLongitude(),
+						getZoom());
+			}
+			repaint();
+		}
+	});
+	
 	@Inject
-	AnimatingMapViewer(final ApplicationState applicationState) {
+	AnimatingMapViewer(final ApplicationState applicationState,
+			final Player player) {
 		super(applicationState);
 		this.applicationState = applicationState;
 		
+		player.addPropertyChangeListener(nl.iljabooij.garmintrainer.model.Player.Property.PLAYING, 
+				new PropertyChangeListener() {
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+						if (evt.getNewValue() == null) {
+							timer.stop();
+						} else {
+							Boolean value = (Boolean) evt.getNewValue();
+							if (value) {
+								timer.start();
+							} else {
+								timer.stop();
+							}
+						}
+						
+					}
+				});
+	}
+		/*
 		applicationState.addPropertyChangeListener(Property.CurrentPlayingTime, 
 				new PropertyChangeListener() {
 					@Override
@@ -66,7 +103,8 @@ public class AnimatingMapViewer extends MapViewer {
 					}
 				});
 	}
-
+	*/
+		
 	private TrackPoint calculateCurrentTrackPoint() {
 		final Activity currentActivity = applicationState.getCurrentActivity();
 		if (currentActivity != null) {
