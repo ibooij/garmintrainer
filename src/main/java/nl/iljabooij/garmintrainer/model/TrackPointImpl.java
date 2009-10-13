@@ -22,7 +22,6 @@ import java.io.Serializable;
 
 import net.jcip.annotations.Immutable;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.joda.time.DateTime;
 
 import com.google.common.base.Preconditions;
