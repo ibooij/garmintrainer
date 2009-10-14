@@ -34,6 +34,7 @@ import nl.iljabooij.garmintrainer.model.Player;
 import nl.iljabooij.garmintrainer.model.TrackPoint;
 
 import org.joda.time.DateTime;
+import org.openstreetmap.gui.jmapviewer.TileController;
 
 import com.google.inject.Inject;
 
@@ -58,8 +59,8 @@ public class AnimatingMapViewer extends MapViewer {
 	
 	@Inject
 	AnimatingMapViewer(final ApplicationState applicationState,
-			final Player player) {
-		super(applicationState);
+			final Player player, final TileController tileController) {
+		super(applicationState, tileController);
 		this.applicationState = applicationState;
 		
 		player.addPropertyChangeListener(nl.iljabooij.garmintrainer.model.Player.Property.PLAYING, 

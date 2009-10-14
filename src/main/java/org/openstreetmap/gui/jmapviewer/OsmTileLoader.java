@@ -28,10 +28,10 @@ public class OsmTileLoader implements TileLoader {
 
     protected TileLoaderListener listener;
 
-    public OsmTileLoader(TileLoaderListener listener) {
-        this.listener = listener;
+    public void setTileLoaderListener(final TileLoaderListener listener) {
+    	this.listener = listener;
     }
-
+    
     public Runnable createTileLoaderJob(final TileSource source, final int tilex, final int tiley, final int zoom) {
         return new Runnable() {
 
@@ -87,5 +87,4 @@ public class OsmTileLoader implements TileLoader {
     public String toString() {
         return getClass().getSimpleName();
     }
-
 }

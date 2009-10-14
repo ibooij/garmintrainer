@@ -5,6 +5,8 @@ import org.openstreetmap.gui.jmapviewer.interfaces.TileLoader;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 
+import com.google.inject.Inject;
+
 public class TileController {
     protected TileLoader tileLoader;
     protected TileCache tileCache;
@@ -12,13 +14,18 @@ public class TileController {
     
     JobDispatcher jobDispatcher;
     
-    public TileController(TileSource source, TileCache tileCache, TileLoaderListener listener) {
-        tileSource = new OsmTileSource.Mapnik();
-        tileLoader = new OsmTileLoader(listener);
+    @Inject
+    public TileController(final TileSource tileSource, final TileLoader tileLoader,
+    		final TileCache tileCache, final JobDispatcher jobDispatcher) {
+        this.tileSource = tileSource;
+        this.tileLoader = tileLoader;
         this.tileCache = tileCache;
-        jobDispatcher = JobDispatcher.getInstance();
+        this.jobDispatcher = jobDispatcher;
     }
     
+    public void setTileLoaderListener(final TileLoaderListener listener) {
+    	tileLoader.setTileLoaderListener(listener);
+    }
     /**
      * retrieves a tile from the cache. If the tile is not present in the cache
      * a load job is added to the working queue of {@link JobThread}.

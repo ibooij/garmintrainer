@@ -9,7 +9,6 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -22,9 +21,10 @@ import javax.swing.event.ChangeListener;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapSquare;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
-import org.openstreetmap.gui.jmapviewer.interfaces.TileLoader;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
+
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -41,18 +41,18 @@ public class JMapViewer extends JPanel implements TileLoaderListener {
     /**
      * Vectors for clock-wise tile painting
      */
-    protected static final Point[] move = { new Point(1, 0), new Point(0, 1), new Point(-1, 0), new Point(0, -1) };
+    protected static final Point[] MOVE = { new Point(1, 0), new Point(0, 1), new Point(-1, 0), new Point(0, -1) };
 
     public static final int MAX_ZOOM = 22;
     public static final int MIN_ZOOM = 0;
 
-    protected List<MapMarker> mapMarkerList;
-    protected List<MapSquare> mapSquareList;
+    protected List<MapMarker> mapMarkerList = Lists.newLinkedList();
+    protected List<MapSquare> mapSquareList = Lists.newLinkedList();
 
-    protected boolean mapMarkersVisible;
-    protected boolean mapSquaresVisible;
-
-    protected boolean tileGridVisible;
+    protected boolean mapMarkersVisible = true;
+    protected boolean mapSquaresVisible = true;
+    
+    protected boolean tileGridVisible = false;
     
     protected TileController tileController; 
 
@@ -71,30 +71,15 @@ public class JMapViewer extends JPanel implements TileLoaderListener {
     protected JButton zoomInButton;
     protected JButton zoomOutButton;
 
-    
-
-    /**
-     * Creates a standard {@link JMapViewer} instance that can be controlled via
-     * mouse: hold right mouse button for moving, double click left mouse button
-     * or use mouse wheel for zooming. Loaded tiles are stored the
-     * {@link MemoryTileCache} and the tile loader uses 4 parallel threads for
-     * retrieving the tiles.
-     */
-    public JMapViewer() {
-        this(new MemoryTileCache(), 4);
-        new DefaultMapController(this);
-    }
-
-    public JMapViewer(TileCache tileCache, int downloadThreadCount) {
+    public JMapViewer(final TileController tileController) {
         super();
-        tileController = new TileController(new OsmTileSource.Mapnik(), tileCache, this);
-        mapMarkerList = new LinkedList<MapMarker>();
-        mapSquareList = new LinkedList<MapSquare>();
-        mapMarkersVisible = true;
-        mapSquaresVisible = true;
-        tileGridVisible = false;
+        
+        this.tileController = tileController;
+        tileController.setTileLoaderListener(this);
+        
         setLayout(null);
         initializeZoomSlider();
+        
         setMinimumSize(new Dimension(Tile.SIZE, Tile.SIZE));
         setPreferredSize(new Dimension(400, 400));
         setDisplayPositionByLatLon(50, 9, 3);
@@ -232,9 +217,7 @@ public class JMapViewer extends JPanel implements TileLoaderListener {
         }
         int height = Math.max(0, getHeight());
         int width = Math.max(0, getWidth());
-        // System.out.println(x_min + " < x < " + x_max);
-        // System.out.println(y_min + " < y < " + y_max);
-        // System.out.println("tiles: " + width + " " + height);
+        
         int newZoom = mapZoomMax;
         int x = x_max - x_min;
         int y = y_max - y_min;
@@ -434,13 +417,13 @@ public class JMapViewer extends JPanel implements TileLoaderListener {
                                 g.drawRect(posx, posy, Tile.SIZE, Tile.SIZE);
                         }
                     }
-                    Point p = move[iMove];
+                    Point p = MOVE[iMove];
                     posx += p.x * Tile.SIZE;
                     posy += p.y * Tile.SIZE;
                     tilex += p.x;
                     tiley += p.y;
                 }
-                iMove = (iMove + 1) % move.length;
+                iMove = (iMove + 1) % MOVE.length;
             }
         }
         // outer border of the map
@@ -619,20 +602,6 @@ public class JMapViewer extends JPanel implements TileLoaderListener {
         return zoomSlider.isVisible();
     }
 
-    public void setTileSource(TileSource tileSource) {
-        if (tileSource.getMaxZoom() > MAX_ZOOM)
-            throw new RuntimeException("Maximum zoom level too high");
-        if (tileSource.getMinZoom() < MIN_ZOOM)
-            throw new RuntimeException("Minumim zoom level too low");
-        tileController.setTileSource(tileSource);
-        zoomSlider.setMinimum(tileSource.getMinZoom());
-        zoomSlider.setMaximum(tileSource.getMaxZoom());
-        tileController.cancelOutstandingJobs();
-        if (zoom > tileSource.getMaxZoom())
-            setZoom(tileSource.getMaxZoom());
-        repaint();
-    }
-
     public void tileLoadingFinished(Tile tile, boolean success) {
         repaint();
     }
@@ -653,14 +622,7 @@ public class JMapViewer extends JPanel implements TileLoaderListener {
         repaint();
     }
 
-    /* (non-Javadoc)
-     * @see org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener#getTileCache()
-     */
     public TileCache getTileCache() {
         return tileController.getTileCache();
-    }
-
-    public void setTileLoader(TileLoader loader) {
-        tileController.setTileLoader(loader);
     }
 }
