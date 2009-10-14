@@ -39,8 +39,7 @@ import nl.iljabooij.garmintrainer.model.TrackPoint;
 import nl.iljabooij.garmintrainer.model.ApplicationState.Property;
 
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
-import org.openstreetmap.gui.jmapviewer.OsmFileCacheTileLoader;
-import org.openstreetmap.gui.jmapviewer.OsmTileSource;
+import org.openstreetmap.gui.jmapviewer.TileController;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 
 import com.google.common.collect.Lists;
@@ -64,11 +63,11 @@ public class MapViewer extends JMapViewer {
 	 * @param applicationState the global application state.
 	 */
 	@Inject
-	public MapViewer(final ApplicationState applicationState) {
-		super();
+	public MapViewer(final ApplicationState applicationState,
+			final TileController tileController) {
+		super(tileController);
 		setName("Map");
 
-		setTileSource(new OsmTileSource.Mapnik());
 		this.applicationState = applicationState;
 		this.applicationState.addPropertyChangeListener(
 				Property.CurrentActivity, new PropertyChangeListener() {
@@ -77,8 +76,6 @@ public class MapViewer extends JMapViewer {
 						changeMarkers();
 					}
 				});
-		
-		setTileLoader(new OsmFileCacheTileLoader(this, CACHE_DIR));
 	}
 	
 	/**

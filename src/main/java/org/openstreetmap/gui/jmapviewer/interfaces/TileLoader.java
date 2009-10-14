@@ -9,7 +9,12 @@ package org.openstreetmap.gui.jmapviewer.interfaces;
  * @author Jan Peter Stotz
  */
 public interface TileLoader {
-
+	/**
+	 * Set the listener which will be notified of jobs being finished.
+	 * @param listener the listener to set.
+	 */
+	void setTileLoaderListener(TileLoaderListener listener);
+	
     /**
      * A typical {@link #createTileLoaderJob(int, int, int)} implementation
      * should create and return a new {@link Job} instance that performs the
@@ -22,5 +27,5 @@ public interface TileLoader {
      * @returns {@link Runnable} implementation that performs the desired load
      *          action.
      */
-    public Runnable createTileLoaderJob(TileSource tileLayerSource, int tilex, int tiley, int zoom);
+    Runnable createTileLoaderJob(TileSource tileLayerSource, int tilex, int tiley, int zoom);
 }
