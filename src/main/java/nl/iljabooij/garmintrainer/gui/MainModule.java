@@ -68,7 +68,7 @@ class MainModule implements Module {
 		binder.bind(TcxParser.class).to(CommonsDigesterTcxParser.class);
 		
 		// for map component
-		binder.bind(TileSource.class).to(OsmTileSource.Mapnik.class);
+		binder.bind(TileSource.class).to(OsmTileSource.CycleMap.class);
 		binder.bind(TileCache.class).to(MemoryTileCache.class);
 		binder.bind(TileLoader.class).to(OsmTileLoader.class);
 	}
