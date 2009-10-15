@@ -10,6 +10,7 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 
 /**
@@ -25,7 +26,6 @@ public class Tile {
     private int ytile;
     private int zoom;
     private BufferedImage image = null;
-    private String key;
     public static final int SIZE = 256;
 
     /**
@@ -42,7 +42,6 @@ public class Tile {
         this.xtile = xtile;
         this.ytile = ytile;
         this.zoom = zoom;
-        this.key = getTileKey(source, xtile, ytile, zoom);
     }
 
     public TileSource getSource() {
@@ -82,13 +81,6 @@ public class Tile {
         image = ImageIO.read(input);
     }
 
-    /**
-     * @return key that identifies a tile
-     */
-    public String getKey() {
-        return key;
-    }
-
     public String getUrl() {
         return source.getTileUrl(zoom, xtile, ytile);
     }
@@ -111,7 +103,12 @@ public class Tile {
 
     @Override
     public String toString() {
-        return "Tile " + key;
+    	return new ToStringBuilder(this)
+    		.append("x", xtile)
+    		.append("y", ytile)
+    		.append("zoom", zoom)
+    		.append("source", source)
+    		.toString();
     }
 
     /**
@@ -138,9 +135,4 @@ public class Tile {
     		.append(zoom)
     		.toHashCode();
     }
-
-    public static String getTileKey(TileSource source, int xtile, int ytile, int zoom) {
-        return zoom + "/" + xtile + "/" + ytile + "@" + source.getName();
-    }
-
 }

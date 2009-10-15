@@ -8,7 +8,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
-import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 
 /**
  * {@link TileCache} implementation that stores all {@link Tile} objects in
@@ -23,59 +22,29 @@ public class MemoryTileCache implements TileCache {
 	 */
 	private static final int CACHE_SIZE = 200;
 
-	private final Map<String, CacheEntry> cache;
+	private final Map<Tile, Tile> cache;
 
 	MemoryTileCache() {
-		Map<String, CacheEntry> unsynchronizedCache = new LinkedHashMap<String, CacheEntry>(
+		Map<Tile,Tile> unsynchronizedCache = new LinkedHashMap<Tile,Tile>(
 				CACHE_SIZE, 0.75f, true) {
 			private static final long serialVersionUID = 1L;
-			protected boolean removeEldestEntry(Map.Entry<String, CacheEntry> entry) {
+			protected boolean removeEldestEntry(Map.Entry<Tile, Tile> entry) {
 		        return size() > CACHE_SIZE;
 			}
 		};
 		cache = Collections.synchronizedMap(unsynchronizedCache);
 	}
 
+	@Override
 	public void addTile(Tile tile) {
-		CacheEntry entry = createCacheEntry(tile);
-		cache.put(tile.getKey(), entry);
+		cache.put(tile, tile);
 	}
 
-	public Tile getTile(TileSource source, int x, int y, int z) {
-		CacheEntry entry = cache.get(Tile.getTileKey(source, x, y, z));
+	@Override
+	public Tile getTile(final Tile tile) {
+		Tile entry = cache.get(tile);
 		if (entry == null)
 			return null;
-		return entry.getTile();
-	}
-
-	protected CacheEntry createCacheEntry(Tile tile) {
-		return new CacheEntry(tile);
-	}
-
-	/**
-	 * Clears the cache deleting all tiles from memory
-	 */
-	public void clear() {
-		cache.clear();
-	}
-
-	public int getTileCount() {
-		return cache.size();
-	}
-
-	/**
-	 * Linked list element holding the {@link Tile} and links to the
-	 * {@link #next} and {@link #prev} item in the list.
-	 */
-	private static class CacheEntry {
-		private Tile tile;
-
-		protected CacheEntry(Tile tile) {
-			this.tile = tile;
-		}
-
-		public Tile getTile() {
-			return tile;
-		}
+		return entry;
 	}
 }

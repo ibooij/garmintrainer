@@ -8,10 +8,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import nl.iljabooij.garmintrainer.util.InjectLogger;
 
-import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
+import org.openstreetmap.gui.jmapviewer.filecache.DiskCache;
+import org.openstreetmap.gui.jmapviewer.filecache.DiskCacheItem;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileLoader;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener;
 import org.slf4j.Logger;
@@ -28,10 +31,13 @@ public class OsmTileLoader implements TileLoader {
 	Logger logger;
 
 	private final JobDispatcher jobDispatcher;
-	
-	private final ConcurrentMap<Tile, TileLoaderListener> loadingTiles =
-		new ConcurrentHashMap<Tile, TileLoaderListener>();
-	
+	private final ExecutorService diskLoadExecutor = Executors
+			.newSingleThreadExecutor();
+
+	private final ConcurrentMap<Tile, TileLoaderListener> loadingTiles = new ConcurrentHashMap<Tile, TileLoaderListener>();
+
+	private final DiskCache diskCache;
+
 	/**
 	 * Holds the used user agent used for HTTP requests. If this field is
 	 * <code>null</code>, the default Java user agent is used.
@@ -40,8 +46,9 @@ public class OsmTileLoader implements TileLoader {
 	private static final String ACCEPT_HEADER = "text/html, image/png, image/jpeg, image/gif, */*";
 
 	@Inject
-	OsmTileLoader(final JobDispatcher jobDispatcher, final TileCache tileCache) {
+	OsmTileLoader(final JobDispatcher jobDispatcher, final DiskCache diskCache) {
 		this.jobDispatcher = jobDispatcher;
+		this.diskCache = diskCache;
 	}
 
 	/**
@@ -65,13 +72,12 @@ public class OsmTileLoader implements TileLoader {
 							.getUrl());
 					input = loadTileFromOsm(tile);
 					tile.loadImage(input);
-					tileLoadingFinished(tile, true);
 					input.close();
+					loadedFromNetwork(tile);
 				} catch (Exception e) {
-					tileLoadingFinished(tile, false);
+					loadingFromDiskFailed(tile);
 					logger.error("failed loading " + tile.getZoom() + "/"
-							+ tile.getXtile() + "/" + tile.getYtile() + " "
-							+ e.getMessage());
+							+ tile.getXtile() + "/" + tile.getYtile(), e);
 				} finally {
 					loadingTiles.remove(tile);
 				}
@@ -79,7 +85,7 @@ public class OsmTileLoader implements TileLoader {
 
 		};
 	}
-	
+
 	private InputStream loadTileFromOsm(Tile tile) throws IOException {
 		URL url;
 		url = new URL(tile.getUrl());
@@ -88,6 +94,21 @@ public class OsmTileLoader implements TileLoader {
 		urlConn.setRequestProperty("USER_AGENT", USER_AGENT);
 		urlConn.setReadTimeout(30000); // 30 seconds read timeout
 		return urlConn.getInputStream();
+	}
+
+	private void loadFromDisk(final Tile template) {
+		Runnable loadFromDiskRunnable = new Runnable() {
+			@Override
+			public void run() {
+				DiskCacheItem diskCacheItem = diskCache.getEntry(template);
+				if (diskCacheItem.tileLoaded()) {
+					loadedFromDisk(diskCacheItem.getTile());
+				} else {
+					loadingFromDiskFailed(template);
+				}
+			}
+		};
+		diskLoadExecutor.execute(loadFromDiskRunnable);
 	}
 
 	@Override
@@ -101,15 +122,32 @@ public class OsmTileLoader implements TileLoader {
 	@Override
 	public void loadTile(Tile tile, TileLoaderListener tileLoaderListener) {
 		if (loadingTiles.putIfAbsent(tile, tileLoaderListener) == null) {
-			jobDispatcher.addJob(createTileLoaderJob(tile));
+			loadFromDisk(tile);
 		}
+	}
+
+	private void loadedFromDisk(final Tile tile) {
+		tileLoadingFinished(tile, true);
+	}
+
+	private void loadingFromDiskFailed(final Tile template) {
+		jobDispatcher.addJob(createTileLoaderJob(template));
+	}
+
+	private void loadedFromNetwork(final Tile tile) {
+		diskCache.addTile(tile, null);
+		tileLoadingFinished(tile, true);
+	}
+
+	private void loadingFromNetworkFailed(final Tile tile) {
+		tileLoadingFinished(tile, false);
 	}
 
 	private void tileLoadingFinished(final Tile tile, boolean success) {
 		final TileLoaderListener listener = loadingTiles.remove(tile);
 		listener.tileLoadingFinished(tile, success);
 	}
-	
+
 	@Override
 	public void cancelDownloads() {
 		jobDispatcher.cancelOutstandingJobs();

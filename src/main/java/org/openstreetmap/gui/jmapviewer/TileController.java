@@ -11,17 +11,15 @@ public class TileController implements TileLoaderListener {
     private final TileLoader tileLoader;
     private final TileCache tileCache;
     private final TileSource tileSource;
-    private final JobDispatcher jobDispatcher;
     
     private TileLoaderListener listener;
     
     @Inject
     public TileController(final TileSource tileSource, final TileLoader tileLoader,
-    		final TileCache tileCache, final JobDispatcher jobDispatcher) {
+    		final TileCache tileCache) {
         this.tileSource = tileSource;
         this.tileLoader = tileLoader;
         this.tileCache = tileCache;
-        this.jobDispatcher = jobDispatcher;
     }
     
     public void setTileLoaderListener(final TileLoaderListener listener) {
@@ -45,14 +43,14 @@ public class TileController implements TileLoaderListener {
             return null;
         
         // try to get the tile from cache
-        Tile tile = tileCache.getTile(tileSource, tilex, tiley, zoom);
+        Tile template = new Tile(tileSource, tilex, tiley, zoom);
+        Tile tile = tileCache.getTile(template);
         if (tile != null) {
         	return tile;
         }
         
         // tile needs to be loaded. 
-        tile = new Tile(tileSource, tilex, tiley, zoom);
-        tileLoader.loadTile(tile, this);
+        tileLoader.loadTile(template, this);
         
         return null;
     }
