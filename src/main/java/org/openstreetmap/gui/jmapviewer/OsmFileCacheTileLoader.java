@@ -16,8 +16,10 @@ import java.nio.charset.Charset;
 
 import nl.iljabooij.garmintrainer.util.InjectLogger;
 
+import org.joda.time.Duration;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileLoader;
+import org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileSource.TileUpdate;
 import org.slf4j.Logger;
@@ -42,8 +44,8 @@ public class OsmFileCacheTileLoader extends OsmTileLoader {
 
 	private static final Charset ETAG_CHARSET = Charset.forName("UTF-8");
 
-	public static final long FILE_AGE_ONE_DAY = 1000 * 60 * 60 * 24;
-	public static final long FILE_AGE_ONE_WEEK = FILE_AGE_ONE_DAY * 7;
+	public static final long FILE_AGE_ONE_DAY = Duration.standardDays(1).getMillis();
+	public static final long FILE_AGE_ONE_WEEK = Duration.standardDays(7).getMillis();
 
 	protected String cacheDirBase;
 
@@ -61,8 +63,9 @@ public class OsmFileCacheTileLoader extends OsmTileLoader {
 	@Inject
 	public OsmFileCacheTileLoader(final JobDispatcher jobDispatcher)
 			throws SecurityException {
-		super();
+		super(jobDispatcher);
 		this.jobDispatcher = jobDispatcher;
+		
 		String tempDir = null;
 		String userName = System.getProperty("user.name");
 
@@ -86,6 +89,13 @@ public class OsmFileCacheTileLoader extends OsmTileLoader {
 			cacheDirBase = "tiles";
 		}
 	}
+
+	
+	@Override
+	public void loadTile(Tile tile, TileLoaderListener tileLoaderListener) {
+		super.loadTile(tile, tileLoaderListener);
+	}
+
 
 	@Override
 	public Runnable createTileLoaderJob(final TileSource source,

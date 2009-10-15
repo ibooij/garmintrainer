@@ -15,19 +15,14 @@ public interface TileCache {
 
     /**
      * Retrieves a tile from the cache if present, otherwise <code>null</code>
-     * will be returned.
+     * will be returned. The template is used to match the tiles in the cache. If
+     * a tile in cache is equal to the template, this tile is returned.
      * 
-     * @param source
-     * @param x
-     *            tile number on the x axis of the tile to be retrieved
-     * @param y
-     *            tile number on the y axis of the tile to be retrieved
-     * @param z
-     *            zoom level of the tile to be retrieved
+     * @param template template tile. 
      * @return the requested tile or <code>null</code> if the tile is not
      *         present in the cache
      */
-    public Tile getTile(TileSource source, int x, int y, int z);
+    public Tile getTile(Tile template);
 
     /**
      * Adds a tile to the cache. How long after adding a tile can be retrieved
@@ -37,9 +32,4 @@ public interface TileCache {
      * @param tile
      */
     public void addTile(Tile tile);
-
-    /**
-     * @return the number of tiles hold by the cache
-     */
-    public int getTileCount();
 }
