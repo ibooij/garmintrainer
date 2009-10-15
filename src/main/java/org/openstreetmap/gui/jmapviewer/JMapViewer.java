@@ -20,7 +20,6 @@ import javax.swing.event.ChangeListener;
 
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapSquare;
-import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 
@@ -620,9 +619,5 @@ public class JMapViewer extends JPanel implements TileLoaderListener {
     public void setMapSquaresVisible(boolean mapSquaresVisible) {
         this.mapSquaresVisible = mapSquaresVisible;
         repaint();
-    }
-
-    public TileCache getTileCache() {
-        return tileController.getTileCache();
     }
 }

@@ -7,12 +7,13 @@ import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 
 import com.google.inject.Inject;
 
-public class TileController {
-    protected TileLoader tileLoader;
-    protected TileCache tileCache;
-    protected TileSource tileSource;
+public class TileController implements TileLoaderListener {
+    private final TileLoader tileLoader;
+    private final TileCache tileCache;
+    private final TileSource tileSource;
+    private final JobDispatcher jobDispatcher;
     
-    JobDispatcher jobDispatcher;
+    private TileLoaderListener listener;
     
     @Inject
     public TileController(final TileSource tileSource, final TileLoader tileLoader,
@@ -24,7 +25,7 @@ public class TileController {
     }
     
     public void setTileLoaderListener(final TileLoaderListener listener) {
-    	tileLoader.setTileLoaderListener(listener);
+    	this.listener = listener;
     }
     /**
      * retrieves a tile from the cache. If the tile is not present in the cache
@@ -38,52 +39,38 @@ public class TileController {
      */
     public Tile getTile(int tilex, int tiley, int zoom) {
         int max = (1 << zoom);
+        
+        // if illegal tile, just return null
         if (tilex < 0 || tilex >= max || tiley < 0 || tiley >= max)
             return null;
+        
+        // try to get the tile from cache
         Tile tile = tileCache.getTile(tileSource, tilex, tiley, zoom);
-        if (tile == null) {
-            tile = new Tile(tileSource, tilex, tiley, zoom);
-            tileCache.addTile(tile);
-            tile.loadPlaceholderFromCache(tileCache);
+        if (tile != null) {
+        	return tile;
         }
-        if (!tile.isLoaded()) {
-            jobDispatcher.addJob(tileLoader.createTileLoaderJob(tileSource, tilex, tiley, zoom));
-        }
-        return tile;
-    }
-
-    public TileCache getTileCache() {
-        return tileCache;
-    }
-
-    public void setTileCache(TileCache tileCache) {
-        this.tileCache = tileCache;
-    }
-
-    public TileLoader getTileLoader() {
-        return tileLoader;
-    }
-
-    public void setTileLoader(TileLoader tileLoader) {
-        this.tileLoader = tileLoader;
-    }
-
-    public TileSource getTileLayerSource() {
-        return tileSource;
+        
+        // tile needs to be loaded. 
+        tile = new Tile(tileSource, tilex, tiley, zoom);
+        tileLoader.loadTile(tile, this);
+        
+        return null;
     }
 
     public TileSource getTileSource() {
         return tileSource;
     }
 
-    public void setTileSource(TileSource tileSource) {
-        this.tileSource = tileSource;
-    }
-
     /**
      * 
      */
     public void cancelOutstandingJobs() {
-        jobDispatcher.cancelOutstandingJobs();
+    	tileLoader.cancelDownloads();
     }
+
+	@Override
+	public void tileLoadingFinished(Tile tile, boolean success) {
+		tileCache.addTile(tile);
+		listener.tileLoadingFinished(tile, success);
+	}
 }
