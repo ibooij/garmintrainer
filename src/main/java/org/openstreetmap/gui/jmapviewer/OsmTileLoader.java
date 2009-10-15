@@ -6,11 +6,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+import nl.iljabooij.garmintrainer.util.InjectLogger;
 
 import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileLoader;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener;
-import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
+import org.slf4j.Logger;
+
+import com.google.inject.Inject;
 
 /**
  * A {@link TileLoader} implementation that loads tiles from OSM via HTTP.
@@ -18,73 +24,95 @@ import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
  * @author Jan Peter Stotz
  */
 public class OsmTileLoader implements TileLoader {
+	@InjectLogger
+	Logger logger;
 
-    /**
-     * Holds the used user agent used for HTTP requests. If this field is 
-     * <code>null</code>, the default Java user agent is used.
-     */
-    public static String USER_AGENT = null;
-    public static String ACCEPT = "text/html, image/png, image/jpeg, image/gif, */*";
+	private final JobDispatcher jobDispatcher;
+	
+	private final ConcurrentMap<Tile, TileLoaderListener> loadingTiles =
+		new ConcurrentHashMap<Tile, TileLoaderListener>();
+	
+	/**
+	 * Holds the used user agent used for HTTP requests. If this field is
+	 * <code>null</code>, the default Java user agent is used.
+	 */
+	private static final String USER_AGENT = "GarminTrainer";
+	private static final String ACCEPT_HEADER = "text/html, image/png, image/jpeg, image/gif, */*";
 
-    protected TileLoaderListener listener;
+	@Inject
+	OsmTileLoader(final JobDispatcher jobDispatcher, final TileCache tileCache) {
+		this.jobDispatcher = jobDispatcher;
+	}
 
-    public void setTileLoaderListener(final TileLoaderListener listener) {
-    	this.listener = listener;
-    }
-    
-    public Runnable createTileLoaderJob(final TileSource source, final int tilex, final int tiley, final int zoom) {
-        return new Runnable() {
+	/**
+	 * Creates a new Job that will attempt to download a tile from an OSM
+	 * server.
+	 * 
+	 * @param tile
+	 *            tile to load.
+	 * @param listener
+	 *            listener to notify when tile is loaded
+	 * @return a Runnable that can be executed.
+	 */
+	private Runnable createTileLoaderJob(final Tile tile) {
+		return new Runnable() {
 
-            InputStream input = null;
+			InputStream input = null;
 
-            public void run() {
-                TileCache cache = listener.getTileCache();
-                Tile tile;
-                synchronized (cache) {
-                    tile = cache.getTile(source, tilex, tiley, zoom);
-                    if (tile == null || tile.isLoaded() || tile.loading)
-                        return;
-                    tile.loading = true;
-                }
-                try {
-                    // Thread.sleep(500);
-                    input = loadTileFromOsm(tile).getInputStream();
-                    tile.loadImage(input);
-                    tile.setLoaded(true);
-                    listener.tileLoadingFinished(tile, true);
-                    input.close();
-                    input = null;
-                } catch (Exception e) {
-                    tile.setImage(Tile.ERROR_IMAGE);
-                    listener.tileLoadingFinished(tile, false);
-                    if (input == null)
-                        System.err.println("failed loading " + zoom + "/" + tilex + "/" + tiley + " " + e.getMessage());
-                } finally {
-                    tile.loading = false;
-                    tile.setLoaded(true);
-                }
-            }
+			public void run() {
+				try {
+					logger.debug("Attempting to download tile from {}", tile
+							.getUrl());
+					input = loadTileFromOsm(tile);
+					tile.loadImage(input);
+					tileLoadingFinished(tile, true);
+					input.close();
+				} catch (Exception e) {
+					tileLoadingFinished(tile, false);
+					logger.error("failed loading " + tile.getZoom() + "/"
+							+ tile.getXtile() + "/" + tile.getYtile() + " "
+							+ e.getMessage());
+				} finally {
+					loadingTiles.remove(tile);
+				}
+			}
 
-        };
-    }
+		};
+	}
+	
+	private InputStream loadTileFromOsm(Tile tile) throws IOException {
+		URL url;
+		url = new URL(tile.getUrl());
+		HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+		urlConn.setRequestProperty("Accept", ACCEPT_HEADER);
+		urlConn.setRequestProperty("USER_AGENT", USER_AGENT);
+		urlConn.setReadTimeout(30000); // 30 seconds read timeout
+		return urlConn.getInputStream();
+	}
 
-    protected HttpURLConnection loadTileFromOsm(Tile tile) throws IOException {
-        URL url;
-        url = new URL(tile.getUrl());
-        HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
-        prepareHttpUrlConnection(urlConn);
-        urlConn.setReadTimeout(30000); // 30 seconds read timeout
-        return urlConn;
-    }
+	@Override
+	public String toString() {
+		return getClass().getSimpleName();
+	}
 
-    protected void prepareHttpUrlConnection(HttpURLConnection urlConn) {
-        if (USER_AGENT != null)
-            urlConn.setRequestProperty("User-agent", USER_AGENT);
-        urlConn.setRequestProperty("Accept", ACCEPT);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void loadTile(Tile tile, TileLoaderListener tileLoaderListener) {
+		if (loadingTiles.putIfAbsent(tile, tileLoaderListener) == null) {
+			jobDispatcher.addJob(createTileLoaderJob(tile));
+		}
+	}
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
+	private void tileLoadingFinished(final Tile tile, boolean success) {
+		final TileLoaderListener listener = loadingTiles.remove(tile);
+		listener.tileLoadingFinished(tile, success);
+	}
+	
+	@Override
+	public void cancelDownloads() {
+		jobDispatcher.cancelOutstandingJobs();
+		loadingTiles.clear();
+	}
 }

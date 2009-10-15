@@ -1,5 +1,7 @@
 package org.openstreetmap.gui.jmapviewer.interfaces;
 
+import org.openstreetmap.gui.jmapviewer.Tile;
+
 //License: GPL. Copyright 2008 by Jan Peter Stotz
 
 /**
@@ -9,23 +11,17 @@ package org.openstreetmap.gui.jmapviewer.interfaces;
  * @author Jan Peter Stotz
  */
 public interface TileLoader {
-	/**
-	 * Set the listener which will be notified of jobs being finished.
-	 * @param listener the listener to set.
-	 */
-	void setTileLoaderListener(TileLoaderListener listener);
-	
     /**
-     * A typical {@link #createTileLoaderJob(int, int, int)} implementation
-     * should create and return a new {@link Job} instance that performs the
-     * load action.
+     * Load a tile. 
      * 
-     * @param tileLayerSource
-     * @param tilex
-     * @param tiley
-     * @param zoom
-     * @returns {@link Runnable} implementation that performs the desired load
-     *          action.
+     * @param tile tile to load
+     * @param tileLoaderListener object that will be notified when tile is loaded
      */
-    Runnable createTileLoaderJob(TileSource tileLayerSource, int tilex, int tiley, int zoom);
+    void loadTile(Tile tile,
+    		TileLoaderListener tileLoaderListener);
+    
+    /**
+     * Cancel all current downloads.
+     */
+    void cancelDownloads();
 }

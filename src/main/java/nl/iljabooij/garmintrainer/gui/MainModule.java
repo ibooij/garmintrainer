@@ -70,7 +70,7 @@ class MainModule implements Module {
 		// for map component
 		binder.bind(TileSource.class).to(OsmTileSource.Mapnik.class);
 		binder.bind(TileCache.class).to(MemoryTileCache.class);
-		binder.bind(TileLoader.class).to(OsmFileCacheTileLoader.class);
+		binder.bind(TileLoader.class).to(OsmTileLoader.class);
 	}
 
 	@Provides
