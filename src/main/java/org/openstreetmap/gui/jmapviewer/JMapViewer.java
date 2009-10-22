@@ -409,8 +409,8 @@ public class JMapViewer extends JPanel implements TileLoaderListener {
 
 		tileController.cancelOutstandingJobs(); // Clearing outstanding load
 
-		int xDiff = (getWidth() / 2) - mapPoint.x;
-		int yDiff = (getHeight() / 2) - mapPoint.y;
+		int xDiff = mapPoint.x - (getWidth() / 2);
+		int yDiff = mapPoint.y - (getHeight() / 2);
 
 		moveMap(xDiff, yDiff);
 
