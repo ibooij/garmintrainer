@@ -236,7 +236,7 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable,
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder(HASH_CODE_SEEDS[0], HASH_CODE_SEEDS[1])
-				.append(startTime).append(true).toHashCode();
+				.append(startTime).append(laps).toHashCode();
 	}
 
 	/** {@inheritDoc} */

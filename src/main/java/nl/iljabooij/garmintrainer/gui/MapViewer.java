@@ -149,9 +149,9 @@ public class MapViewer extends JMapViewer {
 			public void run() {
 				// we don't want to show the markers, just use them to set the
 				// region of the map that we want to show.
-				setMapMarkerVisible(false);
-				setMapMarkerList(markers);
-				setDisplayToFitMapMarkers();
+				//setMapMarkerVisible(false);
+				//setMapMarkerList(markers);
+				//setDisplayToFitMapMarkers();
 				repaint();
 			}
 		});

@@ -49,8 +49,7 @@ public class AnimatingMapViewer extends MapViewer {
 			if (currentTrackPoint != null) {
 				setDisplayPositionByLatLon(
 						currentTrackPoint.getLatitude(),
-						currentTrackPoint.getLongitude(),
-						getZoom());
+						currentTrackPoint.getLongitude());
 			}
 			repaint();
 		}
