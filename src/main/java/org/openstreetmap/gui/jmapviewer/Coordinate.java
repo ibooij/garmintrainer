@@ -4,8 +4,6 @@ package org.openstreetmap.gui.jmapviewer;
 
 import java.awt.geom.Point2D;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * This class encapsulates a Point2D.Double and provide access
@@ -15,6 +13,11 @@ import java.util.Comparator;
  * 
  */
 public class Coordinate {
+	private static final double MINIMUM_LATITUDE = -90.0;
+	private static final double MAXIMUM_LATITUDE = 90.0;
+	private static final double MINIMUM_LONGITUDE = -180.0;
+	private static final double MAXIMUM_LONGITUDE = 180.0;
+	
 	private final Point2D.Double data;
 
 	/**
@@ -53,26 +56,18 @@ public class Coordinate {
     }
     
     public static Coordinate[] getBoundingBox(final Collection<Coordinate> coordinates) {
-    	final Comparator<Coordinate> latitudeComparator = new Comparator<Coordinate>() {
-			@Override
-			public int compare(Coordinate o1, Coordinate o2) {
-				// higher latitudes are further north, so we need to negate the value of compare
-				return - Double.compare(o1.getLat(), o2.getLat());
-			}
-		};
-		final Comparator<Coordinate> longitudeComparator = new Comparator<Coordinate>() {
-			@Override
-			public int compare(Coordinate o1, Coordinate o2) {
-				return Double.compare(o1.getLon(), o2.getLon());
-			}
-		};
-
-		// this completely non-optimal, but easy.. (lazy me)
-    	double northWestLatitude = Collections.min(coordinates, latitudeComparator).getLat();
-    	double southEastLatitude = Collections.max(coordinates, latitudeComparator).getLat();
-    	double northWestLongitude = Collections.min(coordinates, longitudeComparator).getLon();
-    	double southEastLongitude = Collections.max(coordinates, longitudeComparator).getLon();
- 
+    	double northWestLatitude = MINIMUM_LATITUDE;
+    	double southEastLatitude = MAXIMUM_LATITUDE;
+    	double northWestLongitude = MAXIMUM_LONGITUDE;
+    	double southEastLongitude = MINIMUM_LONGITUDE;
+    	
+    	for (Coordinate coordinate: coordinates) {
+    		northWestLatitude = Math.max(northWestLatitude, coordinate.getLat());
+    		northWestLongitude = Math.min(northWestLongitude, coordinate.getLon());
+    		southEastLatitude = Math.min(southEastLatitude, coordinate.getLat());
+    		southEastLongitude = Math.max(southEastLongitude, coordinate.getLon());
+    	}
+  
     	final Coordinate northWest = new Coordinate(northWestLatitude, northWestLongitude);
     	final Coordinate southEast = new Coordinate(southEastLatitude, southEastLongitude);
     	

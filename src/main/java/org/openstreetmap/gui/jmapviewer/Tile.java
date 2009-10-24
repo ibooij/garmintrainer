@@ -198,8 +198,8 @@ public class Tile {
         if (image == null)
             return;
         g.drawImage(image, x, y, null);
-        g.drawRect(x, y, SIZE, SIZE);
-        g.drawString(key, x + 10, y + 30);
+  //      g.drawRect(x, y, SIZE, SIZE);
+//        g.drawString(key, x + 10, y + 30);
     }
 
     @Override
