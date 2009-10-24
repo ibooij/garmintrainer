@@ -2,7 +2,6 @@ package org.openstreetmap.gui.jmapviewer;
 
 //License: GPL. Copyright 2008 by Jan Peter Stotz
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -15,7 +14,6 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -484,5 +482,39 @@ public class JMapViewer extends JPanel implements TileLoaderListener {
 
 	public void setTileLoader(TileLoader loader) {
 		tileController.setTileLoader(loader);
+	}
+
+	/**
+	 * Zoom and place the map to fit an area including northWest and southEast
+	 * coordinate completely.
+	 * 
+	 * @param northWestCoordinate
+	 *            north west corner of the area.
+	 * @param southEastCoordinate
+	 *            south east corner of the area.
+	 */
+	public void zoomToBoundingBox(final Coordinate northWestCoordinate,
+			final Coordinate southEastCoordinate) {
+		final int mapZoomMax = tileController.getTileSource().getMaxZoom();
+
+		final Point northWestPoint = new Point(OsmMercator.LonToX(northWestCoordinate.getLon(), mapZoomMax),
+				OsmMercator.LatToY(northWestCoordinate.getLat(), mapZoomMax));
+		final Point southEastPoint = new Point(OsmMercator.LonToX(southEastCoordinate.getLon(), mapZoomMax),
+				OsmMercator.LatToY(southEastCoordinate.getLat(), mapZoomMax));
+		
+		int areaWidth = southEastPoint.x - northWestPoint.x;
+		int areaHeight = southEastPoint.y - northWestPoint.y;
+		
+		int zoomLevel = mapZoomMax;
+		while(areaWidth > getWidth() || areaHeight > getHeight()) {			
+			zoomLevel--;
+			areaWidth >>= 1;
+			areaHeight >>= 1;
+		}
+			
+		setZoom(zoomLevel);
+		center = northWestCoordinate.getPointBetween(southEastCoordinate);
+		
+		repaint();
 	}
 }
