@@ -128,22 +128,11 @@ public class MapViewer extends JMapViewer {
 				}
 			}
 		}
-
 		final Graphics2D g2d = (Graphics2D) g;
-		Composite originalComposite = g2d.getComposite();
-
-		// use Alpha factor for drawing.
-		int type = AlphaComposite.SRC_OVER;
-		g2d.setComposite(AlphaComposite.getInstance(type, 0.5f));
-
+		g.setColor(new Color(1.0f, 0, 0, 0.5f));
 		g2d.setStroke(new BasicStroke(8, BasicStroke.CAP_ROUND,
 				BasicStroke.JOIN_ROUND));
-
-		g2d.setColor(Color.RED);
 		g2d.draw(path);
-
-		// return to original composite
-		g2d.setComposite(originalComposite);
 	}
 
 	private void zoomMapToActivity(final Object activityObject) {
