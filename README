@@ -1,6 +1,22 @@
 README
 ======
 
+ == Building ==
 
-The Map viewer is taken from http://wiki.openstreetmap.org/wiki/JMapViewer. 
+GarminTrainer uses the Maven build system. Maven gets all dependencies from 
+the maven repository. However, one of the dependencies is not in the main
+repository and has to be installed into the local repository. Do this using 
+the install_extra_libs.sh script.
+ 
+ $ install_extra_libs.sh 
+
+To create a runnable jar of GarminTrainer, run
+
+ $ mvn assembly:assembly
+
+This will create a jar, with all dependencies, in the target/ directory.
+
+ == Code ==
+
+The Map viewer code is taken from http://wiki.openstreetmap.org/wiki/JMapViewer. 
 JMapViewer is based on the map viewer used in JOSM, the Openstreetmap editor.
