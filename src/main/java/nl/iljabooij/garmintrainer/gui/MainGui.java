@@ -33,6 +33,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import org.jvnet.substance.api.skin.SubstanceGraphiteAquaLookAndFeel;
+import org.jvnet.substance.skin.SubstanceAutumnLookAndFeel;
+import org.jvnet.substance.skin.SubstanceBusinessBlackSteelLookAndFeel;
+
 import nl.iljabooij.garmintrainer.model.Activity;
 import nl.iljabooij.garmintrainer.model.ApplicationState;
 import nl.iljabooij.garmintrainer.model.ApplicationState.Property;
@@ -99,15 +103,9 @@ public class MainGui implements PropertyChangeListener {
 
 	private static void createAndShowGui() {
 		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
-		} catch (InstantiationException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			UIManager.setLookAndFeel(new SubstanceBusinessBlackSteelLookAndFeel());
 		} catch (UnsupportedLookAndFeelException e) {
-			throw new RuntimeException(e);
+			// do nothing, continue with default look and feel.
 		}
 		
 		final Module module = new MainModule();
