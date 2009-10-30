@@ -67,8 +67,8 @@ public class Lap implements Serializable {
 	 * Get all track points in the lap
 	 * @return list of all track points.
 	 */
-	public ImmutableList<TrackPointImpl> getTrackPoints() {
-		ImmutableList.Builder<TrackPointImpl> builder = ImmutableList.builder();
+	public ImmutableList<TrackPoint> getTrackPoints() {
+		ImmutableList.Builder<TrackPoint> builder = ImmutableList.builder();
 		for (Track track: tracks) {
 			builder.addAll(track.getTrackPoints());
 		}

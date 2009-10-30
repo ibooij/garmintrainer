@@ -44,6 +44,11 @@ public interface Activity extends Comparable<Activity> {
 	Length getMaximumAltitude();
 
 	/**
+	 * Get the altitude class for this Activity. 
+	 */
+	AltitudeClass getAltitudeClass();
+	
+	/**
 	 * Get minimum altitude of activity.
 	 * @return minimum altitude
 	 */

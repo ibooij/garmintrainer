@@ -22,13 +22,17 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.geom.Path2D;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.JComponent;
 
+import nl.iljabooij.garmintrainer.gui.chart.AltitudeDiagramPainter;
 import nl.iljabooij.garmintrainer.model.Activity;
 import nl.iljabooij.garmintrainer.model.ApplicationState;
 import nl.iljabooij.garmintrainer.model.TrackPoint;
@@ -46,11 +50,15 @@ public class ChartComponent extends JComponent implements PropertyChangeListener
 	@InjectLogger
 	private Logger logger;
 	
+	private final AltitudeDiagramPainter altitudeDiagramPainter;
+	
 	private Activity currentActivity = null;
 	
 	@Inject
-	ChartComponent(final ApplicationState applicationState) {
+	ChartComponent(final ApplicationState applicationState,
+			final AltitudeDiagramPainter altitudeDiagramPainter) {
 		applicationState.addPropertyChangeListener(Property.CurrentActivity, this);
+		this.altitudeDiagramPainter = altitudeDiagramPainter;
 	}
 	
 	@Override
@@ -76,10 +84,9 @@ public class ChartComponent extends JComponent implements PropertyChangeListener
 		if (currentActivity != null) {
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g2d.setStroke(new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-			g2d.translate(0, getHeight());
-			g2d.scale(1.0, -1.0);
+	//		g2d.translate(0, getHeight());
+		//	g2d.scale(1.0, -1.0);
 			drawAltitudeLine(g2d);
-			drawSpeed(g2d);
 		}
 		g2d.dispose();
 	}
@@ -87,59 +94,42 @@ public class ChartComponent extends JComponent implements PropertyChangeListener
 	private void drawAltitudeLine(Graphics2D g2d) {
 		assert (currentActivity != null);
 		
-		final double minAltitude = currentActivity.getMinimumAltitude().getValueInMeters();
-		final double maxAltitude = currentActivity.getMaximumAltitude().getValueInMeters();
+		final BufferedImage graphImage = GraphicsEnvironment
+			.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+			.getDefaultConfiguration().createCompatibleImage(
+			getWidth(), getHeight());
 		
-		final double altitudeOnScreen = maxAltitude - minAltitude;
+		Graphics2D imageGraphics = graphImage.createGraphics();
+		imageGraphics.setBackground(Color.white);
+		imageGraphics.clearRect(0, 0, graphImage.getWidth(), graphImage.getHeight());
 		
-		int durationInSeconds = currentActivity.getGrossDuration().toStandardSeconds().getSeconds();
-		
-		Path2D path = new Path2D.Double();
-		for (TrackPoint trackPoint: currentActivity.getTrackPoints()) {
-			// calculate x-value
-			Duration fromStart = new Duration(currentActivity.getStartTime(), trackPoint.getTime());
-			int fromStartInSeconds = fromStart.toStandardSeconds().getSeconds();
-			double x = getWidth() * ((double) fromStartInSeconds / (double) durationInSeconds);
-			double relativeAltitude = trackPoint.getAltitude().getValueInMeters() - minAltitude;
-			double y = getHeight() * (relativeAltitude / altitudeOnScreen);
-			
-			if (path.getCurrentPoint() == null) {
-				path.moveTo(x, y);
-			} else {
-				path.lineTo(x, y);
-			}
-		}
-		g2d.setColor(Color.black);
-		g2d.draw(path);
+		altitudeDiagramPainter.paintDiagram(currentActivity, graphImage);
+		g2d.drawImage(graphImage, 0, 0, null);
 	}
-	
-	private void drawSpeed(final Graphics2D g2d) {
-		assert(currentActivity != null);
-		
-		final double minSpeed = 0.0;
-		final double maxSpeed = 30.0;
-		
-		final double speedRange = maxSpeed - minSpeed;
-		
-		int durationInSeconds = currentActivity.getGrossDuration().toStandardSeconds().getSeconds();
-		
-		Path2D path = new Path2D.Double();
-		for (TrackPoint trackPoint: currentActivity.getTrackPoints()) {
-			// calculate x-value
-			Duration fromStart = new Duration(currentActivity.getStartTime(), trackPoint.getTime());
-			int fromStartInSeconds = fromStart.toStandardSeconds().getSeconds();
-			double x = getWidth() * ((double) fromStartInSeconds / (double) durationInSeconds);
-			double relativeSpeed = trackPoint.getSpeed().getValueInMetersPerSecond() - minSpeed;
-			double y = getHeight() * (relativeSpeed / speedRange);
-			
-			if (path.getCurrentPoint() == null) {
-				path.moveTo(x, y);
-			} else {
-				path.lineTo(x, y);
-			}
-		}
-		g2d.setStroke(new BasicStroke(1.0f));
-		g2d.setColor(Color.red);
-		g2d.draw(path);
-	}
+//		
+//		final double minAltitude = currentActivity.getMinimumAltitude().getValueInMeters();
+//		final double maxAltitude = currentActivity.getMaximumAltitude().getValueInMeters();
+//		
+//		final double altitudeOnScreen = maxAltitude - minAltitude;
+//		
+//		int durationInSeconds = currentActivity.getGrossDuration().toStandardSeconds().getSeconds();
+//		
+//		Path2D path = new Path2D.Double();
+//		for (TrackPoint trackPoint: currentActivity.getTrackPoints()) {
+//			// calculate x-value
+//			Duration fromStart = new Duration(currentActivity.getStartTime(), trackPoint.getTime());
+//			int fromStartInSeconds = fromStart.toStandardSeconds().getSeconds();
+//			double x = getWidth() * ((double) fromStartInSeconds / (double) durationInSeconds);
+//			double relativeAltitude = trackPoint.getAltitude().getValueInMeters() - minAltitude;
+//			double y = getHeight() * (relativeAltitude / altitudeOnScreen);
+//			
+//			if (path.getCurrentPoint() == null) {
+//				path.moveTo(x, y);
+//			} else {
+//				path.lineTo(x, y);
+//			}
+//		}
+//		g2d.setColor(Color.black);
+//		g2d.draw(path);
+//	}
 }

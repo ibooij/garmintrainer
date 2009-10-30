@@ -53,6 +53,10 @@ public class NonStartTrackPoint extends TrackPointImpl implements Serializable {
 	 */
 	@Override
 	public Length getAltitudeDelta() {
-		return getAltitude().minus(previousMeasuredTrackPoint.getAltitude());
+		if (previousMeasuredTrackPoint.getAltitude() == null) {
+			return Length.createLengthInMeters(0.0);
+		} else {
+			return getAltitude().minus(previousMeasuredTrackPoint.getAltitude());
+		}
 	}
 }

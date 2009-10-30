@@ -86,4 +86,17 @@ public class NonStartTrackPointTest {
 		Length gain = SECOND_ALTITUDE.minus(FIRST_ALTITUDE);
 		assertEquals(gain, nonStartTrackPoint.getAltitudeDelta());
 	}
+	
+	@Test
+	public void testGetAltitudeDeltaWithPreviousNull() {
+		first = mock(MeasuredTrackPoint.class);
+		when(first.getTime()).thenReturn(START_TIME);
+		when(first.getDistance()).thenReturn(Length.createLengthInMeters(0.0));
+		when(first.getAltitude()).thenReturn(null);
+		
+		nonStartTrackPoint = new NonStartTrackPoint(first, second);
+		
+		Length noGain = Length.createLengthInMeters(0.0);
+		assertEquals(noGain, nonStartTrackPoint.getAltitudeDelta());
+	}
 }

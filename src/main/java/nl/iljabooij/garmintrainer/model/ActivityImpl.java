@@ -88,6 +88,13 @@ public final class ActivityImpl implements Comparable<Activity>, Serializable,
 		return Ordering.from(new TrackPoint.AltitudeComparator()).max(
 				getTrackPoints()).getAltitude();
 	}
+	
+	
+	/** {@inheritDoc} */
+	@Override
+	public AltitudeClass getAltitudeClass() {
+		return AltitudeClass.forMaximumAltitude(getMaximumAltitude());
+	}
 
 	/** {@inheritDoc} */
 	public Length getMinimumAltitude() {
