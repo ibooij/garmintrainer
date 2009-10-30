@@ -44,7 +44,7 @@ import com.google.common.collect.Lists;
 public class ActivityImplTest {
 	private ActivityImpl activity;
 	private LinkedList<Lap> laps;
-	private LinkedList<TrackPointImpl> allTrackPoints;
+	private LinkedList<TrackPoint> allTrackPoints;
 	private static final DateTime START_TIME = new DateTime(2009, 9, 17, 14,
 			45, 36, 0);
 
@@ -68,10 +68,10 @@ public class ActivityImplTest {
 			DateTime lapStartTime = START_TIME.plusSeconds(SECONDS_PER_LAP
 					* lapNr);
 			when(lap.getStartTime()).thenReturn(lapStartTime);
-			ImmutableList.Builder<TrackPointImpl> builder = ImmutableList
+			ImmutableList.Builder<TrackPoint> builder = ImmutableList
 					.builder();
 			for (int i = 0; i < distances.length; i++) {
-				TrackPointImpl trackPoint = mock(TrackPointImpl.class);
+				TrackPoint trackPoint = mock(TrackPointImpl.class);
 				Length tpDistance = Length.createLengthInMeters(distances[i]);
 				when(trackPoint.getDistance()).thenReturn(
 						lapStartDistance.plus(tpDistance));
@@ -118,9 +118,9 @@ public class ActivityImplTest {
 			when(lap.getStartTime()).thenReturn(lapStartTime);
 			when(lap.getNetDuration()).thenReturn(netDurationPerLap);
 			// two track points per lap
-			TrackPointImpl tp1 = mock(TrackPointImpl.class);
+			TrackPoint tp1 = mock(TrackPoint.class);
 			when(tp1.getTime()).thenReturn(lapStartTime);
-			TrackPointImpl tp2 = mock(TrackPointImpl.class);
+			TrackPoint tp2 = mock(TrackPoint.class);
 			when(tp2.getTime()).thenReturn(
 					lapStartTime.plus(grossDurationPerLap));
 			when(lap.getTrackPoints()).thenReturn(ImmutableList.of(tp1, tp2));
@@ -186,7 +186,7 @@ public class ActivityImplTest {
 	 */
 	@Test
 	public void testGetTrackPoints() {
-		List<TrackPointImpl> trackPoints = Lists.newArrayList();
+		List<TrackPoint> trackPoints = Lists.newArrayList();
 		for (Lap lap : laps) {
 			trackPoints.addAll(lap.getTrackPoints());
 		}
@@ -201,7 +201,7 @@ public class ActivityImplTest {
 	@Test
 	public void testGetEndTime() {
 		Lap lastLap = laps.getLast();
-		LinkedList<TrackPointImpl> trackPoints = Lists.newLinkedList(lastLap
+		LinkedList<TrackPoint> trackPoints = Lists.newLinkedList(lastLap
 				.getTrackPoints());
 
 		assertEquals(trackPoints.getLast().getTime(), activity.getEndTime());
@@ -244,9 +244,9 @@ public class ActivityImplTest {
 		for (int i = 0; i < laps.length; i++) {
 			laps[i] = mock(Lap.class);
 
-			TrackPointImpl[] trackPoints = new TrackPointImpl[10];
+			TrackPoint[] trackPoints = new TrackPoint[10];
 			for (int j = 0; j < trackPoints.length; j++) {
-				trackPoints[j] = mock(TrackPointImpl.class);
+				trackPoints[j] = mock(TrackPoint.class);
 				if (j < 5) {
 					when(trackPoints[j].getAltitudeDelta()).thenReturn(gain);
 				} else {
@@ -279,7 +279,7 @@ public class ActivityImplTest {
 		for (int i = 0; i < laps.length; i++) {
 			laps[i] = mock(Lap.class);
 
-			TrackPointImpl[] trackPoints = new TrackPointImpl[10];
+			TrackPoint[] trackPoints = new TrackPoint[10];
 			for (int j = 0; j < trackPoints.length; j++) {
 				trackPoints[j] = mock(TrackPointImpl.class);
 				Length delta = (j % 2 == 0) ? gain : loss;
@@ -303,7 +303,7 @@ public class ActivityImplTest {
 		for (int i = 0; i < laps.length; i++) {
 			laps[i] = mock(Lap.class);
 
-			TrackPointImpl[] trackPoints = new TrackPointImpl[altitudes.length];
+			TrackPoint[] trackPoints = new TrackPoint[altitudes.length];
 			for (int j = 0; j < trackPoints.length; j++) {
 				trackPoints[j] = mock(TrackPointImpl.class);
 				when(trackPoints[j].getAltitude()).thenReturn(
@@ -321,6 +321,28 @@ public class ActivityImplTest {
 				.getMinimumAltitude());
 	}
 
+	@Test
+	public void testGetAltitudeClass() {
+		final Length _1meter = Length.createLengthInMeters(1.0);
+		for (AltitudeClass altitudeClass : AltitudeClass.values()) {
+			Lap lap = mock(Lap.class);
+			TrackPoint[] trackPoints = new TrackPoint[10];
+			for (int i = 0; i < 10; i++) {
+				TrackPoint trackPoint = mock(TrackPoint.class);
+				when(trackPoint.getAltitude()).thenReturn(
+						altitudeClass.getHigh().minus(_1meter));
+				trackPoints[i] = trackPoint;
+			}
+			when(lap.getTrackPoints()).thenReturn(
+					ImmutableList.copyOf(Arrays.asList(trackPoints)));
+			
+			Lap[] laps = new Lap[] {lap};
+			Activity activity = new ActivityImpl(START_TIME, Arrays.asList(laps));
+			
+			assertEquals(altitudeClass, activity.getAltitudeClass());
+		}
+	}
+
 	/**
 	 * test the getMaximumSpeed() method
 	 */
@@ -332,7 +354,7 @@ public class ActivityImplTest {
 		for (int i = 0; i < laps.length; i++) {
 			laps[i] = mock(Lap.class);
 
-			TrackPointImpl[] trackPoints = new TrackPointImpl[speeds.length];
+			TrackPoint[] trackPoints = new TrackPoint[speeds.length];
 			for (int j = 0; j < trackPoints.length; j++) {
 				trackPoints[j] = mock(TrackPointImpl.class);
 				when(trackPoints[j].getSpeed()).thenReturn(
@@ -409,6 +431,10 @@ public class ActivityImplTest {
 				continue;
 			}
 
+			if (returnType.isEnum()) {
+				continue;
+			}
+			
 			boolean isKnownImmutableClass = false;
 			for (Class clazz : allowedClasses) {
 				isKnownImmutableClass = isKnownImmutableClass

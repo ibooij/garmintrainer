@@ -36,7 +36,7 @@ import com.google.common.collect.Lists;
 public class LapTest {
 	private Lap testLap;
 	private LinkedList<Track> tracks;
-	private LinkedList<TrackPointImpl> allTrackPoints;
+	private LinkedList<TrackPoint> allTrackPoints;
 
 	private static final DateTime START_TIME = new DateTime();
 	private static final int NR_OF_TRACK_POINTS = 100;
@@ -50,7 +50,7 @@ public class LapTest {
 		for (int trackNr = 0; trackNr < NR_OF_TRACKS; trackNr++) {
 			Track track = mock(Track.class);
 			
-			LinkedList<TrackPointImpl> trackPoints = Lists.newLinkedList();
+			LinkedList<TrackPoint> trackPoints = Lists.newLinkedList();
 			for (int i = trackNr * NR_OF_TRACK_POINTS; i < (trackNr + 1) * NR_OF_TRACK_POINTS; i++) {
 				TrackPointImpl trackPoint = mock(TrackPointImpl.class);
 				when(trackPoint.getTime()).thenReturn(

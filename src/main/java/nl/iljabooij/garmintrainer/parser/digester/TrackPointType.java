@@ -19,8 +19,6 @@
 package nl.iljabooij.garmintrainer.parser.digester;
 
 import nl.iljabooij.garmintrainer.model.Length;
-import nl.iljabooij.garmintrainer.model.NonStartTrackPoint;
-import nl.iljabooij.garmintrainer.model.StartTrackPoint;
 import nl.iljabooij.garmintrainer.model.TrackPointImpl;
 
 import org.joda.time.DateTime;

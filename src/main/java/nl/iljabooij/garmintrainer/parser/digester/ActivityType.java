@@ -24,6 +24,7 @@ import java.util.List;
 import nl.iljabooij.garmintrainer.model.Activity;
 import nl.iljabooij.garmintrainer.model.ActivityImpl;
 import nl.iljabooij.garmintrainer.model.Lap;
+import nl.iljabooij.garmintrainer.model.Length;
 import nl.iljabooij.garmintrainer.model.NonStartTrackPoint;
 import nl.iljabooij.garmintrainer.model.StartTrackPoint;
 import nl.iljabooij.garmintrainer.model.Track;
@@ -50,11 +51,48 @@ public class ActivityType {
     private static DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTimeNoMillis();
     
     /**
+     * Adjust measured track points if a fix was somehow acquired too late. 
+     * @return all track points.
+     */
+    private List<TrackPointType> adjustForLateFix(final List<LapType> lapTypes) {
+    	// create a list of TrackPoint type objects. 
+    	List<TrackPointType> trackPointTypes = Lists.newArrayList();
+    	for (LapType lapType: lapTypes) {
+    		for (TrackType trackType: lapType.getTracks()) {
+    			trackPointTypes.addAll(trackType.getTrackPointTypes());
+    		}
+    	}
+    	
+    	List<TrackPointType> pointsWithoutFix = Lists.newArrayList();
+    	Length lastAltitude = null;
+    	for (int i = 0; i < trackPointTypes.size(); i++) {
+    		TrackPointType trackPointType = trackPointTypes.get(i);
+    		if (trackPointType.getAltitude() == null) {
+    			if (lastAltitude == null) {
+    				// missing fix in beginning of run? 
+    				pointsWithoutFix.add(trackPointType);
+    			} else {
+    				trackPointType.setAltitude(lastAltitude);
+    			}
+    		} else {
+    			if (lastAltitude == null) {
+    				for (TrackPointType withoutFix: pointsWithoutFix) {
+    					withoutFix.setAltitude(trackPointType.getAltitude());
+    				}
+    			}
+    			lastAltitude = trackPointType.getAltitude();
+    		}
+    	}
+    	return trackPointTypes;
+    }
+    /**
      * Build the activity.
      * @return a new Activity
      */
     public Activity build() {
-    	final DateTime dateTimeForId = dateTimeFormatter.parseDateTime(id);
+    	final DateTime startTime = dateTimeFormatter.parseDateTime(id);
+    
+    	adjustForLateFix(lapBuilders);
     	
     	DigesterMeasuredTrackPoint previousMeasuredTrackPoint = null;
     	ArrayList<Lap> laps = Lists.newArrayList();
@@ -67,7 +105,7 @@ public class ActivityType {
         				new DigesterMeasuredTrackPoint(trackPointType);
         			TrackPointImpl newTrackPoint;
         			if (laps.isEmpty() && tracks.isEmpty() && trackPoints.isEmpty()) {
-        				newTrackPoint = new StartTrackPoint(dateTimeForId, measuredTrackPoint);				
+        				newTrackPoint = new StartTrackPoint(startTime, measuredTrackPoint);				
         			} else {
         				newTrackPoint = new NonStartTrackPoint(previousMeasuredTrackPoint, measuredTrackPoint);
         			}
@@ -79,7 +117,7 @@ public class ActivityType {
         	laps.add(new Lap(lapType.getStartTime(), tracks));
         }
          
-        return Memoizer.memoize(new ActivityImpl(dateTimeForId, laps), Activity.class);
+        return Memoizer.memoize(new ActivityImpl(startTime, laps), Activity.class);
     }
 
     /**
