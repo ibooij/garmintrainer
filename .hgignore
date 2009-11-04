@@ -7,3 +7,4 @@ syntax: regexp
 ^\.settings$
 syntax: regexp
 ^target$
+^build$
