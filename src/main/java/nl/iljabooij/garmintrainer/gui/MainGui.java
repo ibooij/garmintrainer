@@ -24,7 +24,6 @@ import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -33,14 +32,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import org.jvnet.substance.api.skin.SubstanceGraphiteAquaLookAndFeel;
-import org.jvnet.substance.skin.SubstanceAutumnLookAndFeel;
-import org.jvnet.substance.skin.SubstanceBusinessBlackSteelLookAndFeel;
-
 import nl.iljabooij.garmintrainer.model.Activity;
 import nl.iljabooij.garmintrainer.model.ApplicationState;
 import nl.iljabooij.garmintrainer.model.ApplicationState.Property;
-import nl.iljabooij.garmintrainer.parser.digester.ParseException;
+
+import org.jvnet.substance.skin.SubstanceBusinessBlackSteelLookAndFeel;
 
 import com.google.inject.Guice;
 import com.google.inject.Inject;
@@ -101,14 +97,14 @@ public class MainGui implements PropertyChangeListener {
 		mainFrame.setTransferHandler(fileTransferHandler);
 	}
 
-	private static void createAndShowGui() {
+	public static void createAndShowGui(final Module module) {
+		System.out.println("Current thread = " + Thread.currentThread());
 		try {
 			UIManager.setLookAndFeel(new SubstanceBusinessBlackSteelLookAndFeel());
 		} catch (UnsupportedLookAndFeelException e) {
 			// do nothing, continue with default look and feel.
 		}
 		
-		final Module module = new MainModule();
 		final Injector injector = Guice.createInjector(module);
 
 		// Create and set up the window.
@@ -121,15 +117,6 @@ public class MainGui implements PropertyChangeListener {
 		frame.setSize(new Dimension(800, 600));
 		frame.pack();
 		frame.setVisible(true);
-	}
-
-	public static void main(final String[] args) throws ParseException, IOException {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				createAndShowGui();
-			}
-		});
 	}
 
 	@Override
