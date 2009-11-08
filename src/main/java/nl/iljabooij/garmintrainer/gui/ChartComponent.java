@@ -106,30 +106,4 @@ public class ChartComponent extends JComponent implements PropertyChangeListener
 		altitudeDiagramPainter.paintDiagram(currentActivity, graphImage);
 		g2d.drawImage(graphImage, 0, 0, null);
 	}
-//		
-//		final double minAltitude = currentActivity.getMinimumAltitude().getValueInMeters();
-//		final double maxAltitude = currentActivity.getMaximumAltitude().getValueInMeters();
-//		
-//		final double altitudeOnScreen = maxAltitude - minAltitude;
-//		
-//		int durationInSeconds = currentActivity.getGrossDuration().toStandardSeconds().getSeconds();
-//		
-//		Path2D path = new Path2D.Double();
-//		for (TrackPoint trackPoint: currentActivity.getTrackPoints()) {
-//			// calculate x-value
-//			Duration fromStart = new Duration(currentActivity.getStartTime(), trackPoint.getTime());
-//			int fromStartInSeconds = fromStart.toStandardSeconds().getSeconds();
-//			double x = getWidth() * ((double) fromStartInSeconds / (double) durationInSeconds);
-//			double relativeAltitude = trackPoint.getAltitude().getValueInMeters() - minAltitude;
-//			double y = getHeight() * (relativeAltitude / altitudeOnScreen);
-//			
-//			if (path.getCurrentPoint() == null) {
-//				path.moveTo(x, y);
-//			} else {
-//				path.lineTo(x, y);
-//			}
-//		}
-//		g2d.setColor(Color.black);
-//		g2d.draw(path);
-//	}
 }
