@@ -5,6 +5,8 @@ import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
 import javax.swing._
 
+import scala.swing._
+
 import com.google.inject.Inject 
 
 import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState}
@@ -15,42 +17,49 @@ class ScalaGui @Inject() (val overviewPanel:OverviewPanel,
 		val chartPanel: ChartPanel,
         val samplesTablePanel: SampleTablePanel,
 		val applicationState: ApplicationState,
-		val fileTransferHandler: FileTransferHandler) {
-  
-    var theFrame:JFrame = null
+		val fileTransferHandler: FileTransferHandler) extends SwingHelper with LoggerHelper {
     
     /**
      * Initialize the Gui.
      * @param frame JFrame to use.
      */
-	def init(frame:JFrame) = {
-	    theFrame = frame
-     
-	    applicationState.addPropertyChangeListener(Property.CurrentActivity, titleChanger)
-		val pane = frame.getContentPane
-		pane.setLayout(new BorderLayout)
-		val tabbedPane = new JTabbedPane
+	def init(frame:MainFrame) = {
+	  debug("initializing frame")
+   
+	  applicationState.addPropertyChangeListener(Property.CurrentActivity, titleChanger(frame))
+      val tabbedPane = new TabbedPane
+	  applicationState.addPropertyChangeListener(Property.ErrorMessage, errorMessageShower(tabbedPane))
 		
-		panels.foreach(tabbedPane.add(_))
+	  panels.foreach(tabbedPane.peer.add(_))
   
-		pane.add(tabbedPane, BorderLayout.CENTER)
-  
-		frame.setTransferHandler(fileTransferHandler)
+	  frame.contents = tabbedPane
+	  frame.peer.setTransferHandler(fileTransferHandler)
 	} 
  
     def panels : List[JPanel] = {
       List(overviewPanel, mapViewer, chartPanel, samplesTablePanel)
     }
     
-    def titleChanger: PropertyChangeListener = {
+    def titleChanger(frame:MainFrame): PropertyChangeListener = {
       new PropertyChangeListener {
         def propertyChange(event: PropertyChangeEvent) {
           var id:String = ""
           if (event.getNewValue != null) {
             val activity:Activity = event.getNewValue.asInstanceOf[Activity]
             id = activity.getStartTime.toString("yyyy-MM-dd")
-            theFrame.setTitle(id)
+            onEdt(frame.title = id)
           }  
+        }
+      }
+    }
+    
+    def errorMessageShower(component:Component): PropertyChangeListener = {
+      new PropertyChangeListener {
+        def propertyChange(event: PropertyChangeEvent) {
+          if (event.getNewValue != null) {
+            val message = event.getNewValue.asInstanceOf[String]
+            onEdt(Dialog.showMessage(component, message))
+          }
         }
       }
     }
