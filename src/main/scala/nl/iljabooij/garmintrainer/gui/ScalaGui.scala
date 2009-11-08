@@ -12,7 +12,7 @@ import com.google.inject.Inject
 import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState}
 import nl.iljabooij.garmintrainer.model.ApplicationState.Property
 
-class ScalaGui @Inject() (val overviewPanel:OverviewPanel,
+class ScalaGui @Inject() (val overviewPanel:ScalaOverviewPanel,
 		val mapViewer: MapViewer,
 		val chartPanel: ChartPanel,
         val samplesTablePanel: SampleTablePanel,
@@ -30,6 +30,8 @@ class ScalaGui @Inject() (val overviewPanel:OverviewPanel,
       val tabbedPane = new TabbedPane
 	  applicationState.addPropertyChangeListener(Property.ErrorMessage, errorMessageShower(tabbedPane))
 		
+	  tabbedPane.pages += new TabbedPane.Page("Overview", overviewPanel)
+	    
 	  panels.foreach(tabbedPane.peer.add(_))
   
 	  frame.contents = tabbedPane
@@ -37,7 +39,7 @@ class ScalaGui @Inject() (val overviewPanel:OverviewPanel,
 	} 
  
     def panels : List[JPanel] = {
-      List(overviewPanel, mapViewer, chartPanel, samplesTablePanel)
+      List(mapViewer, chartPanel, samplesTablePanel)
     }
     
     def titleChanger(frame:MainFrame): PropertyChangeListener = {
