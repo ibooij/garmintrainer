@@ -15,7 +15,7 @@ import nl.iljabooij.garmintrainer.model.ApplicationState.Property
 class ScalaGui @Inject() (val overviewPanel:ScalaOverviewPanel,
 		val mapViewer: MapViewer,
 		val chartPanel: ChartPanel,
-        val samplesTablePanel: SampleTablePanel,
+        val tablePanel: ScalaTablePanel,
 		val applicationState: ApplicationState,
 		val fileTransferHandler: FileTransferHandler) extends SwingHelper with LoggerHelper {
     
@@ -26,20 +26,21 @@ class ScalaGui @Inject() (val overviewPanel:ScalaOverviewPanel,
 	def init(frame:MainFrame) = {
 	  debug("initializing frame")
    
-	  applicationState.addPropertyChangeListener(Property.CurrentActivity, titleChanger(frame))
-      val tabbedPane = new TabbedPane
-	  applicationState.addPropertyChangeListener(Property.ErrorMessage, errorMessageShower(tabbedPane))
-		
+	  val tabbedPane = new TabbedPane	
 	  tabbedPane.pages += new TabbedPane.Page("Overview", overviewPanel)
 	    
 	  panels.foreach(tabbedPane.peer.add(_))
+	  tabbedPane.pages += new TabbedPane.Page("Samples", tablePanel)
   
 	  frame.contents = tabbedPane
 	  frame.peer.setTransferHandler(fileTransferHandler)
+   
+      applicationState.addPropertyChangeListener(Property.CurrentActivity, titleChanger(frame))
+	  applicationState.addPropertyChangeListener(Property.ErrorMessage, errorMessageShower(tabbedPane))
 	} 
  
     def panels : List[JPanel] = {
-      List(mapViewer, chartPanel, samplesTablePanel)
+      List(mapViewer, chartPanel)
     }
     
     def titleChanger(frame:MainFrame): PropertyChangeListener = {
