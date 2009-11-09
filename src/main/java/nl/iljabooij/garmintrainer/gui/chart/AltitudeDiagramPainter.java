@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 import java.util.List;
 
 import nl.iljabooij.garmintrainer.model.Activity;

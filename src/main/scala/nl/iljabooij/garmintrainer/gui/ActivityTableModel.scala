@@ -4,7 +4,7 @@ import java.beans.{PropertyChangeEvent,PropertyChangeListener}
 import javax.swing.table.AbstractTableModel
 import com.google.inject.Inject
 import org.joda.time.{DateTime,DateTimeZone,Duration}
-import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState,Length,Speed}
+import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState,Length,Speed,TrackPoint}
 import ApplicationState.Property
 import Length.{Unit => LengthUnit}
 import Speed.{Unit => SpeedUnit}
@@ -12,8 +12,8 @@ import Speed.{Unit => SpeedUnit}
 
 class ActivityTableModel @Inject() (private val applicationState:ApplicationState) 
     extends AbstractTableModel with SwingHelper {
-  
-  private val columns = List("Time", "Distance", "Altitude", "Altitude Gain", "Speed", "Heart Rate")
+  private val columns = List("Time", "Distance", "Altitude", 
+                             "Altitude Gain", "Speed", "Heart Rate")
   applicationState.addPropertyChangeListener(Property.CurrentActivity, activityChanger)
   
   /**
