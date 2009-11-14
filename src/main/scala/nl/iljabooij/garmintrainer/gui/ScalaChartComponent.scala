@@ -23,7 +23,7 @@ class ScalaChartComponent @Inject()
 	}
   }
   
-  override def paintComponent(g: Graphics) = {
+  protected override def paintComponent(g: Graphics) = {
     val g2d = g.asInstanceOf[Graphics2D]
     g2d.setBackground(Color.white)
 	g2d.clearRect(0, 0, size.width, size.height)
@@ -33,7 +33,7 @@ class ScalaChartComponent @Inject()
 	}
   }
   
-  def drawChart(g2d: Graphics2D, activity: Activity) = {
+  private def drawChart(g2d: Graphics2D, activity: Activity) = {
     val graphImage = GraphicsEnvironment
 		.getLocalGraphicsEnvironment().getDefaultScreenDevice()
 		.getDefaultConfiguration().createCompatibleImage(
@@ -43,6 +43,7 @@ class ScalaChartComponent @Inject()
 	imageGraphics.setBackground(Color.white);
 	imageGraphics.clearRect(0, 0, graphImage.getWidth, graphImage.getHeight);
 		
+    println("calling painter")
 	altitudeDiagramPainter.paintDiagram(activity, graphImage)
 	g2d.drawImage(graphImage, 0, 0, null)
   }

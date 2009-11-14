@@ -14,10 +14,10 @@ import nl.iljabooij.garmintrainer.model.ApplicationState.Property
 
 class ScalaGui @Inject() (val overviewPanel:ScalaOverviewPanel,
 		val mapViewer: MapViewer,
-		val chartPanel: ChartPanel,
+		val chartComponent: ScalaChartComponent,
         val tablePanel: ScalaTablePanel,
 		val applicationState: ApplicationState,
-		val fileTransferHandler: FileTransferHandler) extends SwingHelper with LoggerHelper {
+		val fileTransferHandler: ScalaFileTransferHandler) extends SwingHelper with LoggerHelper {
     
     /**
      * Initialize the Gui.
@@ -28,7 +28,10 @@ class ScalaGui @Inject() (val overviewPanel:ScalaOverviewPanel,
    
 	  val tabbedPane = new TabbedPane	
 	  tabbedPane.pages += new TabbedPane.Page("Overview", overviewPanel)
-	    
+      val chartPanel = new BorderPanel {
+        add(chartComponent, BorderPanel.Position.Center)
+      }
+	  tabbedPane.pages += new TabbedPane.Page("Chart", chartPanel)
 	  panels.foreach(tabbedPane.peer.add(_))
 	  tabbedPane.pages += new TabbedPane.Page("Samples", tablePanel)
   
@@ -40,7 +43,7 @@ class ScalaGui @Inject() (val overviewPanel:ScalaOverviewPanel,
 	} 
  
     def panels : List[JPanel] = {
-      List(mapViewer, chartPanel)
+      List(mapViewer)
     }
     
     def titleChanger(frame:MainFrame): PropertyChangeListener = {
