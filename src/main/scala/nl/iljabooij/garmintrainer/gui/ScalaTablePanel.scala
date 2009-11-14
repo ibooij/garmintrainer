@@ -15,19 +15,4 @@ class ScalaTablePanel @Inject() (private val applicationState: ApplicationState,
   table.model = tableModel
   private val scrollPane = new ScrollPane(table)
   add(scrollPane, BorderPanel.Position.Center)
-//  applicationState.addPropertyChangeListener(Property.CurrentActivity, tableModelChanger)
-//  
-//  /**
-//   * Creates a new PropertyChangeListener that updates the model when needed. 
-//   */
-//  private def tableModelChanger: PropertyChangeListener = {
-//    new PropertyChangeListener {
-//      def propertyChange(event: PropertyChangeEvent) {
-//        if (event.getNewValue != null) {
-//          val activity:Activity = event.getNewValue.asInstanceOf[Activity]
-//          onEdt(tableModel.setActivity(activity))
-//        }  
-//      }
-//    }
-//  }
 }
