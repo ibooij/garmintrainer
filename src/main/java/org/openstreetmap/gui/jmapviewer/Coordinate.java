@@ -55,7 +55,7 @@ public class Coordinate {
     	return new Coordinate(lat, lon);
     }
     
-    public static Coordinate[] getBoundingBox(final Collection<Coordinate> coordinates) {
+    public static Coordinate[] getBoundingBox(final Coordinate[] coordinates) {
     	double northWestLatitude = MINIMUM_LATITUDE;
     	double southEastLatitude = MAXIMUM_LATITUDE;
     	double northWestLongitude = MAXIMUM_LONGITUDE;
@@ -71,6 +71,10 @@ public class Coordinate {
     	final Coordinate northWest = new Coordinate(northWestLatitude, northWestLongitude);
     	final Coordinate southEast = new Coordinate(southEastLatitude, southEastLongitude);
     	
-    	return new Coordinate[] {northWest, southEast}; 
+    	return new Coordinate[] {northWest, southEast};
+    }
+    
+    public static Coordinate[] getBoundingBox(final Collection<Coordinate> coordinates) {
+    	return getBoundingBox((Coordinate[]) coordinates.toArray());
     }
 }

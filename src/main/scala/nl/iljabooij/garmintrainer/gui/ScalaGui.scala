@@ -13,7 +13,7 @@ import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState}
 import nl.iljabooij.garmintrainer.model.ApplicationState.Property
 
 class ScalaGui @Inject() (val overviewPanel:ScalaOverviewPanel,
-		val mapViewer: MapViewer,
+		val mapViewer: ScalaMapViewer,
 		val chartComponent: ScalaChartComponent,
         val tablePanel: ScalaTablePanel,
 		val applicationState: ApplicationState,

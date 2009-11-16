@@ -8,7 +8,7 @@ import scala.swing._
 import com.google.inject.Inject
 
 class ScalaOverviewPanel @Inject() (summaryPanel:ScalaSummaryPanel,
-	map: MapViewer, chartComponent: ScalaChartComponent) extends GridPanel(2,2) {
+	map: ScalaMapViewer, chartComponent: ScalaChartComponent) extends GridPanel(2,2) {
   
   contents += new BorderPanel {
     border = new TitledBorder("Summary")
