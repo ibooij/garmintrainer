@@ -14,6 +14,13 @@ jar.doFirst {
   }
 }
 
+task copyJars << {
+  copy {
+    from configurations.runtime
+    into "all_libs"
+  }
+}
+
 repositories {
   mavenCentral()
   mavenRepo urls: 'http://scala-tools.org/repo-releases/'

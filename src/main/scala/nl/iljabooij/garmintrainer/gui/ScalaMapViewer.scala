@@ -53,7 +53,10 @@ class ScalaMapViewer @Inject() (applicationState: ApplicationState)
     }
   }
   
-  protected override def paintComponent(g: Graphics) {
+  /** This method should be protected, but I cannot get it to compile if
+   it is..
+   */
+  override def paintComponent(g: Graphics) {
     super.paintComponent(g)
     
     val activity = applicationState.getCurrentActivity
