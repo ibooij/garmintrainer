@@ -11,7 +11,6 @@ import nl.iljabooij.garmintrainer._
 import com.google.inject.Guice
 import org.jvnet.substance.skin.SubstanceBusinessBlackSteelLookAndFeel
 
-import org.apache.log4j.PropertyConfigurator
 /**
  Just a simple main. 
  */
@@ -21,8 +20,6 @@ object NewMain {
   def main(args:Array[String]) {
     println("Hello World!")
     println(Thread.currentThread)
-    val logConfigUrl = this.getClass.getResource("/log4j.properties")
-    PropertyConfigurator.configure(logConfigUrl)
     SwingUtilities.invokeLater(
       
       new Runnable {
