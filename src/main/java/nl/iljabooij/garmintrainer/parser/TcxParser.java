@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import nl.iljabooij.garmintrainer.model.Activity;
-import nl.iljabooij.garmintrainer.parser.digester.ParseException;
 
 /**
  * A {@link TcxParser} object will parse a TCX file from an {@link InputStream} to

@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import nl.iljabooij.garmintrainer.model.Activity;
+import nl.iljabooij.garmintrainer.parser.ParseException;
 import nl.iljabooij.garmintrainer.testutils.JUnitBaseGuice;
 
 import org.apache.commons.digester.Digester;
