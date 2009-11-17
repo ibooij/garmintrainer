@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with GarminTrainer.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.iljabooij.garmintrainer.parser.digester;
+package nl.iljabooij.garmintrainer.parser;
 
 public class ParseException extends Exception {
 	private static final long serialVersionUID = 1L;

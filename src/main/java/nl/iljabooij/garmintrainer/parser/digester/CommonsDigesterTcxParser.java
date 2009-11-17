@@ -25,6 +25,7 @@ import java.util.List;
 
 import nl.iljabooij.garmintrainer.model.Activity;
 import nl.iljabooij.garmintrainer.model.Length;
+import nl.iljabooij.garmintrainer.parser.ParseException;
 import nl.iljabooij.garmintrainer.parser.TcxParser;
 import nl.iljabooij.garmintrainer.util.InjectLogger;
 
