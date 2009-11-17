@@ -33,7 +33,7 @@ class ScalaSummaryPanel @Inject() (state:ApplicationState)
   add(new JLabel("Meters Climbed"))
   add(climbedLabel)
   
-  SpringUtilities.makeGrid(this, 6, 2, 5, 5, 5, 5)
+  ScalaSpringUtilities.makeGrid(this, 6, 2, 5, 5, 5, 5)
   
   state.addPropertyChangeListener(Property.CurrentActivity, contentChanger)
   
