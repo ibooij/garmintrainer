@@ -9,4 +9,12 @@ trait LoggerHelper {
   def debug(s:String) = {
     if (logger.isDebugEnabled) logger.debug(s)
   }
+  
+  def error(s:String) = {
+    if (logger.isErrorEnabled) logger.error(s)
+  }
+  
+  def error(s:String, o: Any) = {
+    if (logger.isErrorEnabled) logger.error(s, o)
+  }
 }
