@@ -5,53 +5,53 @@ usePlugin 'scala'
 sourceCompatibility = '1.6'
 
 manifest.mainAttributes(
-  'Main-Class': 'nl.iljabooij.garmintrainer.NewMain'
-)
+        'Main-Class': 'nl.iljabooij.garmintrainer.NewMain'
+        )
 
 jar.doFirst {
-  for(file in configurations.runtime.resolve()) {
-    jar.merge(file)
-  }
+    for(file in configurations.runtime.resolve()) {
+        jar.merge(file)
+    }
 }
 
 task copyJars << {
-  copy {
-    from configurations.runtime
-    into "all_libs"
-  }
+    copy {
+        from configurations.runtime
+            into "all_libs"
+    }
 }
 
-repositories {
-  mavenCentral()
-  mavenRepo urls: 'http://scala-tools.org/repo-releases/'
-}
+    repositories {
+        mavenCentral()
+            mavenRepo urls: 'http://scala-tools.org/repo-releases/'
+    }
 
 dependencies {
-  // Libraries needed to run the scala tools
+    // Libraries needed to run the scala tools
     scalaTools 'org.scala-lang:scala-compiler:2.7.7'
-    scalaTools 'org.scala-lang:scala-library:2.7.7'
+        scalaTools 'org.scala-lang:scala-library:2.7.7'
 
-    // Libraries needed for scala api
-    compile 'org.scala-lang:scala-library:2.7.7'
-    compile 'org.scala-lang:scala-swing:2.7.7'
+        // Libraries needed for scala api
+        compile 'org.scala-lang:scala-library:2.7.7'
+        compile 'org.scala-lang:scala-swing:2.7.7'
 
-  compile group:'joda-time', name: 'joda-time', version: '1.6' 
-  compile group:'com.google.inject', name: 'guice', version: '2.0', transitive: true
-  compile group: 'aopalliance', name: 'aopalliance', version: '1.0'
-  compile group:'com.google.collections', name: 'google-collections', version: '1.0-rc2'
-  compile group:'org.slf4j', name: 'slf4j-api', version: '1.5.8'
-  compile 'commons-beanutils:commons-beanutils:1.8.0'
-  compile 'commons-digester:commons-digester:2.0'
-  compile 'commons-lang:commons-lang:2.4'
-  compile 'commons-io:commons-io:1.4'
-  
-  // local jars, not in maven repository.
-  compile fileTree(dir: 'extra_libs', includes: ['*.jar'])
+        compile group:'joda-time', name: 'joda-time', version: '1.6' 
+        compile group:'com.google.inject', name: 'guice', version: '2.0', transitive: true
+        compile group: 'aopalliance', name: 'aopalliance', version: '1.0'
+        compile group:'com.google.collections', name: 'google-collections', version: '1.0-rc2'
+        compile group:'org.slf4j', name: 'slf4j-api', version: '1.5.8'
+        compile 'commons-beanutils:commons-beanutils:1.8.0'
+        compile 'commons-digester:commons-digester:2.0'
+        compile 'commons-lang:commons-lang:2.4'
+        compile 'commons-io:commons-io:1.4'
 
-  // compile dependencies for test
-  testCompile 'junit:junit:4.6'
-  testCompile 'org.mockito:mockito-all:1.8.0'
-  // runtime dependencies
-  runtime group:'org.slf4j', name: 'slf4j-log4j12', version: '1.5.8'
-  
+        // local jars, not in maven repository.
+        compile fileTree(dir: 'extra_libs', includes: ['*.jar'])
+
+        // compile dependencies for test
+        testCompile 'junit:junit:4.6'
+        testCompile 'org.mockito:mockito-all:1.8.0'
+        testCompile 'org.scalatest:scalatest:1.0'
+        // runtime dependencies
+        runtime group:'org.slf4j', name: 'slf4j-log4j12', version: '1.5.8'
 }
