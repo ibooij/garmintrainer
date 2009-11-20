@@ -15,10 +15,8 @@ import nl.iljabooij.garmintrainer.util.Slf4jTypeListener
 class GuiceModule extends Module {
 	override def configure(binder: Binder) {
 		binder.bindListener(Matchers.any(), new Slf4jTypeListener);
-		
 		binder.bind(classOf[ApplicationState]).to(classOf[ApplicationStateImpl]);
 		binder.bind(classOf[TcxImporter]).to(classOf[TcxImporterImpl]);
-		binder.bind(classOf[ActivityStorage]).to(classOf[EmptyActivityStorage]);
-		binder.bind(classOf[TcxParser]).to(classOf[CommonsDigesterTcxParser]);
+		binder.bind(classOf[TcxParser]).to(classOf[DigesterTcxParser]);
 	}
 }
