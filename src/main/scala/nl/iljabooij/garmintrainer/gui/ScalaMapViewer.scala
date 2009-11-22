@@ -32,16 +32,25 @@ class ScalaMapViewer @Inject() (applicationState: ApplicationState)
   }
   
   private def zoomToActivity(activity: Activity) {
-    var northWest = new Coordinate(-180.0, 90.0)
-    var southEast = new Coordinate(180.0, -90.0)
-    if (activity != null) {
-      val coordinates = trackPoints.filter(tp => tp.hasPosition).map(tp => new Coordinate(tp.getLatitude, tp.getLongitude))
-      
-      val bounds:Array[Coordinate] = Coordinate.getBoundingBox(coordinates.toArray)
-      northWest = bounds(0)
-      southEast = bounds(1)
+    /** perform these computations in a background thread */
+    def doInBackground = {
+      var northWest = new Coordinate(-180.0, 90.0)
+      var southEast = new Coordinate(180.0, -90.0)
+      if (activity != null) {
+        val coordinates = trackPoints.filter(tp => tp.hasPosition).map(tp => new Coordinate(tp.getLatitude, tp.getLongitude))
+        val bounds:Array[Coordinate] = Coordinate.getBoundingBox(coordinates.toArray)
+        northWest = bounds(0)
+        southEast = bounds(1)
+      }
+      Pair(northWest, southEast)
     }
-    zoomToBoundingBox(northWest, southEast)
+    /** zooming to bounding box has to happen on the EDT */
+    def onEdt(bounds: Pair[Coordinate,Coordinate]) {
+      val (northWest,southEast) = bounds
+      zoomToBoundingBox(northWest, southEast)  
+    }
+    
+    inSwingWorker(doInBackground, onEdt)
   }
   
   def trackPoints: List[TrackPoint] = {

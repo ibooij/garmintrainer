@@ -46,15 +46,44 @@ class ScalaSummaryPanel @Inject() (state:ApplicationState)
     }
     
     new PropertyChangeListener {
+      /**
+       * This method will be performed on a background thread by
+       * a SwingWorker.
+       */
+      def doInBackground(activity: Activity) = {
+        val startTime = activity.getStartTime.toString("yyyy-MM-dd")
+        val distance = activity.getDistance.convert(LengthUnit.Kilometer).toString
+        val nrLaps = activity.getLaps.size.toString
+        val grossDuration = durationToString(activity.getGrossDuration)
+        val netDuration = durationToString(activity.getNetDuration)
+        val altitudeGain = activity.getAltitudeGain.convert(LengthUnit.Meter).toString
+        Map("startTime" -> startTime,
+            "distance" -> distance,
+            "nrOfLaps" -> nrLaps,
+            "grossDuration" -> grossDuration,
+            "netDuration" -> netDuration,
+            "altitudeGain" -> altitudeGain
+        )
+      }
+      
+      /**
+       * The SwingWorker will perform this method on the Swing Event Dispatch Thread.
+       */
+      def done(values: Map[String,String]) {
+        assert(isEdt)
+        
+        dateLabel.setText(values("startTime"))
+        distanceLabel.setText(values("distance"))
+        lapsLabel.setText(values("nrOfLaps"))
+        totalTimeLabel.setText(values("grossDuration"))
+        ridingTimeLabel.setText(values("netDuration"))
+        climbedLabel.setText(values("altitudeGain"))
+      }
+      
       def propertyChange(event: PropertyChangeEvent) {
         if (event.getNewValue != null) {
           val activity = event.getNewValue.asInstanceOf[Activity]
-          dateLabel.setText(activity.getStartTime.toString("yyyy-MM-dd"))
-          distanceLabel.setText(activity.getDistance.convert(LengthUnit.Kilometer).toString)
-          lapsLabel.setText(activity.getLaps.size.toString)
-          totalTimeLabel.setText(durationToString(activity.getGrossDuration))
-          ridingTimeLabel.setText(durationToString(activity.getNetDuration))
-          climbedLabel.setText(activity.getAltitudeGain.convert(LengthUnit.Meter).toString);
+          inSwingWorker(doInBackground(activity), done)
         }
       }
     } 
