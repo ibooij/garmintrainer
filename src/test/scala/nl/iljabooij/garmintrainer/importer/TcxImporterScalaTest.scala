@@ -40,8 +40,7 @@ class TcxImporterScalaTest extends JUnit3Suite with AssertionsForJUnit with Mock
      val uri = getClass().getResource("/sample.tcx").toURI()
      val file = new File(uri)
      
-     val activities = new java.util.LinkedList[Activity]
-     activities.add(mock[Activity])
+     val activities = List(mock[Activity])
      
      when(tcxParser.parse(any(classOf[InputStream]))).thenReturn(activities)
      
@@ -57,8 +56,7 @@ class TcxImporterScalaTest extends JUnit3Suite with AssertionsForJUnit with Mock
    def testWithParserThrowingException() {
      val uri = getClass().getResource("/sample.tcx").toURI()
      val file = new File(uri);
-     val activities = new java.util.LinkedList[Activity]
-     activities.add(mock[Activity])
+     val activities = List(mock[Activity])
      
      when(tcxParser.parse(any(classOf[InputStream]))).thenThrow(
        new ParseException("test exception"))

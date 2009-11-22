@@ -8,6 +8,7 @@ import scala.collection.jcl.Conversions
 
 import org.joda.time.Duration
 
+import nl.iljabooij.garmintrainer.LoggerHelper
 import nl.iljabooij.garmintrainer.model.{Activity,TrackPoint}
 
 
