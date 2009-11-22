@@ -16,16 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with GarminTrainer.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.iljabooij.garmintrainer.parser;
+package nl.iljabooij.garmintrainer.parser
 
-public class ParseException extends Exception {
-	private static final long serialVersionUID = 1L;
-
-	public ParseException(final String message) {
-		super(message);
-	}
-	
-	public ParseException(final String message, final Throwable throwable) {
-		super(message, throwable);
-	}
+class ParseException(message:String, cause: Throwable) extends Exception(message, cause) {
+	def this(message: String) = this(message, null)
 }
