@@ -20,7 +20,7 @@ class DigesterTcxParser @Inject() (digesterProvider: Provider[Digester]) extends
   private val TRACK = LAP + "/Track"
   private val TRACK_POINT = TRACK + "/Trackpoint"
 
-  override def parse(inputStream: InputStream): JList[Activity] = {
+  override def parse(inputStream: InputStream): List[Activity] = {
     if (inputStream == null) throw new NullPointerException("inputStream should not be null")
     debug("Start parsing inputStream")
     
@@ -36,10 +36,7 @@ class DigesterTcxParser @Inject() (digesterProvider: Provider[Digester]) extends
       case e: Exception => throw new ParseException("Exception parsing TCX file", e)
     }
       
-    val activities = new JAList[Activity]
-    activityTypes.foreach(at => activities.add(at.build))
-     
-    return activities
+    activityTypes.map(_.build)
   }
   
   private def setUpDigester(): Digester = {

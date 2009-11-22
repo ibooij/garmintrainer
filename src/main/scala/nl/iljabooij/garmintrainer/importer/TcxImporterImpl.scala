@@ -32,7 +32,7 @@ class TcxImporterImpl @Inject() (applicationState: ApplicationState,
     }
     
     if (!activities.isEmpty) {
-      applicationState.setCurrentActivity(activities.get(0))
+      applicationState.setCurrentActivity(activities(0))
     }
   }         
 }
