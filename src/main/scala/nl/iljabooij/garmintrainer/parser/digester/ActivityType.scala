@@ -50,7 +50,7 @@ class ActivityType {
   private def extractTrackPointTypes: List[TrackPointType] = {
     val trackPoints = new ListBuffer[TrackPointType]
     lapTypes.foreach (lapType => {
-      convertList(lapType.getTracks).foreach (trackType => {
+      lapType.tracks.foreach (trackType => {
         convertList(trackType.getTrackPointTypes).foreach(tpt => {
           trackPoints += tpt
         })
@@ -88,7 +88,7 @@ class ActivityType {
 
     lapTypes.foreach (lapType => {
       val tracks = new JAList[Track]
-      convertList(lapType.getTracks).foreach (trackType => {
+      lapType.tracks.foreach (trackType => {
         val trackPoints = new JAList[TrackPoint]
     	convertList(trackType.getTrackPointTypes).foreach(trackPointType => {
     	  val measuredTrackPoint = new DigesterMeasuredTrackPoint(trackPointType)
@@ -102,7 +102,7 @@ class ActivityType {
     	})
         tracks.add(new Track(trackPoints))
       })
-      laps.add(new Lap(lapType.getStartTime, tracks))
+      laps.add(new Lap(lapType.startTime, tracks))
     })
     
     new ActivityImpl(startTime, laps)
