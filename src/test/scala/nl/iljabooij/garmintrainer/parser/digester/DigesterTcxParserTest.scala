@@ -7,7 +7,7 @@ import nl.iljabooij.garmintrainer.model.Activity
 import org.apache.commons.digester.Digester
 import org.scalatest.junit.{AssertionsForJUnit,JUnit3Suite}
 import org.scalatest.mock.MockitoSugar
-import org.junit.{Before,Test}
+import org.junit.Assert._
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.mockito.invocation.InvocationOnMock
@@ -31,14 +31,15 @@ class DigesterTcxParserTest extends JUnit3Suite with AssertionsForJUnit
   def testParse {
     val inputStream = mock[InputStream]  
     val activityTypes = new ArrayList[ActivityType]
-    val activities = new ArrayList[Activity]
+    var activities = List[Activity]() 
     for(i <- 1 to 2) {
       val activityTypeMock = mock[ActivityType]
       val activity = mock[Activity]
       when(activityTypeMock.build()).thenReturn(activity)
       activityTypes.add(activityTypeMock)
-      activities.add(activity)
+      activities = activity :: activities
     }
+    activities = activities.reverse
     
     var returnedActivityTypes: JList[ActivityType] = null
     
@@ -69,7 +70,7 @@ class DigesterTcxParserTest extends JUnit3Suite with AssertionsForJUnit
       }
     }).when(digester).parse(inputStream);
     
-    assert(activities.equals(parser.parse(inputStream)))
+    assertEquals(activities, parser.parse(inputStream))
     // verify calls to the mocks we provided
     verify(provider, times(1)).get
     verify(digester, times(1)).push(returnedActivityTypes)
