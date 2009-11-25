@@ -35,7 +35,7 @@ class DigesterTcxParserTest extends JUnit3Suite with AssertionsForJUnit
     for(i <- 1 to 2) {
       val activityTypeMock = mock[ActivityType]
       val activity = mock[Activity]
-      when(activityTypeMock.build()).thenReturn(activity)
+      when(activityTypeMock.build).thenReturn(activity)
       activityTypes.add(activityTypeMock)
       activities = activity :: activities
     }
