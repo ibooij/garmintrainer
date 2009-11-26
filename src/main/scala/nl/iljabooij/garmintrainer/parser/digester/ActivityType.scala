@@ -51,9 +51,7 @@ class ActivityType {
     val trackPoints = new ListBuffer[TrackPointType]
     lapTypes.foreach (lapType => {
       lapType.tracks.foreach (trackType => {
-        convertList(trackType.getTrackPointTypes).foreach(tpt => {
-          trackPoints += tpt
-        })
+        trackType.trackPointTypes.foreach(trackPoints += _)
       })
     })
     trackPoints.toList
@@ -62,14 +60,14 @@ class ActivityType {
   private def adjustForLateFix {
     val trackPointTypes = extractTrackPointTypes
     
-    val firstPointWithAltitude = trackPointTypes.find(_.getAltitude != null)
+    val firstPointWithAltitude = trackPointTypes.find(_.altitude != null)
     val firstAltitude = if (firstPointWithAltitude.isEmpty) Length.createLengthInMeters(0) 
-                        else firstPointWithAltitude.get.getAltitude
+                        else firstPointWithAltitude.get.altitude
     
     var lastAltitude = firstAltitude
     trackPointTypes.foreach (trackPointType => {
-      val altitude = trackPointType.getAltitude
-      if (altitude == null) trackPointType.setAltitude(lastAltitude)
+      val altitude = trackPointType.altitude
+      if (altitude == null) trackPointType.altitude =lastAltitude
       else lastAltitude = altitude
     })
   }
@@ -90,7 +88,7 @@ class ActivityType {
       val tracks = new JAList[Track]
       lapType.tracks.foreach (trackType => {
         val trackPoints = new JAList[TrackPoint]
-    	convertList(trackType.getTrackPointTypes).foreach(trackPointType => {
+    	trackType.trackPointTypes.foreach(trackPointType => {
     	  val measuredTrackPoint = new DigesterMeasuredTrackPoint(trackPointType)
           val newTrackPoint = 
             if (laps.isEmpty() && tracks.isEmpty() && trackPoints.isEmpty()) 

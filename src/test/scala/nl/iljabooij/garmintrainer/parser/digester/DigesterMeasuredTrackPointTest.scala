@@ -42,48 +42,48 @@ class DigesterMeasuredTrackPointTest extends JUnit3Suite with MockitoSugar {
 	
 	def testGetAltitude {
 	  val altitude = Length.createLengthInMeters(100.0)
-      when(trackPoint.getAltitude()).thenReturn(altitude)
+      when(trackPoint.altitude).thenReturn(altitude)
 	  assertEquals(altitude, dmtp.getAltitude())
-      verify(trackPoint, times(1)).getAltitude()
+      verify(trackPoint, times(1)).altitude
 	}
 
 	def testGetDistance {
 		val distance = Length.createLengthInMeters(100.0)
-		when(trackPoint.getDistance()).thenReturn(distance)
+		when(trackPoint.distance).thenReturn(distance)
 		
 		assertEquals(distance, dmtp.getDistance())
-		verify(trackPoint, times(1)).getDistance()
+		verify(trackPoint, times(1)).distance
 	}
 
 	def testGetHeartRate {
 		val heartRate = 127
-		when(trackPoint.getHeartRate()).thenReturn(heartRate)
+		when(trackPoint.heartRate).thenReturn(heartRate)
 		
 		assertEquals(heartRate, dmtp.getHeartRate())
-		verify(trackPoint, times(1)).getHeartRate()
+		verify(trackPoint, times(1)).heartRate
 	}
 
 	def testGetLatitude {
 		val latitude = 4.213 // just some latitude
-		when(trackPoint.getLatitude()).thenReturn(latitude)
+		when(trackPoint.latitude).thenReturn(latitude)
 		
 		assertEquals(latitude, dmtp.getLatitude(), DELTA_FOR_DOUBLE_EQUALITY)
-		verify(trackPoint, times(1)).getLatitude()
+		verify(trackPoint, times(1)).latitude
 	}
 
 	def testGetLongitude {
 		val longitude = 14.213 // just some longitude
-		when(trackPoint.getLongitude()).thenReturn(longitude)
+		when(trackPoint.longitude).thenReturn(longitude)
 		
 		assertEquals(longitude, dmtp.getLongitude(), DELTA_FOR_DOUBLE_EQUALITY)
-		verify(trackPoint, times(1)).getLongitude()
+		verify(trackPoint, times(1)).longitude
 	}
 
 	def testGetTime {
 		val time = new DateTime()
-		when(trackPoint.getTime()).thenReturn(time)
+		when(trackPoint.time).thenReturn(time)
 		
 		assertEquals(time, dmtp.getTime())
-		verify(trackPoint, times(1)).getTime()
+		verify(trackPoint, times(1)).time
 	}
 }
