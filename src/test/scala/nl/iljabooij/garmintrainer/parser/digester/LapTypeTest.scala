@@ -65,9 +65,7 @@ class LapTypeTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar 
       for(i <- 0 until NR_OF_TRACKS) {
         val trackType = mock[TrackType]
         startTime = endTime.plus(START_INTERVALS(i))
-        when(trackType.getStartTime()).thenReturn(startTime)
-        endTime = startTime.plus(END_INTERVALS(i))
-        when(trackType.getEndTime()).thenReturn(endTime)
+        when(trackType.startTime).thenReturn(startTime)
 		tracksBuffer += trackType
         testLapType.addTrack(trackType);
 	  }
@@ -86,13 +84,5 @@ class LapTypeTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar 
 	 */ 
 	def testGetStartTime {
 		assertEquals(START_TIME, testLapType.startTime);
-	}
-//	
-//	/**
-//	 * Test getEndTime()
-//	 */ 
-	def testGetEndTime {
-		assertEquals(tracks.last.getEndTime, testLapType.endTime);
-	}
-//	
+	}	
 }

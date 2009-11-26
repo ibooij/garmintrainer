@@ -16,36 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with GarminTrainer.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.iljabooij.garmintrainer.parser.digester
+package nl.iljabooij.garmintrainer.parser.digester;
 
 import org.joda.time.DateTime
 import scala.collection.mutable.ListBuffer
 import scala.reflect.BeanProperty
 
-/**
- * Builder for Lap Objects.
- * 
- * @author "Ilja Booij <ibooij@gmail.com>"
- * 
- */
-class LapType extends LoggerHelper {
-  private val tracksBuffer = new ListBuffer[TrackType]
+class TrackType {
+  private val trackPointBuffer = new ListBuffer[TrackPointType]
+                                                
+  var startTime: DateTime = null
   
-  @BeanProperty  
-  var startTime:DateTime = null
-
-  /**
-   * get all tracks in the lap
-   */
-  def tracks = tracksBuffer.toList
+  def trackPointTypes = trackPointBuffer.toList
   
-  /**
-   * Add a {@link TrackType} to the lap. the {@link TrackType} will be added
-   * as the last track in the lap.
-   * 
-   * @param track {@link TrackPointType} to add.
-   */
-  def addTrack(track: TrackType) {
-    tracksBuffer += track
+  def addTrackPoint(trackPoint: TrackPointType) {
+    trackPointBuffer += trackPoint
   }
 }

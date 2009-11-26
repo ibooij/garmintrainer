@@ -18,30 +18,24 @@
  */
 package nl.iljabooij.garmintrainer.parser.digester
 
-import org.joda.time.DateTime
-
-import com.google.common.base.Preconditions
-
-import net.jcip.annotations.Immutable
 import nl.iljabooij.garmintrainer.model.Length
-import nl.iljabooij.garmintrainer.model.MeasuredTrackPoint
-
+import nl.iljabooij.garmintrainer.model.TrackPointImpl
+import org.joda.time.DateTime
+import scala.reflect.BeanProperty
 /**
- * An Implementation of {@link MeasuredTrackPoint} that uses a {@link TrackPointType} 
- * object to get it's values.
- * @author ilja
- *
+ * Builder for {@link TrackPointImpl}. Because {@link TrackPointImpl} is an unmodifiable
+ * object, we need a builder if we want to build a {@link TrackPointImpl}
+ * incrementally, as with commons-digester.
+ * 
+ * @author "Ilja Booij <ibooij@gmail.com>"
+ * 
  */
-@Immutable
-class DigesterMeasuredTrackPoint(delegate: TrackPointType) extends MeasuredTrackPoint {
-  if (delegate == null) throw new NullPointerException
-  
-  override def getHeartRate = delegate.heartRate
-  override def getAltitude = delegate.altitude
-  override def getDistance = delegate.distance
-  override def getTime = delegate.time
-  override def getLatitude = delegate.latitude
-  override def getLongitude = delegate.longitude
+class TrackPointType {
+  @BeanProperty var time:DateTime = null
+	
+  @BeanProperty var heartRate: Int = 0
+  @BeanProperty var altitude: Length = null
+  @BeanProperty var distance: Length = null
+  @BeanProperty var latitude: Double = 0.0
+  @BeanProperty var longitude: Double = 0.0
 }
-
-
