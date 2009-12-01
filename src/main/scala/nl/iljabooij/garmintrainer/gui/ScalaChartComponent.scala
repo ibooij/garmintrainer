@@ -7,7 +7,7 @@ import com.google.inject.Inject
 
 import nl.iljabooij.garmintrainer.gui.chart.AltitudeDiagramPainter
 import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState}
-import nl.iljabooij.garmintrainer.model.ApplicationState.Property
+import nl.iljabooij.garmintrainer.model.Property
 
 class ScalaChartComponent @Inject() 
 	(val applicationState:ApplicationState,
@@ -28,8 +28,9 @@ class ScalaChartComponent @Inject()
     g2d.setBackground(Color.white)
 	g2d.clearRect(0, 0, size.width, size.height)
  
-	if (applicationState.getCurrentActivity != null) {
-	  drawChart(g2d, applicationState.getCurrentActivity)
+	val currentActivity = applicationState.currentActivity
+	if (currentActivity != null) {
+	  drawChart(g2d, currentActivity)
 	}
   }
   

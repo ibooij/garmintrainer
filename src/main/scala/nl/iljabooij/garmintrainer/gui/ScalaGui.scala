@@ -10,7 +10,7 @@ import scala.swing._
 import com.google.inject.Inject 
 
 import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState}
-import nl.iljabooij.garmintrainer.model.ApplicationState.Property
+import nl.iljabooij.garmintrainer.model.Property
 
 class ScalaGui @Inject() (val overviewPanel:ScalaOverviewPanel,
 		val mapViewer: ScalaMapViewer,
