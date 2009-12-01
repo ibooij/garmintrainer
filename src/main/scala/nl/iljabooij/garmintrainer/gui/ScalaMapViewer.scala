@@ -7,8 +7,7 @@ import scala.collection.jcl.Conversions._
 import com.google.inject.Inject
 import org.openstreetmap.gui.jmapviewer._
 
-import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState,TrackPoint}
-import ApplicationState.Property
+import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState,Property,TrackPoint}
 
 class ScalaMapViewer @Inject() (applicationState: ApplicationState)
     extends JMapViewer with SwingHelper {
@@ -54,10 +53,11 @@ class ScalaMapViewer @Inject() (applicationState: ApplicationState)
   }
   
   def trackPoints: List[TrackPoint] = {
-    if (applicationState.getCurrentActivity == null)
+    val activity = applicationState.currentActivity
+    if (activity == null)
       List[TrackPoint]()
     else {
-      val julPoints = applicationState.getCurrentActivity.getTrackPoints
+      val julPoints = activity.getTrackPoints
       convertList(julPoints).toList
     }
   }
@@ -68,7 +68,7 @@ class ScalaMapViewer @Inject() (applicationState: ApplicationState)
   override def paintComponent(g: Graphics) {
     super.paintComponent(g)
     
-    val activity = applicationState.getCurrentActivity
+    val activity = applicationState.currentActivity
     if (activity == null) return
     
     val mapPoints = trackPoints.filter(tp => tp.hasPosition).map(tp => getMapPosition(tp.getLatitude, tp.getLongitude, false))

@@ -77,7 +77,7 @@ class ScalaFileTransferHandler @Inject() (applicationState:ApplicationState, imp
           try {
             importer.importTcx(file)
           } catch {
-            case e: TcxImportException => applicationState.setErrorMessage(e.getMessage)
+            case e: TcxImportException => applicationState.errorMessage = e.getMessage
           }
         }
       }

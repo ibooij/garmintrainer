@@ -70,5 +70,4 @@ public interface TrackPoint {
 			return tp1.getTime().compareTo(tp2.getTime());
 		}
 	}
-
 }

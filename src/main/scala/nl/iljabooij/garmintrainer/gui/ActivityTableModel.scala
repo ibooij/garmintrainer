@@ -4,8 +4,7 @@ import java.beans.{PropertyChangeEvent,PropertyChangeListener}
 import javax.swing.table.AbstractTableModel
 import com.google.inject.Inject
 import org.joda.time.{DateTime,DateTimeZone,Duration}
-import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState,Length,Speed,TrackPoint}
-import ApplicationState.Property
+import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState,Length,Property,Speed,TrackPoint}
 import Length.{Unit => LengthUnit}
 import Speed.{Unit => SpeedUnit}
 
@@ -20,7 +19,7 @@ class ActivityTableModel @Inject() (private val applicationState:ApplicationStat
    * Get the value for the cell at [RowwIndex, ColumnIndex] 
    */
   override def getValueAt(rowIndex:Int, columnIndex:Int): Object = {
-    val activity = applicationState.getCurrentActivity
+    val activity = applicationState.currentActivity
     if (activity == null) return null
     
     val trackPoint = activity.getTrackPoints.get(rowIndex)
@@ -47,7 +46,7 @@ class ActivityTableModel @Inject() (private val applicationState:ApplicationStat
   }
   
   override def getRowCount: Int = {
-    val activity = applicationState.getCurrentActivity
+    val activity = applicationState.currentActivity
     if (activity == null) 0 else activity.getTrackPoints.size
   }
   

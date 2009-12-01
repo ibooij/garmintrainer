@@ -5,9 +5,8 @@ import javax.swing.{JLabel,JPanel,SpringLayout}
 import scala.swing.{Label,LayoutContainer,Panel}
 import com.google.inject.Inject
 import org.joda.time.Duration
-import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState,Length}
+import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState,Length,Property}
 import Length.{Unit => LengthUnit}
-import ApplicationState.Property
 
 class ScalaSummaryPanel @Inject() (state:ApplicationState) 
 	extends JPanel with SwingHelper {
