@@ -52,7 +52,7 @@ class ScalaGui @Inject() (val overviewPanel:ScalaOverviewPanel,
           var id:String = ""
           if (event.getNewValue != null) {
             val activity:Activity = event.getNewValue.asInstanceOf[Activity]
-            id = activity.getStartTime.toString("yyyy-MM-dd")
+            id = activity.startTime.toString("yyyy-MM-dd")
             onEdt(frame.title = id)
           }  
         }

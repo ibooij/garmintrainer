@@ -16,99 +16,82 @@
  * You should have received a copy of the GNU General Public License
  * along with GarminTrainer.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.iljabooij.garmintrainer.model;
+package nl.iljabooij.garmintrainer.model
 
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
+import org.joda.time.{DateTime,Duration}
 
-import com.google.common.collect.ImmutableList;
+//import com.google.common.collect.ImmutableList;
 
-public interface Activity extends Comparable<Activity> {
-
-	/**
-	 * Get start time of activity.
-	 * @return start time
-	 */
-	DateTime getStartTime();
-
-	/**
-	 * Get end time of activity
-	 * @return the end time of the activity.
-	 */
-	DateTime getEndTime();
+trait Activity extends Comparable[Activity] {
+  /**
+   * Get start time of activity.
+   * @return start time
+   */
+  def startTime:DateTime
+  
+  /**
+   * Get end time of activity
+   * @return the end time of the activity.
+   */
+   def endTime:DateTime
 
 	/**
 	 * Get maximum altitude of activity.
 	 * @return maximum altitude
 	 */
-	Length getMaximumAltitude();
+	def maximumAltitude: Length
 
 	/**
 	 * Get the altitude class for this Activity. 
 	 */
-	AltitudeClass getAltitudeClass();
+	def altitudeClass:AltitudeClass
 	
 	/**
 	 * Get minimum altitude of activity.
 	 * @return minimum altitude
 	 */
-	Length getMinimumAltitude();
+	def minimumAltitude:Length
 
 	/**
 	 * Get Maximum Speed of Exercise
 	 */
-	Speed getMaximumSpeed();
+	def maximumSpeed:Speed
 
 	/**
 	 * Get gross duration (from start time to time of last measurement) of the
 	 * Activity.
 	 * @return gross duration
 	 */
-	Duration getGrossDuration();
+	def grossDuration:Duration
 
 	/**
 	 * Get net duration (from start time to time of last measurement, minus
 	 * pauses) of the Activity.
 	 * @return net duration
 	 */
-	Duration getNetDuration();
+	def netDuration: Duration
 
 	/**
 	 * Get all track points in the activity.
 	 * @return immutable list of track points.
 	 */
-	ImmutableList<TrackPoint> getTrackPoints();
+	def trackPoints:List[TrackPoint]
 
 	/**
 	 * Get Laps in Activity
 	 * @return all laps
 	 */
-	ImmutableList<Lap> getLaps();
-
-	/**
-	 * {@inheritDoc}
-	 */
-	String toString();
+	def laps:List[Lap]
 
 	/**
 	 * Get distance of the complete {@link ActivityImpl}.
 	 * @return total distance.
 	 */
-	Length getDistance();
+	def distance:Length
 
 	/**
 	 * Get total altitude gained
 	 * @return total altitude gain
 	 */
-	Length getAltitudeGain();
-	
-	/**
-	 * Get the TrackPoint for a certain point in time.
-	 * @param dateTime the time to search for
-	 * @return the TrackPoint for the time. If the time is not found in the
-	 * trackpoints, it returns the track point with the latest time before dateTime.
-	 * if the time is before the first track point's time, the first track point
-	 * is returned anyway.
-	 */
-	public TrackPoint getTrackPointForTime(final DateTime dateTime);
+	def altitudeGain: Length
 }

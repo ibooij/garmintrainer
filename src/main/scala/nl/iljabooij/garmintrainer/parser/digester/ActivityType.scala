@@ -82,28 +82,28 @@ class ActivityType {
     adjustForLateFix
   
     var previousMeasuredTrackPoint:MeasuredTrackPoint = null;
-    var laps = new JAList[Lap]
+    var laps = new ListBuffer[Lap]
 
     lapTypes.foreach (lapType => {
-      val tracks = new JAList[Track]
+      val tracks = new ListBuffer[Track]
       lapType.tracks.foreach (trackType => {
         val trackPoints = new JAList[TrackPoint]
     	trackType.trackPointTypes.foreach(trackPointType => {
     	  val measuredTrackPoint = new DigesterMeasuredTrackPoint(trackPointType)
           val newTrackPoint = 
-            if (laps.isEmpty() && tracks.isEmpty() && trackPoints.isEmpty()) 
+            if (laps.isEmpty && tracks.isEmpty && trackPoints.isEmpty()) 
               new StartTrackPoint(startTime, measuredTrackPoint)
             else
               new NonStartTrackPoint(previousMeasuredTrackPoint, measuredTrackPoint)
            trackPoints.add(newTrackPoint)
            previousMeasuredTrackPoint = measuredTrackPoint
     	})
-        tracks.add(new Track(trackPoints))
+        tracks += new Track(trackPoints)
       })
-      laps.add(new Lap(lapType.startTime, tracks))
+      laps += new Lap(lapType.startTime, tracks.toList)
     })
     
-    new ActivityImpl(startTime, laps)
+    new ActivityImpl(startTime, laps.toList)
   }
     
   /**
