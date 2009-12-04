@@ -16,25 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with GarminTrainer.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.iljabooij.garmintrainer.parser.digester
+package nl.iljabooij.garmintrainer.model
 
-import org.apache.commons.digester.AbstractObjectCreationFactory
-import org.joda.time.format.ISODateTimeFormat
-import org.xml.sax.Attributes
+import org.joda.time.{DateTime,Duration}
 
-class LapBuilderFactory extends AbstractObjectCreationFactory {
-  private val dateTimeFormatter = ISODateTimeFormat.dateTimeNoMillis()
-  
-  override def createObject(attributes: Attributes): LapType = {
-    val dateTimeString = attributes.getValue(LapBuilderFactory.startTimeAttribute)
-	val startTime = dateTimeFormatter.parseDateTime(dateTimeString)
-	val lapBuilder = new LapType
-	lapBuilder.startTime = startTime
-	
-	return lapBuilder
+/**
+ * First track point in the Activity
+ * 
+ * @author ilja
+ * @param startTime start time of the {@link Activity}.
+ * @param measuredTrackPoint track point as measured by the gps device.
+ */
+class StartTrackPoint(startTime: DateTime, measuredTrackPoint: MeasuredTrackPoint) 
+	extends TrackPointImpl(measuredTrackPoint) {
+  override def getSpeed = {
+    val timeTravelled = new Duration(startTime, getTime())
+    Speed.createSpeedInMetersPerSecond(getDistance(), timeTravelled)
   }
-}
 
-object LapBuilderFactory {
-  val startTimeAttribute = "StartTime"
+  override def getAltitudeDelta = Length.createLengthInMeters(0.0)
 }
