@@ -54,12 +54,7 @@ class ScalaMapViewer @Inject() (applicationState: ApplicationState)
   
   def trackPoints: List[TrackPoint] = {
     val activity = applicationState.currentActivity
-    if (activity == null)
-      List[TrackPoint]()
-    else {
-      val julPoints = activity.getTrackPoints
-      convertList(julPoints).toList
-    }
+    if (activity == null) List[TrackPoint]() else activity.trackPoints
   }
   
   /** This method should be protected, but I cannot get it to compile if

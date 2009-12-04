@@ -50,12 +50,12 @@ class ScalaSummaryPanel @Inject() (state:ApplicationState)
        * a SwingWorker.
        */
       def doInBackground(activity: Activity) = {
-        val startTime = activity.getStartTime.toString("yyyy-MM-dd")
-        val distance = activity.getDistance.convert(LengthUnit.Kilometer).toString
-        val nrLaps = activity.getLaps.size.toString
-        val grossDuration = durationToString(activity.getGrossDuration)
-        val netDuration = durationToString(activity.getNetDuration)
-        val altitudeGain = activity.getAltitudeGain.convert(LengthUnit.Meter).toString
+        val startTime = activity.startTime.toString("yyyy-MM-dd")
+        val distance = activity.distance.convert(LengthUnit.Kilometer).toString
+        val nrLaps = activity.laps.size.toString
+        val grossDuration = durationToString(activity.grossDuration)
+        val netDuration = durationToString(activity.netDuration)
+        val altitudeGain = activity.altitudeGain.convert(LengthUnit.Meter).toString
         Map("startTime" -> startTime,
             "distance" -> distance,
             "nrOfLaps" -> nrLaps,

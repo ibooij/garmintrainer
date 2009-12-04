@@ -36,11 +36,11 @@ class AltitudeDiagramPainter extends LoggerHelper {
 	
   private def paintAltitude(activity: Activity, g2d: Graphics2D,
                             width: Int, height: Int) = {
-    val minAltitude = Math.min(0.0, activity.getMinimumAltitude.getValueInMeters)
-    val maxAltitude = activity.getMaximumAltitude.getValueInMeters
+    val minAltitude = Math.min(0.0, activity.minimumAltitude.getValueInMeters)
+    val maxAltitude = activity.maximumAltitude.getValueInMeters
     
     val altitudeRange = maxAltitude - minAltitude
-    val durationInSeconds = activity.getGrossDuration.toStandardSeconds.getSeconds.asInstanceOf[Double]
+    val durationInSeconds = activity.grossDuration.toStandardSeconds.getSeconds.asInstanceOf[Double]
     
     val path = new Path2D.Double
     path.moveTo(LeftOffset, height - BottomOffset)
@@ -55,7 +55,7 @@ class AltitudeDiagramPainter extends LoggerHelper {
       path.lineTo(x,y)
     }
     
-    val trackPoints = Conversions.convertList(activity.getTrackPoints)
+    val trackPoints = activity.trackPoints
     trackPoints.foreach(nextPoint)
     
     path.lineTo(xt(trackPoints.last), height - BottomOffset)
@@ -109,7 +109,7 @@ class AltitudeDiagramPainter extends LoggerHelper {
     
   private def xForTrackPoint(activity: Activity, width: Int, 
                              durationInSeconds: Double)(trackPoint: TrackPoint): Double = {
-    val fromStart = new Duration(activity.getStartTime, trackPoint.getTime).toStandardSeconds
+    val fromStart = new Duration(activity.startTime, trackPoint.getTime).toStandardSeconds
     (width - LeftOffset - RightOffset) * (fromStart.getSeconds / durationInSeconds) + LeftOffset
   }
   

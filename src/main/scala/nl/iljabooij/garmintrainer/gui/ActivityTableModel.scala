@@ -22,13 +22,13 @@ class ActivityTableModel @Inject() (private val applicationState:ApplicationStat
     val activity = applicationState.currentActivity
     if (activity == null) return null
     
-    val trackPoint = activity.getTrackPoints.get(rowIndex)
+    val trackPoint = activity.trackPoints(rowIndex)
     
     val column = columns(columnIndex)
     column match {
       case "Time" => 
         val dateTime = new DateTime(0L, DateTimeZone.UTC)
-        val fromStart = new Duration(activity.getStartTime, trackPoint.getTime)
+        val fromStart = new Duration(activity.startTime, trackPoint.getTime)
         val timeFromStart = dateTime.plus(fromStart)
         timeFromStart.toString("HH:mm:ss")
       case "Distance" =>
@@ -47,7 +47,7 @@ class ActivityTableModel @Inject() (private val applicationState:ApplicationStat
   
   override def getRowCount: Int = {
     val activity = applicationState.currentActivity
-    if (activity == null) 0 else activity.getTrackPoints.size
+    if (activity == null) 0 else activity.trackPoints.size
   }
   
   override def getColumnCount:Int = columns.length
