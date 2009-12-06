@@ -29,11 +29,11 @@ import scala.collection.jcl.Conversions.convertList
  */
 
 class Lap(val startTime:DateTime, val tracks:List[Track]) {
-  def endTime = tracks.last.getEndTime
+  def endTime = tracks.last.endTime
   
   def trackPoints = {
     val buffer = new ListBuffer[TrackPoint]
-    tracks.foreach(track => buffer ++= convertList(track.getTrackPoints))
+    tracks.foreach(track => buffer ++= track.trackPoints)
     buffer.toList
   }
 
@@ -50,6 +50,6 @@ class Lap(val startTime:DateTime, val tracks:List[Track]) {
    * @return net duration of lap.
    */
   def netDuration = {
-    tracks.foldLeft(new Duration(startTime,tracks(0).getStartTime))((duration,track) => duration.plus(track.getDuration))
+    tracks.foldLeft(new Duration(startTime,tracks.head.startTime))((duration,track) => duration.plus(track.duration))
   }
 }

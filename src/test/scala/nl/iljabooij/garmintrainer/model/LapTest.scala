@@ -16,112 +16,81 @@
  * You should have received a copy of the GNU General Public License
  * along with GarminTrainer.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.iljabooij.garmintrainer.model;
+package nl.iljabooij.garmintrainer.model
 
 import org.junit.Assert._
 import org.mockito.Mockito._
 import org.joda.time.{DateTime,Duration}
 import org.scalatest.junit.{JUnit3Suite,AssertionsForJUnit}
 import org.scalatest.mock.MockitoSugar
-
+import scala.collection.jcl.Conversions._
+import scala.collection.mutable.ListBuffer
 
 class LapTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
-//	private Lap testLap;
-//	private LinkedList<Track> tracks;
-//	private LinkedList<TrackPoint> allTrackPoints;
-//
-//	private static final DateTime START_TIME = new DateTime();
-//	private static final int NR_OF_TRACK_POINTS = 100;
-//	private static final int NR_OF_TRACKS = 3;
-//
-//	@Before
-//	public void setUp() {
-//		tracks = Lists.newLinkedList();
-//		allTrackPoints = Lists.newLinkedList();
-//
-//		for (int trackNr = 0; trackNr < NR_OF_TRACKS; trackNr++) {
-//			Track track = mock(Track.class);
-//			
-//			LinkedList<TrackPoint> trackPoints = Lists.newLinkedList();
-//			for (int i = trackNr * NR_OF_TRACK_POINTS; i < (trackNr + 1) * NR_OF_TRACK_POINTS; i++) {
-//				TrackPointImpl trackPoint = mock(TrackPointImpl.class);
-//				when(trackPoint.getTime()).thenReturn(
-//						START_TIME.plusSeconds(i + 1));
-//				trackPoints.add(trackPoint);
-//			}
-//			allTrackPoints.addAll(trackPoints);
-//			when(track.getTrackPoints()).thenReturn(ImmutableList.copyOf(trackPoints));
-//			DateTime startTime = trackPoints.getFirst().getTime();
-//			DateTime endTime = trackPoints.getLast().getTime();
-//			when(track.getStartTime()).thenReturn(startTime);
-//			when(track.getEndTime()).thenReturn(endTime);
-//			tracks.add(track);
-//		}
-//		testLap = new Lap(START_TIME, tracks);
-//	}
-//
-//	@Test
-//	public void testGetStartTime() {
-//		assertEquals(START_TIME, testLap.getStartTime());
-//	}
-//
-//	@Test
-//	public void testGetEndTime() {
-//		assertEquals(allTrackPoints.getLast().getTime(), testLap.getEndTime());
-//	}
-//
-//	@Test
-//	public void testGetTrackPoints() {
-//		assertEquals(allTrackPoints, testLap.getTrackPoints());
-//	}
-//
-//	/**
-//	 * Test if the Lap class can find pauses between different tracks in the lap.
-//	 */
-//	@Test
-//	public void testGetPauses() {
-//		// three tracks, with pauses in between
-//		Track[] tracks = new Track[3];
-//		tracks[0] = mock(Track.class);
-//		tracks[1] = mock(Track.class);
-//		tracks[2] = mock(Track.class);
-//		
-//		when(tracks[0].getStartTime()).thenReturn(START_TIME);
-//		when(tracks[0].getEndTime()).thenReturn(START_TIME.plusMinutes(1));
-//		when(tracks[1].getStartTime()).thenReturn(START_TIME.plusMinutes(2));
-//		when(tracks[1].getEndTime()).thenReturn(START_TIME.plusMinutes(3));
-//		when(tracks[2].getStartTime()).thenReturn(START_TIME.plusMinutes(4));
-//		when(tracks[2].getEndTime()).thenReturn(START_TIME.plusMinutes(5));
-//	
-//		Pause[] pauses = new Pause[2];
-//		pauses[0] = new Pause(tracks[0].getEndTime(), tracks[1].getStartTime());
-//		pauses[1] = new Pause(tracks[1].getEndTime(), tracks[2].getStartTime());
-//		
-//		Lap lap = new Lap(START_TIME, Arrays.asList(tracks));
-//		
-//		assertEquals(Arrays.asList(pauses), lap.getPauses());
-//	}
-//	
-//	@Test
-//	public void testGetGrossDuration() {
-//		// three tracks, with pauses in between
-//		Track[] tracks = new Track[3];
-//		tracks[0] = mock(Track.class);
-//		tracks[1] = mock(Track.class);
-//		tracks[2] = mock(Track.class);
-//		
-//		when(tracks[0].getStartTime()).thenReturn(START_TIME);
-//		when(tracks[0].getEndTime()).thenReturn(START_TIME.plusMinutes(1));
-//		when(tracks[1].getStartTime()).thenReturn(START_TIME.plusMinutes(2));
-//		when(tracks[1].getEndTime()).thenReturn(START_TIME.plusMinutes(3));
-//		when(tracks[2].getStartTime()).thenReturn(START_TIME.plusMinutes(4));
-//		when(tracks[2].getEndTime()).thenReturn(START_TIME.plusMinutes(5));
-//		
-//		Lap lap = new Lap(START_TIME, Arrays.asList(tracks));
-//		
-//		assertEquals(new Duration(tracks[0].getStartTime(), tracks[2].getEndTime()),
-//				lap.getGrossDuration());	
-//	}
+  private var testLap:Lap = _
+  private var tracks:List[Track] = _
+  private var allTrackPoints:List[TrackPoint] = _
+
+  private val START_TIME = new DateTime
+  private val NR_OF_TRACK_POINTS = 100
+  private val NR_OF_TRACKS = 3
+
+  override def setUp() {
+    val trackPointsBuffer = new ListBuffer[TrackPoint]
+    val tracksBuffer = new ListBuffer[Track]
+    
+    for (trackNr <- 0 until NR_OF_TRACKS) {
+      val trackPoints = new ListBuffer[TrackPoint]
+      for (tpNr <- 0 until NR_OF_TRACK_POINTS) {
+        val trackPoint = mock[TrackPoint]
+        when(trackPoint.getTime).thenReturn(START_TIME.plusSeconds(tpNr + 1))
+        trackPoints += trackPoint
+      }
+      trackPointsBuffer ++= trackPoints
+      val track = mock[Track]
+      when(track.trackPoints).thenReturn(trackPoints.toList)
+      val trackStartTime = trackPoints.toList.head.getTime
+      val trackEndTime = trackPoints.toList.last.getTime
+      when(track.startTime).thenReturn(trackStartTime)
+      when(track.endTime).thenReturn(trackEndTime)
+      
+      tracksBuffer += track
+    }
+    allTrackPoints = trackPointsBuffer.toList
+    
+    testLap = new Lap(START_TIME, tracksBuffer.toList)
+  } 
+
+  def testGetStartTime {
+    val track = mock[Track]
+    val lap = new Lap(START_TIME, List(track))
+    
+    assertEquals(START_TIME, testLap.startTime)
+  }
+  
+  def testEndTime {
+    assertEquals(allTrackPoints.last.getTime, testLap.endTime)
+  }
+
+  def testTrackPoints {
+    assertEquals(allTrackPoints, testLap.trackPoints)
+  }
+
+  def testGetGrossDuration {
+    val tracks = List(mock[Track],mock[Track],mock[Track])
+    
+    when(tracks(0).startTime).thenReturn(START_TIME)
+    when(tracks(0).endTime).thenReturn(START_TIME.plusMinutes(1))
+    when(tracks(1).startTime).thenReturn(START_TIME.plusMinutes(2))
+    when(tracks(1).endTime).thenReturn(START_TIME.plusMinutes(3))
+    when(tracks(2).startTime).thenReturn(START_TIME.plusMinutes(4))
+    when(tracks(2).endTime).thenReturn(START_TIME.plusMinutes(5))
+    
+    val lap = new Lap(START_TIME, tracks)
+    
+    assertEquals(new Duration(tracks.head.startTime, tracks.last.endTime),
+                 lap.grossDuration)
+  }
 //	
 //	@Test
 //	public void testGetNetDuration() {
