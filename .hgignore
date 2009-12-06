@@ -8,4 +8,10 @@ syntax: regexp
 syntax: regexp
 ^target$
 ^build$
+
+# sbt directories
+^lib_managed$
+^project/boot$
+^project/build/target$
+
 ^\.manager$

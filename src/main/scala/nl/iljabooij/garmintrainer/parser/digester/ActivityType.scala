@@ -87,18 +87,18 @@ class ActivityType {
     lapTypes.foreach (lapType => {
       val tracks = new ListBuffer[Track]
       lapType.tracks.foreach (trackType => {
-        val trackPoints = new JAList[TrackPoint]
+        val trackPoints = new ListBuffer[TrackPoint]
     	trackType.trackPointTypes.foreach(trackPointType => {
     	  val measuredTrackPoint = new DigesterMeasuredTrackPoint(trackPointType)
           val newTrackPoint = 
-            if (laps.isEmpty && tracks.isEmpty && trackPoints.isEmpty()) 
+            if (laps.isEmpty && tracks.isEmpty && trackPoints.isEmpty) 
               new StartTrackPoint(startTime, measuredTrackPoint)
             else
               new NonStartTrackPoint(previousMeasuredTrackPoint, measuredTrackPoint)
-           trackPoints.add(newTrackPoint)
+           trackPoints += newTrackPoint
            previousMeasuredTrackPoint = measuredTrackPoint
     	})
-        tracks += new Track(trackPoints)
+        tracks += new Track(trackPoints.toList)
       })
       laps += new Lap(lapType.startTime, tracks.toList)
     })
