@@ -40,11 +40,6 @@ trait Activity extends Comparable[Activity] {
 	 * @return maximum altitude
 	 */
 	def maximumAltitude: Length
-
-	/**
-	 * Get the altitude class for this Activity. 
-	 */
-	def altitudeClass:AltitudeClass
 	
 	/**
 	 * Get minimum altitude of activity.
