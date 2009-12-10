@@ -16,15 +16,5 @@ class Build(info: ProjectInfo) extends DefaultProject(info)
     val scalaSwing = "org.scala-lang" % "scala-swing" % "2.7.7"
     val scalaTest = "org.scalatest" % "scalatest" % "1.0" % "test"
     val slf4jApi = "org.slf4j" % "slf4j-api" % "1.5.8"
-    
-    /*compile group:'joda-time', name: 'joda-time', version: '1.6' 
-
-        compile group: 'aopalliance', name: 'aopalliance', version: '1.0'
-        compile group:'com.google.collections', name: 'google-collections', version: '1.0-rc2'
-
-        compile 'commons-beanutils:commons-beanutils:1.8.0'
-        compile 'commons-digester:commons-digester:2.0'
-        compile 'commons-logging:commons-logging:1.1.1'
-
-        compile 'commons-io:commons-io:1.4'*/
+    val slf4jLog4j = "org.slf4j" % "slf4j-log4j12" % "1.5.8"
 }
