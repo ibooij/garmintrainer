@@ -109,14 +109,14 @@ class AltitudeDiagramPainter extends LoggerHelper {
     
   private def xForTrackPoint(activity: Activity, width: Int, 
                              durationInSeconds: Double)(trackPoint: TrackPoint): Double = {
-    val fromStart = new Duration(activity.startTime, trackPoint.getTime).toStandardSeconds
+    val fromStart = new Duration(activity.startTime, trackPoint.time).toStandardSeconds
     (width - LeftOffset - RightOffset) * (fromStart.getSeconds / durationInSeconds) + LeftOffset
   }
   
   private def yForTrackPoint(height: Int, minAltitude: Double, 
                              altitudeRange: Double)
   							(trackPoint: TrackPoint): Double = {
-    val relativeAltitude= (trackPoint.getAltitude.getValueInMeters - minAltitude) / altitudeRange 
+    val relativeAltitude= (trackPoint.altitude.getValueInMeters - minAltitude) / altitudeRange 
     height - relativeAltitude * (height - BottomOffset - TopOffset) - BottomOffset
   }
 }

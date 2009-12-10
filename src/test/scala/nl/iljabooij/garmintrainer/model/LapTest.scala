@@ -43,14 +43,14 @@ class LapTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
       val trackPoints = new ListBuffer[TrackPoint]
       for (tpNr <- 0 until NR_OF_TRACK_POINTS) {
         val trackPoint = mock[TrackPoint]
-        when(trackPoint.getTime).thenReturn(START_TIME.plusSeconds(tpNr + 1))
+        when(trackPoint.time).thenReturn(START_TIME.plusSeconds(tpNr + 1))
         trackPoints += trackPoint
       }
       trackPointsBuffer ++= trackPoints
       val track = mock[Track]
       when(track.trackPoints).thenReturn(trackPoints.toList)
-      val trackStartTime = trackPoints.toList.head.getTime
-      val trackEndTime = trackPoints.toList.last.getTime
+      val trackStartTime = trackPoints.toList.head.time
+      val trackEndTime = trackPoints.toList.last.time
       when(track.startTime).thenReturn(trackStartTime)
       when(track.endTime).thenReturn(trackEndTime)
       
@@ -69,7 +69,7 @@ class LapTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
   }
   
   def testEndTime {
-    assertEquals(allTrackPoints.last.getTime, testLap.endTime)
+    assertEquals(allTrackPoints.last.time, testLap.endTime)
   }
 
   def testTrackPoints {

@@ -36,7 +36,7 @@ class ScalaMapViewer @Inject() (applicationState: ApplicationState)
       var northWest = new Coordinate(-180.0, 90.0)
       var southEast = new Coordinate(180.0, -90.0)
       if (activity != null) {
-        val coordinates = trackPoints.filter(tp => tp.hasPosition).map(tp => new Coordinate(tp.getLatitude, tp.getLongitude))
+        val coordinates = trackPoints.filter(tp => tp.hasPosition).map(tp => new Coordinate(tp.latitude, tp.longitude))
         val bounds:Array[Coordinate] = Coordinate.getBoundingBox(coordinates.toArray)
         northWest = bounds(0)
         southEast = bounds(1)
@@ -66,7 +66,7 @@ class ScalaMapViewer @Inject() (applicationState: ApplicationState)
     val activity = applicationState.currentActivity
     if (activity == null) return
     
-    val mapPoints = trackPoints.filter(tp => tp.hasPosition).map(tp => getMapPosition(tp.getLatitude, tp.getLongitude, false))
+    val mapPoints = trackPoints.filter(tp => tp.hasPosition).map(tp => getMapPosition(tp.latitude, tp.longitude, false))
     
     val path = new Path2D.Double
     path.moveTo(mapPoints.head.x, mapPoints.head.y)

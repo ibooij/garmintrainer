@@ -28,19 +28,19 @@ class ActivityTableModel @Inject() (private val applicationState:ApplicationStat
     column match {
       case "Time" => 
         val dateTime = new DateTime(0L, DateTimeZone.UTC)
-        val fromStart = new Duration(activity.startTime, trackPoint.getTime)
+        val fromStart = new Duration(activity.startTime, trackPoint.time)
         val timeFromStart = dateTime.plus(fromStart)
         timeFromStart.toString("HH:mm:ss")
       case "Distance" =>
-        trackPoint.getDistance.convert(LengthUnit.Kilometer)
+        trackPoint.distance.convert(LengthUnit.Kilometer)
       case "Altitude" =>
-        trackPoint.getAltitude.convert(LengthUnit.Meter)
+        trackPoint.altitude.convert(LengthUnit.Meter)
       case "Altitude Gain" =>
-        trackPoint.getAltitudeDelta.convert(LengthUnit.Meter)
+        trackPoint.altitudeDelta.convert(LengthUnit.Meter)
       case "Heart Rate" =>
-        "" + trackPoint.getHeartRate
+        "" + trackPoint.heartRate
       case "Speed" =>
-        trackPoint.getSpeed.convert(SpeedUnit.KilometersPerHour)
+        trackPoint.speed.convert(SpeedUnit.KilometersPerHour)
       case _ => "unknown"
     }
   }

@@ -36,12 +36,12 @@ import nl.iljabooij.garmintrainer.model.MeasuredTrackPoint
 class DigesterMeasuredTrackPoint(delegate: TrackPointType) extends MeasuredTrackPoint {
   if (delegate == null) throw new NullPointerException
   
-  override def getHeartRate = delegate.heartRate
-  override def getAltitude = delegate.altitude
-  override def getDistance = delegate.distance
-  override def getTime = delegate.time
-  override def getLatitude = delegate.latitude
-  override def getLongitude = delegate.longitude
+  override def heartRate = delegate.heartRate
+  override def altitude = delegate.altitude
+  override def distance = delegate.distance
+  override def time = delegate.time
+  override def latitude = delegate.latitude
+  override def longitude = delegate.longitude
 }
 
 

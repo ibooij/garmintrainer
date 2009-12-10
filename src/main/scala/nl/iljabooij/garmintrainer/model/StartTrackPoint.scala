@@ -29,10 +29,10 @@ import org.joda.time.{DateTime,Duration}
  */
 class StartTrackPoint(startTime: DateTime, measuredTrackPoint: MeasuredTrackPoint) 
 	extends TrackPointImpl(measuredTrackPoint) {
-  override def getSpeed = {
-    val timeTravelled = new Duration(startTime, getTime())
-    Speed.createSpeedInMetersPerSecond(getDistance(), timeTravelled)
+  override def speed = {
+    val timeTravelled = new Duration(startTime, time)
+    Speed.createSpeedInMetersPerSecond(distance, timeTravelled)
   }
 
-  override def getAltitudeDelta = Length.createLengthInMeters(0.0)
+  override def altitudeDelta = Length.createLengthInMeters(0.0)
 }

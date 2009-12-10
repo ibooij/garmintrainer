@@ -46,14 +46,14 @@ class NonStartTrackPointTest extends JUnit3Suite with AssertionsForJUnit with Mo
 
 	override def setUp {
 		first = mock[MeasuredTrackPoint]
-		when(first.getTime()).thenReturn(START_TIME)
-		when(first.getDistance()).thenReturn(Length.createLengthInMeters(0.0))
-		when(first.getAltitude()).thenReturn(FIRST_ALTITUDE)
+		when(first.time).thenReturn(START_TIME)
+		when(first.distance).thenReturn(Length.createLengthInMeters(0.0))
+		when(first.altitude).thenReturn(FIRST_ALTITUDE)
 		
 		second = mock[MeasuredTrackPoint]
-		when(second.getTime()).thenReturn(SECOND_TIME)
-		when(second.getDistance()).thenReturn(SECOND_DISTANCE)
-		when(second.getAltitude()).thenReturn(SECOND_ALTITUDE)
+		when(second.time).thenReturn(SECOND_TIME)
+		when(second.distance).thenReturn(SECOND_DISTANCE)
+		when(second.altitude).thenReturn(SECOND_ALTITUDE)
 		
 		nonStartTrackPoint = new NonStartTrackPoint(first, second)
 	}
@@ -66,12 +66,12 @@ class NonStartTrackPointTest extends JUnit3Suite with AssertionsForJUnit with Mo
 		val distance = SECOND_DISTANCE
 		val speed = Speed.createSpeedInMetersPerSecond(distance, duration)
 
-		assertEquals(speed, nonStartTrackPoint.getSpeed())
+		assertEquals(speed, nonStartTrackPoint.speed)
 		
-		verify(first, times(1)).getDistance()
-		verify(first, times(1)).getTime()
-		verify(second, times(1)).getDistance()
-		verify(second, times(1)).getTime()
+		verify(first, times(1)).distance
+		verify(first, times(1)).time
+		verify(second, times(1)).distance
+		verify(second, times(1)).time
 	}
 
 	def testConstructorFailsWithNullPrevious() {
@@ -82,6 +82,6 @@ class NonStartTrackPointTest extends JUnit3Suite with AssertionsForJUnit with Mo
 	
 	def testGetAltitudeDelta() {
 		val gain = SECOND_ALTITUDE.minus(FIRST_ALTITUDE)
-		assertEquals(gain, nonStartTrackPoint.getAltitudeDelta())
+		assertEquals(gain, nonStartTrackPoint.altitudeDelta)
 	}
 }
