@@ -69,36 +69,44 @@ class ActivityImpl(val startTime:DateTime, val laps:List[Lap])
   
   override def distance = trackPoints.last.getDistance
 	
-  override def altitudeGain = Length.createLengthInMeters(0.0)
-//	/** {@inheritDoc} */
-//	public Length getAltitudeGain() {
-//		final Length minimumGain = Length.createLengthInMeters(5.0);
-//		Length totalGain = Length.createLengthInMeters(0.0);
-//
-//		// only count as climb if 5 meters are gained without a drop in between.
-//		// This is a crude way to filter out any noise.
-//		LinkedList<TrackPoint> climbingStretch = Lists.newLinkedList();
-//		for (TrackPoint trackPoint : getTrackPoints()) {
-//			if (trackPoint.getAltitudeDelta().getValueInMeters() > 0.0) {
-//				climbingStretch.add(trackPoint);
-//			} else {
-//				Length gain = Length.createLengthInMeters(0.0);
-//				for (TrackPoint climbingTrackPoint : climbingStretch) {
-//					gain = gain.plus(climbingTrackPoint.getAltitudeDelta());
-//				}
-//				if (gain.compareTo(minimumGain) > 0) {
-//					totalGain = totalGain.plus(gain);
-//				}
-//				climbingStretch.clear();
-//			}
-//		}
-//		return totalGain;
-//	}
+  /**
+   Get altitude gain for total activity. Disregard small climbs of less than 5.0 meters up.
+   */
+  override def altitudeGain = {
+    val ZERO_GAIN = Length.createLengthInMeters(0.0)
+    val MINIMUM_GAIN = Length.createLengthInMeters(5.0)
+    
+    // returns a list of climbs. A Climb is a list of track points that all have
+    // a positive altitude delta.
+    def findClimbs(theClimbs:List[List[TrackPoint]], currentClimb:List[TrackPoint], trackPoints:List[TrackPoint]):List[List[TrackPoint]] = {
+      trackPoints match {
+        case Nil => currentClimb :: theClimbs
+        case trackPoint :: rest => {
+            if (trackPoint.getAltitudeDelta.compareTo(ZERO_GAIN) > 0) 
+              findClimbs(theClimbs, trackPoint :: currentClimb, rest)
+            else if (currentClimb.isEmpty)
+              findClimbs(theClimbs, List(), rest)
+            else
+              findClimbs(currentClimb :: theClimbs, List(), rest)
+        }
+      }
+    }
+    // calculate total gain for climb
+    def totalGainForClimb(climb:List[TrackPoint]):Length = {
+      climb.foldLeft(ZERO_GAIN)((climb, tp) => climb.plus(tp.getAltitudeDelta))
+    }
+    
+    // find all climbs, calculate gain per climb, filter out climbs with less than
+    // MINIMUM_GAIN gain and sum the totals.
+    findClimbs(List(List()), List(), trackPoints)
+      .map(totalGainForClimb)
+      .filter(_.compareTo(MINIMUM_GAIN) > 0)
+      .foldLeft(ZERO_GAIN)((total,climb) => total.plus(climb))
+  }
 
-	/** {@inheritDoc} */
+  /** {@inheritDoc} */
   override def equals(o: Any) = {
-    if (o == this) true
-	else if (o == null) false
+    if (o == null) false
     else if (!(o.isInstanceOf[Activity])) false
     else {
       // compare with interface Activity, not with ActivityImpl!

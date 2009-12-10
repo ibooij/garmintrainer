@@ -20,7 +20,7 @@ package nl.iljabooij.garmintrainer.model
 
 import org.junit.Assert._
 import org.mockito.Mockito._
-import org.joda.time.{DateTime,Duration}
+import org.joda.time.{DateTime,Duration,Minutes}
 import org.scalatest.junit.{JUnit3Suite,AssertionsForJUnit}
 import org.scalatest.mock.MockitoSugar
 import scala.collection.jcl.Conversions._
@@ -91,55 +91,49 @@ class LapTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
     assertEquals(new Duration(tracks.head.startTime, tracks.last.endTime),
                  lap.grossDuration)
   }
-//	
-//	@Test
-//	public void testGetNetDuration() {
-//		// three tracks, with pauses in between
-//		Track[] tracks = new Track[3];
-//		tracks[0] = mock(Track.class);
-//		tracks[1] = mock(Track.class);
-//		tracks[2] = mock(Track.class);
-//		
-//		when(tracks[0].getStartTime()).thenReturn(START_TIME);
-//		when(tracks[0].getEndTime()).thenReturn(START_TIME.plusMinutes(1));
-//		when(tracks[1].getStartTime()).thenReturn(START_TIME.plusMinutes(2));
-//		when(tracks[1].getEndTime()).thenReturn(START_TIME.plusMinutes(3));
-//		when(tracks[2].getStartTime()).thenReturn(START_TIME.plusMinutes(4));
-//		when(tracks[2].getEndTime()).thenReturn(START_TIME.plusMinutes(5));
-//		
-//		for (Track track: tracks) {
-//			when(track.getDuration()).thenReturn(new Duration(60000));
-//		}
-//		
-//		Lap lap = new Lap(START_TIME, Arrays.asList(tracks));
-//		Duration netDuration = new Duration(0);
-//		for (Track track: tracks) {
-//			netDuration = netDuration.plus(new Duration(track.getStartTime(), track.getEndTime()));
-//		}
-//		assertEquals(netDuration,
-//				lap.getNetDuration());	
-//	}
-//	
-//	/**
-//	 * Lap start time and start time of first track may be different (first track may
-//	 * start a little after the lap. Make sure that {@link Lap#getNetDuration()}
-//	 * returns the correct value.
-//	 */
-//	@Test
-//	public void testGetNetDurationWithDelayedRecording() {
-//		final DateTime startOfLap = new DateTime();
-//		// track starts 5 seconds after lap
-//		final Duration trackDelay = Duration.standardSeconds(5);
-//		final DateTime startOfTrack = startOfLap.plus(trackDelay);
-//		
-//		final Duration trackDuration = Duration.standardMinutes(5);
-//		
-//		Track track = mock(Track.class);
-//		when(track.getStartTime()).thenReturn(startOfTrack);
-//		when(track.getDuration()).thenReturn(trackDuration);
-//		
-//		Lap lap = new Lap(startOfLap, Lists.newArrayList(track));
-//		
-//		assertEquals(trackDelay.plus(trackDuration), lap.getNetDuration());
-//	}
+  
+  def testNetDuration {
+    val GAP = Minutes.ONE
+    val TRACK_TIME = Minutes.TWO
+  
+    def startTime(trackNr: Int) = {
+      START_TIME.plus(GAP.plus(TRACK_TIME).multipliedBy(trackNr))
+    }
+    	
+    def endTime(trackNr: Int) = {
+      startTime(trackNr + 1).minus(GAP)
+    }
+    
+    val tracks = (0 to 1).map(trackNr => {
+      val track = mock[Track]
+      when(track.startTime).thenReturn(startTime(trackNr))
+      when(track.endTime).thenReturn(endTime(trackNr))
+      when(track.duration).thenReturn(TRACK_TIME.toStandardDuration)
+      
+      track
+    }).toList
+    
+    val lap = new Lap(START_TIME, tracks)
+    
+    val netDuration = TRACK_TIME.multipliedBy(tracks.size).toStandardDuration
+    
+    assertEquals(netDuration, lap.netDuration)
+  }
+   
+  /** Test if net duration is correct when there is a difference in
+      the start of the lap and start of the first track within that lap. */
+  def testNetDurationWithDelayedRecording {
+    val startTime = new DateTime
+    val delay = Duration.standardSeconds(5)
+    val startOfTrack = startTime.plus(delay)
+    val trackDuration = Duration.standardMinutes(5)
+    
+    val track = mock[Track]
+    when(track.startTime).thenReturn(startOfTrack)
+    when(track.duration).thenReturn(trackDuration)
+    
+    val lap = new Lap(startTime, List(track))
+    
+    assertEquals(trackDuration, lap.netDuration)
+  }
 }

@@ -26,9 +26,9 @@ import org.scalatest.mock.MockitoSugar
 import scala.collection.mutable.ListBuffer
 
 class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
-  private var activity:ActivityImpl = null
-  private var laps:List[Lap] = null
-  private var allTrackPoints: List[TrackPoint] = null
+  private var activity:ActivityImpl = _
+  private var laps:List[Lap] = _
+  private var allTrackPoints: List[TrackPoint] = _
   private val START_TIME = new DateTime(2009, 9, 17, 14, 45, 36, 0)
   
   private val NR_OF_LAPS = 4
@@ -59,6 +59,7 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
         lapsBuffer += lap
       }
       allTrackPoints = tpBuffer.toList
+      laps = lapsBuffer.toList
 	  activity = new ActivityImpl(START_TIME, lapsBuffer.toList)
 	}
 
@@ -198,21 +199,26 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
 	}
 
 	def testGetAltitudeGain() {
-		// first half of points in lap go up by 2.0 meters, other half go down
 		val gain = Length.createLengthInMeters(3.0)
+		val smallGain = Length.createLengthInMeters(0.5)
 		val loss = Length.createLengthInMeters(-3.0)
+		val smallLoss = Length.createLengthInMeters(-0.5)
 
 		val laps = new ListBuffer[Lap]
 		for (i <- 0 until 2) {
 			laps += mock[Lap]
 
 			val trackPoints = new ListBuffer[TrackPoint]
-			for (j <- 0 until 10) {
+			for (j <- 0 until 20) {
 			  trackPoints += mock[TrackPoint]
               if (j < 5) {
                 when(trackPoints(j).getAltitudeDelta()).thenReturn(gain)
-              } else {
+              } else if (j < 10){
                 when(trackPoints(j).getAltitudeDelta()).thenReturn(loss)
+              } else if (j < 15 ){
+                when(trackPoints(j).getAltitudeDelta()).thenReturn(smallGain)
+              } else {
+                when(trackPoints(j).getAltitudeDelta()).thenReturn(smallLoss)
               }
 			}
 			when(laps(i).trackPoints).thenReturn(trackPoints.toList)
@@ -220,9 +226,9 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
 
 		val activity = new ActivityImpl(START_TIME, laps.toList)
 
-		// test gain
-		val totalGain = laps.length * (laps(0).trackPoints.size / 2) * gain.getValueInMeters()
-		assertEquals(Length.createLengthInMeters(totalGain), activity
+		// test gain. There are two laps, both with a climb of 15m, which is significant
+		// and a small climb of 2.5m which will be ignored.
+		assertEquals(Length.createLengthInMeters(30.0), activity
 				.altitudeGain)
 	}
 

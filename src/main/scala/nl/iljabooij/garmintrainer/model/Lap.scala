@@ -50,6 +50,6 @@ class Lap(val startTime:DateTime, val tracks:List[Track]) {
    * @return net duration of lap.
    */
   def netDuration = {
-    tracks.foldLeft(new Duration(startTime,tracks.head.startTime))((duration,track) => duration.plus(track.duration))
+    tracks.foldLeft(new Duration(0l))((duration,track) => duration.plus(track.duration))
   }
 }
