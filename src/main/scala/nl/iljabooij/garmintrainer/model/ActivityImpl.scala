@@ -40,15 +40,12 @@ class ActivityImpl(val startTime:DateTime, val laps:List[Lap])
   checkArgument(!laps.isEmpty)
   
   override def endTime = trackPoints.last.time
-  override def maximumAltitude = altitudesInOrder.last
-  
-  override def altitudeClass = AltitudeClass.forMaximumAltitude(maximumAltitude)
-  
-  override def minimumAltitude = altitudesInOrder.head
+  override lazy val maximumAltitude = altitudesInOrder.last
+  override lazy val minimumAltitude = altitudesInOrder.head
   
   private def altitudesInOrder = trackPoints.map(_.altitude).sort((a,b) => (a compareTo b) < 0)
   
-  override def maximumSpeed = trackPoints.map(_.speed).sort((a,b) => (a.compareTo(b)) > 0).head 
+  override lazy val maximumSpeed = trackPoints.map(_.speed).sort((a,b) => (a.compareTo(b)) > 0).head 
 
   override def grossDuration = new Duration(startTime, trackPoints.last.time)
 
@@ -57,7 +54,7 @@ class ActivityImpl(val startTime:DateTime, val laps:List[Lap])
     laps.foldLeft(netDuration)((duration,lap) => duration.plus(lap.netDuration))
   }
 
-  override def trackPoints = {
+  override lazy val trackPoints = {
     var buffer = new ListBuffer[TrackPoint]
     laps.foreach(buffer ++= _.trackPoints)
     
@@ -71,7 +68,7 @@ class ActivityImpl(val startTime:DateTime, val laps:List[Lap])
   /**
    Get altitude gain for total activity. Disregard small climbs of less than 5.0 meters up.
    */
-  override def altitudeGain = {
+  override lazy val altitudeGain = {
     val ZERO_GAIN = Length.createLengthInMeters(0.0)
     val MINIMUM_GAIN = Length.createLengthInMeters(5.0)
     
