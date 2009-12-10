@@ -39,19 +39,18 @@ class ActivityImpl(val startTime:DateTime, val laps:List[Lap])
   checkNotNull(startTime)
   checkArgument(!laps.isEmpty)
   
-  
-  override def endTime = trackPoints.last.getTime
+  override def endTime = trackPoints.last.time
   override def maximumAltitude = altitudesInOrder.last
   
   override def altitudeClass = AltitudeClass.forMaximumAltitude(maximumAltitude)
   
   override def minimumAltitude = altitudesInOrder.head
   
-  private def altitudesInOrder = trackPoints.map(_.getAltitude).sort((a,b) => (a compareTo b) < 0)
+  private def altitudesInOrder = trackPoints.map(_.altitude).sort((a,b) => (a compareTo b) < 0)
   
-  override def maximumSpeed = trackPoints.map(_.getSpeed).sort((a,b) => (a.compareTo(b)) > 0).head 
+  override def maximumSpeed = trackPoints.map(_.speed).sort((a,b) => (a.compareTo(b)) > 0).head 
 
-  override def grossDuration = new Duration(startTime, trackPoints.last.getTime)
+  override def grossDuration = new Duration(startTime, trackPoints.last.time)
 
   override def netDuration = {
     var netDuration = new Duration(startTime, laps.head.startTime)
@@ -67,7 +66,7 @@ class ActivityImpl(val startTime:DateTime, val laps:List[Lap])
   
   override def toString = "Activity [start time=" + startTime + ", #laps=" + laps.size + "]";
   
-  override def distance = trackPoints.last.getDistance
+  override def distance = trackPoints.last.distance
 	
   /**
    Get altitude gain for total activity. Disregard small climbs of less than 5.0 meters up.
@@ -82,7 +81,7 @@ class ActivityImpl(val startTime:DateTime, val laps:List[Lap])
       trackPoints match {
         case Nil => currentClimb :: theClimbs
         case trackPoint :: rest => {
-            if (trackPoint.getAltitudeDelta.compareTo(ZERO_GAIN) > 0) 
+            if (trackPoint.altitudeDelta.compareTo(ZERO_GAIN) > 0) 
               findClimbs(theClimbs, trackPoint :: currentClimb, rest)
             else if (currentClimb.isEmpty)
               findClimbs(theClimbs, List(), rest)
@@ -93,7 +92,7 @@ class ActivityImpl(val startTime:DateTime, val laps:List[Lap])
     }
     // calculate total gain for climb
     def totalGainForClimb(climb:List[TrackPoint]):Length = {
-      climb.foldLeft(ZERO_GAIN)((climb, tp) => climb.plus(tp.getAltitudeDelta))
+      climb.foldLeft(ZERO_GAIN)((climb, tp) => climb.plus(tp.altitudeDelta))
     }
     
     // find all climbs, calculate gain per climb, filter out climbs with less than

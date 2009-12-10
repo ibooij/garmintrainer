@@ -41,7 +41,7 @@ class TrackTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
   override def setUp {
     trackPoints = (0 until NR_OF_TRACK_POINTS).map(tpNr => {
       val trackPoint = mock[TrackPoint]
-      when(trackPoint.getTime).thenReturn(START_TIME.plusSeconds(tpNr))
+      when(trackPoint.time).thenReturn(START_TIME.plusSeconds(tpNr))
       
       trackPoint
     }).toList
@@ -53,11 +53,11 @@ class TrackTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
   }
   
   def testEndTime {
-    assertEquals(trackPoints.last.getTime, testTrack.endTime)
+    assertEquals(trackPoints.last.time, testTrack.endTime)
   }
   
   def testDuration {
-    assertEquals(new Duration(START_TIME, trackPoints.last.getTime),
+    assertEquals(new Duration(START_TIME, trackPoints.last.time),
                  testTrack.duration)
   }
   

@@ -31,7 +31,7 @@ class Track(val trackPoints:List[TrackPoint]) {
   Preconditions.checkNotNull(trackPoints)
   Preconditions.checkArgument(!trackPoints.isEmpty)
   
-  def startTime = trackPoints.head.getTime
-  def endTime = trackPoints.last.getTime
+  def startTime = trackPoints.head.time
+  def endTime = trackPoints.last.time
   def duration = new Duration(startTime, endTime)
 }

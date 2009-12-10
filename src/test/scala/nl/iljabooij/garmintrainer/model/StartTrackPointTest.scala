@@ -44,19 +44,19 @@ class StartTrackPointTest extends JUnit3Suite with AssertionsForJUnit with Mocki
 	}
 	
 	def testGetSpeed() {
-		when (measuredTrackPoint.getTime()).thenReturn(TRACK_POINT_TIME)
-		when (measuredTrackPoint.getDistance()).thenReturn(DISTANCE)
+		when (measuredTrackPoint.time).thenReturn(TRACK_POINT_TIME)
+		when (measuredTrackPoint.distance).thenReturn(DISTANCE)
 		// speed as calculated:
 		val speed = Speed.createSpeedInMetersPerSecond(DISTANCE, new Duration(START_TIME, TRACK_POINT_TIME))
 		
-		assertEquals(speed, startTrackPoint.getSpeed())
+		assertEquals(speed, startTrackPoint.speed)
 		
-		verify(measuredTrackPoint, times(1)).getTime()
-		verify(measuredTrackPoint, times(1)).getDistance()
+		verify(measuredTrackPoint, times(1)).time
+		verify(measuredTrackPoint, times(1)).distance
 	}
 	
 	def testAltitudeDelta() {
 		assertEquals("Start point should not have altitude gain",
-				Length.createLengthInMeters(0.0), startTrackPoint.getAltitudeDelta())
+				Length.createLengthInMeters(0.0), startTrackPoint.altitudeDelta)
 	}
 }

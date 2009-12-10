@@ -49,8 +49,8 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
         for(tpNr <- 0 until distances.size) {
           val trackPoint = mock[TrackPoint]
           val tpDistance = Length.createLengthInMeters(distances(tpNr))
-          when(trackPoint.getDistance).thenReturn(lapStartDistance.plus(tpDistance))
-          when(trackPoint.getTime()).thenReturn(lapStartTime.plusSeconds(tpNr * SECONDS_PER_POINT))
+          when(trackPoint.distance).thenReturn(lapStartDistance.plus(tpDistance))
+          when(trackPoint.time).thenReturn(lapStartTime.plusSeconds(tpNr * SECONDS_PER_POINT))
           
           lapTrackPoints += trackPoint
         }
@@ -64,7 +64,7 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
 	}
 
 	def testGrossDuration {
-		val grossDuration = new Duration(START_TIME, allTrackPoints.last.getTime)
+		val grossDuration = new Duration(START_TIME, allTrackPoints.last.time)
 		assertEquals(grossDuration, activity.grossDuration)
 	}
 
@@ -94,9 +94,9 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
         
         // two track points per lap
 		val tp1 = mock[TrackPoint]
-        when(tp1.getTime).thenReturn(lapStartTime)
+        when(tp1.time).thenReturn(lapStartTime)
         val tp2 = mock[TrackPoint]
-        when(tp2.getTime).thenReturn(lapStartTime.plus(grossDurationPerLap))
+        when(tp2.time).thenReturn(lapStartTime.plus(grossDurationPerLap))
         when(lap.trackPoints).thenReturn(List(tp1, tp2))
 
         laps += lap
@@ -166,7 +166,7 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
 	}
 
 	def testGetEndTime() {
-	  val endTime = allTrackPoints.last.getTime
+	  val endTime = allTrackPoints.last.time
       assertEquals(endTime, activity.endTime);
 	}
 
@@ -212,13 +212,13 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
 			for (j <- 0 until 20) {
 			  trackPoints += mock[TrackPoint]
               if (j < 5) {
-                when(trackPoints(j).getAltitudeDelta()).thenReturn(gain)
+                when(trackPoints(j).altitudeDelta).thenReturn(gain)
               } else if (j < 10){
-                when(trackPoints(j).getAltitudeDelta()).thenReturn(loss)
+                when(trackPoints(j).altitudeDelta).thenReturn(loss)
               } else if (j < 15 ){
-                when(trackPoints(j).getAltitudeDelta()).thenReturn(smallGain)
+                when(trackPoints(j).altitudeDelta).thenReturn(smallGain)
               } else {
-                when(trackPoints(j).getAltitudeDelta()).thenReturn(smallLoss)
+                when(trackPoints(j).altitudeDelta).thenReturn(smallLoss)
               }
 			}
 			when(laps(i).trackPoints).thenReturn(trackPoints.toList)
@@ -249,7 +249,7 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
 				val trackPoint = mock[TrackPoint]
                 trackPoints += trackPoint                 
 				val delta = if (j % 2 == 0) gain else loss
-				when(trackPoint.getAltitudeDelta()).thenReturn(delta)
+				when(trackPoint.altitudeDelta).thenReturn(delta)
 			}
 			
 			when(lap.trackPoints).thenReturn(trackPoints.toList)
@@ -265,7 +265,7 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
       
       def mockTrackPointForAltitude(altitude:Double):TrackPoint = {
         val tp = mock[TrackPoint]
-        when(tp.getAltitude).thenReturn(Length.createLengthInMeters(altitude))
+        when(tp.altitude).thenReturn(Length.createLengthInMeters(altitude))
         return tp
       }
       val lap = mock[Lap]
@@ -305,7 +305,7 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
 	  val speeds = List(1.0, 2.0, 3.0, 2.0)
 	  def tpForSpeed(speed:Double) = {
 	    val tp = mock[TrackPoint]
-        when(tp.getSpeed).thenReturn(Speed.createExactSpeedInMetersPerSecond(speed))
+        when(tp.speed).thenReturn(Speed.createExactSpeedInMetersPerSecond(speed))
         tp
       }
       val lap = mock[Lap]

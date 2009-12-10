@@ -16,23 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with GarminTrainer.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.iljabooij.garmintrainer.model;
+package nl.iljabooij.garmintrainer.model
 
-import org.joda.time.Duration;
-import com.google.common.base.Preconditions;
+import org.joda.time.Duration
+import com.google.common.base.Preconditions
 
 class NonStartTrackPoint(previous:MeasuredTrackPoint, measuredTrackPoint:MeasuredTrackPoint) 
     extends TrackPointImpl(measuredTrackPoint) {
   Preconditions.checkNotNull(previous)
 	
-  override def getSpeed = {
-    val distanceTravelled = getDistance.minus(previous.getDistance)
-    val timeTravelled = new Duration(previous.getTime, getTime)
+  override def speed = {
+    val distanceTravelled = distance.minus(previous.distance)
+    val timeTravelled = new Duration(previous.time, time)
     
     Speed.createSpeedInMetersPerSecond(distanceTravelled, timeTravelled)
   }
 	
-  override def getAltitudeDelta = {
-    getAltitude.minus(previous.getAltitude)
+  override def altitudeDelta = {
+    altitude.minus(previous.altitude)
   }
 }

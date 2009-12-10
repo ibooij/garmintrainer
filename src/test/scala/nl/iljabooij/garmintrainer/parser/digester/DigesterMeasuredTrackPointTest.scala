@@ -43,7 +43,7 @@ class DigesterMeasuredTrackPointTest extends JUnit3Suite with MockitoSugar {
 	def testGetAltitude {
 	  val altitude = Length.createLengthInMeters(100.0)
       when(trackPoint.altitude).thenReturn(altitude)
-	  assertEquals(altitude, dmtp.getAltitude())
+	  assertEquals(altitude, dmtp.altitude)
       verify(trackPoint, times(1)).altitude
 	}
 
@@ -51,7 +51,7 @@ class DigesterMeasuredTrackPointTest extends JUnit3Suite with MockitoSugar {
 		val distance = Length.createLengthInMeters(100.0)
 		when(trackPoint.distance).thenReturn(distance)
 		
-		assertEquals(distance, dmtp.getDistance())
+		assertEquals(distance, dmtp.distance)
 		verify(trackPoint, times(1)).distance
 	}
 
@@ -59,7 +59,7 @@ class DigesterMeasuredTrackPointTest extends JUnit3Suite with MockitoSugar {
 		val heartRate = 127
 		when(trackPoint.heartRate).thenReturn(heartRate)
 		
-		assertEquals(heartRate, dmtp.getHeartRate())
+		assertEquals(heartRate, dmtp.heartRate)
 		verify(trackPoint, times(1)).heartRate
 	}
 
@@ -67,7 +67,7 @@ class DigesterMeasuredTrackPointTest extends JUnit3Suite with MockitoSugar {
 		val latitude = 4.213 // just some latitude
 		when(trackPoint.latitude).thenReturn(latitude)
 		
-		assertEquals(latitude, dmtp.getLatitude(), DELTA_FOR_DOUBLE_EQUALITY)
+		assertEquals(latitude, dmtp.latitude, DELTA_FOR_DOUBLE_EQUALITY)
 		verify(trackPoint, times(1)).latitude
 	}
 
@@ -75,7 +75,7 @@ class DigesterMeasuredTrackPointTest extends JUnit3Suite with MockitoSugar {
 		val longitude = 14.213 // just some longitude
 		when(trackPoint.longitude).thenReturn(longitude)
 		
-		assertEquals(longitude, dmtp.getLongitude(), DELTA_FOR_DOUBLE_EQUALITY)
+		assertEquals(longitude, dmtp.longitude, DELTA_FOR_DOUBLE_EQUALITY)
 		verify(trackPoint, times(1)).longitude
 	}
 
@@ -83,7 +83,7 @@ class DigesterMeasuredTrackPointTest extends JUnit3Suite with MockitoSugar {
 		val time = new DateTime()
 		when(trackPoint.time).thenReturn(time)
 		
-		assertEquals(time, dmtp.getTime())
+		assertEquals(time, dmtp.time)
 		verify(trackPoint, times(1)).time
 	}
 }
