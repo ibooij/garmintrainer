@@ -36,13 +36,13 @@ object Length {
   case class Meter(val meters:Double) extends Length(meters) {
     override val conversionValue = Length.METER
     override val suffix = "m"
-    override val format = new DecimalFormat("###.0")
+    override val format = new DecimalFormat("##0.0")
   }
   
   case class Kilometer(val kilometers:Double) extends Length(kilometers) {
     override val conversionValue = Length.KILOMETER
     override val suffix = "km"
-    override val format = new DecimalFormat("###.000")
+    override val format = new DecimalFormat("##0.000")
   }
 }
 
@@ -79,7 +79,7 @@ abstract class Length(value:Double) {
     else if (!(o.isInstanceOf[Length])) false
     else Math.abs(siValue - o.asInstanceOf[Length].siValue) < EQUALITY_DELTA
   }
-  
+    
   override def hashCode = siValue.hashCode
 }
 

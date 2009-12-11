@@ -82,8 +82,19 @@ class LengthTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
   
   def testToString {
     assertEquals("1.0 m", new Meter(1).toString)
+    assertEquals("0.2 m", new Meter(0.2).toString)
     assertEquals("3121.0 m", new Meter(3121).toString)
     assertEquals("1.000 km", new Kilometer(1).toString)
+    assertEquals("0.200 km", new Kilometer(0.2).toString)
+    
+  }
+  
+  def testToStringNegative {
+    assertEquals("-1.0 m", new Meter(-1).toString)
+    assertEquals("-0.2 m", new Meter(-0.2).toString)
+    assertEquals("-3121.0 m", new Meter(-3121).toString)
+    assertEquals("-1.000 km", new Kilometer(-1).toString)
+    assertEquals("-0.200 km", new Kilometer(-0.2).toString)
   }
   
   def testCompare {
