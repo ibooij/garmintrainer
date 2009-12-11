@@ -21,7 +21,6 @@ package nl.iljabooij.garmintrainer.parser.digester
 import java.util.{ArrayList => JAList, List => JList}
 
 import nl.iljabooij.garmintrainer.model._
-import nl.iljabooij.garmintrainer.util.Memoizer;
 
 import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
