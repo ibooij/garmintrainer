@@ -19,6 +19,7 @@
 package nl.iljabooij.garmintrainer.parser.digester
 
 import nl.iljabooij.garmintrainer.model.Length
+import nl.iljabooij.garmintrainer.model.Length.{Meter}
 import com.google.common.base.Preconditions.checkArgument
 import com.google.common.base.Preconditions.checkNotNull
 
@@ -51,6 +52,6 @@ final class LengthConverter extends Converter {
 	// of an IllegalArgumentException.
     val d = value.asInstanceOf[String].toDouble
     
-    Length.createLengthInMeters(d)
+    new Meter(d)
   }
 }

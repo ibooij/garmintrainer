@@ -21,7 +21,7 @@ package nl.iljabooij.garmintrainer.parser.digester
 import org.junit.Assert._
 import org.scalatest.junit.{JUnit3Suite,AssertionsForJUnit}
 import nl.iljabooij.garmintrainer.model.{Length,Speed}
-
+import nl.iljabooij.garmintrainer.model.Length.Meter
 
 class LengthConverterTest extends JUnit3Suite {
 	var lengthConverter:LengthConverter = null
@@ -34,7 +34,7 @@ class LengthConverterTest extends JUnit3Suite {
 	  val o = lengthConverter.convert(classOf[Length], "1.0")
 	  assertTrue("o should be a Length object", o.isInstanceOf[Length])
 	  val length = o.asInstanceOf[Length]
-	  assertEquals("length should be 1 meter", Length.createLengthInMeters(1.0), length);
+	  assertEquals("length should be 1 meter", new Meter(1.0), length);
 	}
 	
 	def testWrongValue {

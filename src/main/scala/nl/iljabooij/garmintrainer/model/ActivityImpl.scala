@@ -21,6 +21,8 @@ package nl.iljabooij.garmintrainer.model
 import com.google.common.base.Preconditions.checkArgument
 import com.google.common.base.Preconditions.checkNotNull
 
+import nl.iljabooij.garmintrainer.model.Length.Meter
+
 import org.apache.commons.lang.builder.{EqualsBuilder,HashCodeBuilder}
 import org.joda.time.{DateTime,Duration}
 
@@ -43,9 +45,9 @@ class ActivityImpl(val startTime:DateTime, val laps:List[Lap])
   override lazy val maximumAltitude = altitudesInOrder.last
   override lazy val minimumAltitude = altitudesInOrder.head
   
-  private def altitudesInOrder = trackPoints.map(_.altitude).sort((a,b) => (a compareTo b) < 0)
+  private def altitudesInOrder = trackPoints.map(_.altitude).sort((a,b) => a < b)
   
-  override lazy val maximumSpeed = trackPoints.map(_.speed).sort((a,b) => (a.compareTo(b)) > 0).head 
+  override lazy val maximumSpeed = trackPoints.map(_.speed).sort((a,b) => a > b).head 
 
   override def grossDuration = new Duration(startTime, trackPoints.last.time)
 
@@ -69,8 +71,8 @@ class ActivityImpl(val startTime:DateTime, val laps:List[Lap])
    Get altitude gain for total activity. Disregard small climbs of less than 5.0 meters up.
    */
   override lazy val altitudeGain = {
-    val ZERO_GAIN = Length.createLengthInMeters(0.0)
-    val MINIMUM_GAIN = Length.createLengthInMeters(5.0)
+    val ZERO_GAIN = Length.ZERO
+    val MINIMUM_GAIN:Length = Meter(5.0)
     
     // returns a list of climbs. A Climb is a list of track points that all have
     // a positive altitude delta.
@@ -78,7 +80,7 @@ class ActivityImpl(val startTime:DateTime, val laps:List[Lap])
       trackPoints match {
         case Nil => currentClimb :: theClimbs
         case trackPoint :: rest => {
-            if (trackPoint.altitudeDelta.compareTo(ZERO_GAIN) > 0) 
+            if (trackPoint.altitudeDelta > ZERO_GAIN) 
               findClimbs(theClimbs, trackPoint :: currentClimb, rest)
             else if (currentClimb.isEmpty)
               findClimbs(theClimbs, List(), rest)
@@ -89,15 +91,15 @@ class ActivityImpl(val startTime:DateTime, val laps:List[Lap])
     }
     // calculate total gain for climb
     def totalGainForClimb(climb:List[TrackPoint]):Length = {
-      climb.foldLeft(ZERO_GAIN)((climb, tp) => climb.plus(tp.altitudeDelta))
+      climb.foldLeft(ZERO_GAIN)((climb, tp) => climb + tp.altitudeDelta)
     }
     
     // find all climbs, calculate gain per climb, filter out climbs with less than
     // MINIMUM_GAIN gain and sum the totals.
     findClimbs(List(List()), List(), trackPoints)
       .map(totalGainForClimb)
-      .filter(_.compareTo(MINIMUM_GAIN) > 0)
-      .foldLeft(ZERO_GAIN)((total,climb) => total.plus(climb))
+      .filter(_ > MINIMUM_GAIN)
+      .foldLeft(ZERO_GAIN)((total,climb) => total + climb)
   }
 
   /** {@inheritDoc} */

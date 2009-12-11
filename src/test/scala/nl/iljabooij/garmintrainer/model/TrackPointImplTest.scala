@@ -61,7 +61,7 @@ class TrackPointImplTest extends JUnit3Suite with AssertionsForJUnit with Mockit
   }
   
   def testAltitude {
-    val altitude = Length.createLengthInMeters(100.0)
+    val altitude = new Length.Meter(100.0)
     when(measuredTrackPoint.altitude).thenReturn(altitude)
     
     assertEquals(altitude, trackPointImpl.altitude)
@@ -69,7 +69,7 @@ class TrackPointImplTest extends JUnit3Suite with AssertionsForJUnit with Mockit
   }
   
   def testDistance {
-    val distance = Length.createLengthInMeters(100.0)
+    val distance = new Length.Meter(100.0)
     when(measuredTrackPoint.distance).thenReturn(distance)
     
     assertEquals(distance, trackPointImpl.distance)

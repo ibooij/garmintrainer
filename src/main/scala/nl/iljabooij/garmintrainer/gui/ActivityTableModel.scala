@@ -5,9 +5,6 @@ import javax.swing.table.AbstractTableModel
 import com.google.inject.Inject
 import org.joda.time.{DateTime,DateTimeZone,Duration}
 import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState,Length,Property,Speed,TrackPoint}
-import Length.{Unit => LengthUnit}
-import Speed.{Unit => SpeedUnit}
-
 
 class ActivityTableModel @Inject() (private val applicationState:ApplicationState) 
     extends AbstractTableModel with SwingHelper {
@@ -32,15 +29,15 @@ class ActivityTableModel @Inject() (private val applicationState:ApplicationStat
         val timeFromStart = dateTime.plus(fromStart)
         timeFromStart.toString("HH:mm:ss")
       case "Distance" =>
-        trackPoint.distance.convert(LengthUnit.Kilometer)
+        trackPoint.distance.toKilometers
       case "Altitude" =>
-        trackPoint.altitude.convert(LengthUnit.Meter)
+        trackPoint.altitude.toMeters
       case "Altitude Gain" =>
-        trackPoint.altitudeDelta.convert(LengthUnit.Meter)
+        trackPoint.altitudeDelta.toMeters
       case "Heart Rate" =>
         "" + trackPoint.heartRate
       case "Speed" =>
-        trackPoint.speed.convert(SpeedUnit.KilometersPerHour)
+        trackPoint.speed.toKilometersPerHour
       case _ => "unknown"
     }
   }

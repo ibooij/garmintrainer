@@ -26,13 +26,13 @@ class NonStartTrackPoint(previous:MeasuredTrackPoint, measuredTrackPoint:Measure
   Preconditions.checkNotNull(previous)
 	
   override def speed = {
-    val distanceTravelled = distance.minus(previous.distance)
+    val distanceTravelled = distance - previous.distance
     val timeTravelled = new Duration(previous.time, time)
-    
-    Speed.createSpeedInMetersPerSecond(distanceTravelled, timeTravelled)
+
+    Speed.speed(distanceTravelled, timeTravelled)
   }
 	
   override def altitudeDelta = {
-    altitude.minus(previous.altitude)
+    altitude - previous.altitude
   }
 }

@@ -32,7 +32,7 @@ import org.scalatest.mock.MockitoSugar
 class StartTrackPointTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
 	private val START_TIME = new DateTime()
 	private val TRACK_POINT_TIME = START_TIME.plusSeconds(10)
-	private val DISTANCE = Length.createLengthInMeters(100.0)
+	private val DISTANCE = new Length.Meter(100.0)
 	
 	private var startTrackPoint:StartTrackPoint = null
 	private var measuredTrackPoint:MeasuredTrackPoint = null
@@ -47,7 +47,7 @@ class StartTrackPointTest extends JUnit3Suite with AssertionsForJUnit with Mocki
 		when (measuredTrackPoint.time).thenReturn(TRACK_POINT_TIME)
 		when (measuredTrackPoint.distance).thenReturn(DISTANCE)
 		// speed as calculated:
-		val speed = Speed.createSpeedInMetersPerSecond(DISTANCE, new Duration(START_TIME, TRACK_POINT_TIME))
+		val speed = Speed.speed(DISTANCE, new Duration(START_TIME, TRACK_POINT_TIME))
 		
 		assertEquals(speed, startTrackPoint.speed)
 		
@@ -57,6 +57,6 @@ class StartTrackPointTest extends JUnit3Suite with AssertionsForJUnit with Mocki
 	
 	def testAltitudeDelta() {
 		assertEquals("Start point should not have altitude gain",
-				Length.createLengthInMeters(0.0), startTrackPoint.altitudeDelta)
+				Length.ZERO, startTrackPoint.altitudeDelta)
 	}
 }
