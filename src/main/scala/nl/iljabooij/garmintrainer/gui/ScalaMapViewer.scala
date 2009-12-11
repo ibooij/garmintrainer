@@ -1,6 +1,6 @@
 package nl.iljabooij.garmintrainer.gui
 
-import java.awt.{BasicStroke,Color,Graphics,Graphics2D}
+import java.awt.{BasicStroke,Color,Graphics,Graphics2D,Point}
 import java.awt.geom.Path2D
 import java.io.File
 import scala.collection.jcl.Conversions._
@@ -30,6 +30,22 @@ class ScalaMapViewer @Inject() (applicationState: ApplicationState)
     }
   }
   
+  private def boundingBox(coordinates:List[Coordinate]) = {
+    var north = coordinates.map(_.getLat).sort(_ > _).head
+    var south = coordinates.map(_.getLat).sort(_>_).last
+    var west = coordinates.map(_.getLon).sort(_>_).last
+    var east = coordinates.map(_.getLon).sort(_>_).head
+    
+    List(new Coordinate(north, west), new Coordinate(south,east))
+  }
+  
+  private def centerBetween(northWest: Coordinate, southEast: Coordinate) = {
+    val lat = (northWest.getLat + southEast.getLat) / 2.0
+    val lon = (northWest.getLon + southEast.getLon) / 2.0
+	  
+    new Coordinate(lat,lon)
+  }
+  
   private def zoomToActivity(activity: Activity) {
     /** perform these computations in a background thread */
     def doInBackground = {
@@ -37,7 +53,8 @@ class ScalaMapViewer @Inject() (applicationState: ApplicationState)
       var southEast = new Coordinate(180.0, -90.0)
       if (activity != null) {
         val coordinates = trackPoints.filter(tp => tp.hasPosition).map(tp => new Coordinate(tp.latitude, tp.longitude))
-        val bounds:Array[Coordinate] = Coordinate.getBoundingBox(coordinates.toArray)
+        
+        val bounds = boundingBox(coordinates)
         northWest = bounds(0)
         southEast = bounds(1)
       }
@@ -50,6 +67,29 @@ class ScalaMapViewer @Inject() (applicationState: ApplicationState)
     }
     
     inSwingWorker(doInBackground, onEdt)
+  }
+  
+  private def zoomToBoundingBox(northWest:Coordinate, southEast:Coordinate) {
+    val mapZoomMax = tileController.getTileSource.getMaxZoom
+    val nwPoint = new Point(OsmMercator.LonToX(northWest.getLon, mapZoomMax),
+                            OsmMercator.LatToY(northWest.getLat, mapZoomMax))
+    val sePoint = new Point(OsmMercator.LonToX(southEast.getLon, mapZoomMax),
+                            OsmMercator.LatToY(southEast.getLat, mapZoomMax))
+    var width = sePoint.x - nwPoint.x
+    var height = sePoint.y - nwPoint.y
+    
+    var zoomLevel = mapZoomMax
+    while(width > getWidth || height > getHeight) {
+      zoomLevel -= 1
+      width >>= 1
+      height >>= 1
+    }
+      
+    setZoom(zoomLevel)
+    val centerCoordinate = centerBetween(northWest, southEast)
+    center = new Point(OsmMercator.LonToX(centerCoordinate.getLon, zoomLevel),
+                       OsmMercator.LatToY(centerCoordinate.getLat, zoomLevel))
+    repaint()
   }
   
   def trackPoints: List[TrackPoint] = {
