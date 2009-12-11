@@ -63,4 +63,13 @@ class SpeedTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
     val kmph = mps.toKilometersPerHour
     assertEquals(36.0, kmph.kmph, DELTA)
   }  
+  
+  def testToString {
+    assertEquals("10.0 m/s", new MetersPerSecond(10.0).toString)
+    assertEquals("-10.0 m/s", new MetersPerSecond(-10.0).toString)
+    assertEquals("0.2 m/s", new MetersPerSecond(0.23).toString)
+    assertEquals("10.0 km/h", new KilometersPerHour(10.0).toString)
+    assertEquals("-10.0 km/h", new KilometersPerHour(-10.0).toString)
+    assertEquals("0.2 km/h", new KilometersPerHour(0.23).toString)
+  }
 }

@@ -18,6 +18,7 @@
  */
 package nl.iljabooij.garmintrainer.model
 
+import java.text.{DecimalFormat,NumberFormat}
 import org.joda.time.Duration
 
 
@@ -33,13 +34,15 @@ object Speed {
   val KMPH_CONVERSION = 1.0/3.6
   
   class MetersPerSecond(val mps:Double) extends Speed(mps) {
-    override def conversionValue = Speed.MPS_CONVERSION
-    override def suffix = "m/s"
+    override val conversionValue = Speed.MPS_CONVERSION
+    override val suffix = "m/s"
+    override val format = new DecimalFormat("##0.0")
   }
 
   class KilometersPerHour(val kmph:Double) extends Speed(kmph) {
-    override def conversionValue = Speed.KMPH_CONVERSION
-    override def suffix = "km/h"
+    override val conversionValue = Speed.KMPH_CONVERSION
+    override val suffix = "km/h"
+    override val format = new DecimalFormat("##0.0")
   }
 }
 
@@ -49,6 +52,7 @@ abstract class Speed(value:Double) {
   
   def conversionValue:Double
   def suffix:String
+  def format:NumberFormat
   
   def siValue = value * conversionValue
   
@@ -61,7 +65,7 @@ abstract class Speed(value:Double) {
     else Math.abs(siValue - (that.asInstanceOf[Speed]).siValue) < EQUALITY_DELTA
   }
   override def hashCode = siValue.hashCode
-  override def toString = value + suffix
+  override def toString = format.format(value) + " " + suffix
   
   def >(that:Speed) = siValue > that.siValue
 }
