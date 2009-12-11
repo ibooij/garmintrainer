@@ -18,6 +18,8 @@
  */
 package nl.iljabooij.garmintrainer.parser.digester
 
+import nl.iljabooij.garmintrainer.model.Length.{Meter}
+
 import org.joda.time.DateTime
 import org.junit.Assert._
 import org.mockito.Mockito._
@@ -41,14 +43,14 @@ class DigesterMeasuredTrackPointTest extends JUnit3Suite with MockitoSugar {
 	}
 	
 	def testGetAltitude {
-	  val altitude = Length.createLengthInMeters(100.0)
+	  val altitude = new Meter(100.0)
       when(trackPoint.altitude).thenReturn(altitude)
 	  assertEquals(altitude, dmtp.altitude)
       verify(trackPoint, times(1)).altitude
 	}
 
 	def testGetDistance {
-		val distance = Length.createLengthInMeters(100.0)
+		val distance = new Meter(100.0)
 		when(trackPoint.distance).thenReturn(distance)
 		
 		assertEquals(distance, dmtp.distance)

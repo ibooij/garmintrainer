@@ -6,7 +6,6 @@ import scala.swing.{Label,LayoutContainer,Panel}
 import com.google.inject.Inject
 import org.joda.time.Duration
 import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState,Length,Property}
-import Length.{Unit => LengthUnit}
 
 class ScalaSummaryPanel @Inject() (state:ApplicationState) 
 	extends JPanel with SwingHelper {
@@ -51,11 +50,11 @@ class ScalaSummaryPanel @Inject() (state:ApplicationState)
        */
       def doInBackground(activity: Activity) = {
         val startTime = activity.startTime.toString("yyyy-MM-dd")
-        val distance = activity.distance.convert(LengthUnit.Kilometer).toString
+        val distance = activity.distance.toKilometers.toString
         val nrLaps = activity.laps.size.toString
         val grossDuration = durationToString(activity.grossDuration)
         val netDuration = durationToString(activity.netDuration)
-        val altitudeGain = activity.altitudeGain.convert(LengthUnit.Meter).toString
+        val altitudeGain = activity.altitudeGain.toMeters.toString
         Map("startTime" -> startTime,
             "distance" -> distance,
             "nrOfLaps" -> nrLaps,

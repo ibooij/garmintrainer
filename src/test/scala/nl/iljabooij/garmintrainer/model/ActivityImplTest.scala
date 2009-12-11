@@ -18,6 +18,9 @@
  */
 package nl.iljabooij.garmintrainer.model;
 
+import nl.iljabooij.garmintrainer.model.Length.{Meter}
+import nl.iljabooij.garmintrainer.model.Speed.MetersPerSecond
+
 import org.junit.Assert._
 import org.mockito.Mockito._
 import org.joda.time.{DateTime,Duration}
@@ -41,15 +44,15 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
 	  val tpBuffer = new ListBuffer[TrackPoint]	
 	  for (lapNr <- 0 until NR_OF_LAPS) {
 	    val lap = mock[Lap]
-		val lapStartDistance = Length.createLengthInMeters(distances(distances.length - 1) * lapNr)
+		val lapStartDistance = new Meter(distances(distances.length - 1) * lapNr)
   		val lapStartTime = START_TIME.plusSeconds(SECONDS_PER_LAP * lapNr)
 			
   		when(lap.startTime).thenReturn(lapStartTime);
         val lapTrackPoints = new ListBuffer[TrackPoint]
         for(tpNr <- 0 until distances.size) {
           val trackPoint = mock[TrackPoint]
-          val tpDistance = Length.createLengthInMeters(distances(tpNr))
-          when(trackPoint.distance).thenReturn(lapStartDistance.plus(tpDistance))
+          val tpDistance = new Meter(distances(tpNr))
+          when(trackPoint.distance).thenReturn(lapStartDistance + tpDistance)
           when(trackPoint.time).thenReturn(lapStartTime.plusSeconds(tpNr * SECONDS_PER_POINT))
           
           lapTrackPoints += trackPoint
@@ -171,7 +174,7 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
 	}
 
 	def testGetDistance() {
-		val distance = Length.createLengthInMeters(NR_OF_LAPS
+		val distance = new Meter(NR_OF_LAPS
 				* distances(distances.length - 1))
 		assertEquals("lengths equal", distance, activity.distance)
 	}
@@ -199,10 +202,10 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
 	}
 
 	def testGetAltitudeGain() {
-		val gain = Length.createLengthInMeters(3.0)
-		val smallGain = Length.createLengthInMeters(0.5)
-		val loss = Length.createLengthInMeters(-3.0)
-		val smallLoss = Length.createLengthInMeters(-0.5)
+		val gain = new Meter(3.0)
+		val smallGain = new Meter(0.5)
+		val loss = new Meter(-3.0)
+		val smallLoss = new Meter(-0.5)
 
 		val laps = new ListBuffer[Lap]
 		for (i <- 0 until 2) {
@@ -228,7 +231,7 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
 
 		// test gain. There are two laps, both with a climb of 15m, which is significant
 		// and a small climb of 2.5m which will be ignored.
-		assertEquals(Length.createLengthInMeters(30.0), activity
+		assertEquals(new Meter(30.0), activity
 				.altitudeGain)
 	}
 
@@ -237,8 +240,8 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
 	 */
 	def testFilterAltitudeDeltaNoise() {
 		// values go up and down every trackpoint.
-		val gain = Length.createLengthInMeters(4.0)
-		val loss = Length.createLengthInMeters(-4.0)
+		val gain = new Meter(4.0)
+		val loss = new Meter(-4.0)
 
 		val laps = new ListBuffer[Lap]
 		for (i <- 0 until 1) {
@@ -257,7 +260,7 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
 
 		val activity = new ActivityImpl(START_TIME, laps.toList)
 
-		assertEquals(Length.createLengthInMeters(0.0), activity.altitudeGain)
+		assertEquals(new Meter(0.0), activity.altitudeGain)
 	}
 
 	def testGetMaxAndMinAltitude() {
@@ -265,20 +268,20 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
       
       def mockTrackPointForAltitude(altitude:Double):TrackPoint = {
         val tp = mock[TrackPoint]
-        when(tp.altitude).thenReturn(Length.createLengthInMeters(altitude))
+        when(tp.altitude).thenReturn(new Meter(altitude))
         return tp
       }
       val lap = mock[Lap]
       val tps = altitudes.map(mockTrackPointForAltitude(_)).toList
       when(lap.trackPoints).thenReturn(tps)
       val activity = new ActivityImpl(START_TIME, List(lap))
-      assertEquals(Length.createLengthInMeters(3.0), activity.maximumAltitude)
-	  assertEquals(Length.createLengthInMeters(1.0), activity.minimumAltitude)
+      assertEquals(new Meter(3.0), activity.maximumAltitude)
+	  assertEquals(new Meter(1.0), activity.minimumAltitude)
 	}
 
 //	@Test
 //	public void testGetAltitudeClass() {
-//		final Length _1meter = Length.createLengthInMeters(1.0);
+//		final Length _1meter = new Meter(1.0);
 //		for (AltitudeClass altitudeClass : AltitudeClass.values()) {
 //			Lap lap = mock(Lap.class);
 //			TrackPoint[] trackPoints = new TrackPoint[10];
@@ -305,7 +308,7 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
 	  val speeds = List(1.0, 2.0, 3.0, 2.0)
 	  def tpForSpeed(speed:Double) = {
 	    val tp = mock[TrackPoint]
-        when(tp.speed).thenReturn(Speed.createExactSpeedInMetersPerSecond(speed))
+        when(tp.speed).thenReturn(new MetersPerSecond(speed))
         tp
       }
       val lap = mock[Lap]
@@ -314,7 +317,7 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
       
       val activity = new ActivityImpl(START_TIME, List(lap))
 
-      assertEquals(Speed.createExactSpeedInMetersPerSecond(3.0), activity
+      assertEquals(new MetersPerSecond(3.0), activity
 				.maximumSpeed)
 	}
 

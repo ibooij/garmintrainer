@@ -61,7 +61,7 @@ class ActivityType {
     val trackPointTypes = extractTrackPointTypes
     
     val firstPointWithAltitude = trackPointTypes.find(_.altitude != null)
-    val firstAltitude = if (firstPointWithAltitude.isEmpty) Length.createLengthInMeters(0) 
+    val firstAltitude = if (firstPointWithAltitude.isEmpty) Length.ZERO 
                         else firstPointWithAltitude.get.altitude
     
     var lastAltitude = firstAltitude

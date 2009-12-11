@@ -31,8 +31,8 @@ class StartTrackPoint(startTime: DateTime, measuredTrackPoint: MeasuredTrackPoin
 	extends TrackPointImpl(measuredTrackPoint) {
   override def speed = {
     val timeTravelled = new Duration(startTime, time)
-    Speed.createSpeedInMetersPerSecond(distance, timeTravelled)
+    Speed.speed(distance, timeTravelled)
   }
 
-  override def altitudeDelta = Length.createLengthInMeters(0.0)
+  override def altitudeDelta = Length.ZERO
 }
