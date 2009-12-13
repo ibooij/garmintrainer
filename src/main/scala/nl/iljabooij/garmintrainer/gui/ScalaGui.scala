@@ -50,9 +50,9 @@ class ScalaGui @Inject() (val overviewPanel:ScalaOverviewPanel,
       new PropertyChangeListener {
         def propertyChange(event: PropertyChangeEvent) {
           var id:String = ""
-          if (event.getNewValue != null) {
-            val activity:Activity = event.getNewValue.asInstanceOf[Activity]
-            id = activity.startTime.toString("yyyy-MM-dd")
+          val activityOption = event.getNewValue.asInstanceOf[Option[Activity]]
+          if (activityOption.isDefined) {
+            id = activityOption.get.startTime.toString("yyyy-MM-dd")
             onEdt(frame.title = id)
           }  
         }

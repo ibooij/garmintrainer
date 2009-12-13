@@ -22,7 +22,7 @@ class ScalaMapViewer @Inject() (applicationState: ApplicationState)
                                                     activityChanger)
       
   private def activityChanger(value: Any) {
-    val activity = value.asInstanceOf[Activity]
+    val activity = value.asInstanceOf[Option[Activity]]
    
     onEdt {
       zoomToActivity(activity)
@@ -46,13 +46,13 @@ class ScalaMapViewer @Inject() (applicationState: ApplicationState)
     new Coordinate(lat,lon)
   }
   
-  private def zoomToActivity(activity: Activity) {
+  private def zoomToActivity(activity: Option[Activity]) {
     /** perform these computations in a background thread */
     def doInBackground = {
       var northWest = new Coordinate(-180.0, 90.0)
       var southEast = new Coordinate(180.0, -90.0)
-      if (activity != null) {
-        val coordinates = trackPoints.filter(tp => tp.hasPosition).map(tp => new Coordinate(tp.latitude, tp.longitude))
+      if (activity.isDefined) {
+        val coordinates = activity.get.trackPoints.filter(tp => tp.hasPosition).map(tp => new Coordinate(tp.latitude, tp.longitude))
         
         val bounds = boundingBox(coordinates)
         northWest = bounds(0)
@@ -92,21 +92,15 @@ class ScalaMapViewer @Inject() (applicationState: ApplicationState)
     repaint()
   }
   
-  def trackPoints: List[TrackPoint] = {
-    val activity = applicationState.currentActivity
-    if (activity == null) List[TrackPoint]() else activity.trackPoints
-  }
-  
   /** This method should be protected, but I cannot get it to compile if
    it is..
    */
   override def paintComponent(g: Graphics) {
     super.paintComponent(g)
     
-    val activity = applicationState.currentActivity
-    if (activity == null) return
-    
-    val mapPoints = trackPoints.filter(tp => tp.hasPosition).map(tp => getMapPosition(tp.latitude, tp.longitude, false))
+    if (applicationState.currentActivity.isEmpty) return
+    val activity = applicationState.currentActivity.get
+    val mapPoints = activity.trackPoints.filter(tp => tp.hasPosition).map(tp => getMapPosition(tp.latitude, tp.longitude, false))
     
     val path = new Path2D.Double
     path.moveTo(mapPoints.head.x, mapPoints.head.y)

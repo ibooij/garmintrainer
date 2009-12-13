@@ -46,7 +46,7 @@ class TcxImporterScalaTest extends JUnit3Suite with AssertionsForJUnit with Mock
      
      tcxImporter.importTcx(file)
      
-     verify(applicationState, times(1)).currentActivity_=(activities.first)
+     verify(applicationState, times(1)).currentActivity_=(Some(activities.first))
      verify(tcxParser, times(1)).parse(any(classOf[InputStream]))
    }
    
