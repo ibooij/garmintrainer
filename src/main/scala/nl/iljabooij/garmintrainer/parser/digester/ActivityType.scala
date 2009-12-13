@@ -28,14 +28,12 @@ import scala.collection.jcl.Conversions._
 import scala.collection.mutable.ListBuffer
 import scala.reflect.BeanProperty
 
-//import com.google.common.collect.Lists;
-
 /**
  * Builder for {@link Activity}.
  * 
  * @author "Ilja Booij"
  */
-class ActivityType {
+class ActivityType extends NotNull {
   // use Bean Property so it can be set by the commons digester.
   @BeanProperty
   var id: String = null

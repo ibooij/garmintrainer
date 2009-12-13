@@ -31,7 +31,7 @@ import scala.collection.mutable.ListBuffer
  *
  */
 class LapTypeTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
-	private var testLapType: LapType = null
+	private var testLapType: LapType = _
     private var tracks = List[TrackType]()
 	
 	private var START_TIME = new DateTime();
@@ -64,10 +64,8 @@ class LapTypeTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar 
       var endTime = START_TIME
       for(i <- 0 until NR_OF_TRACKS) {
         val trackType = mock[TrackType]
-        startTime = endTime.plus(START_INTERVALS(i))
-        when(trackType.startTime).thenReturn(startTime)
 		tracksBuffer += trackType
-        testLapType.addTrack(trackType);
+        testLapType.addTrack(trackType)
 	  }
       tracks = tracksBuffer.toList
 	}

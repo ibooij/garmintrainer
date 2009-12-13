@@ -28,7 +28,7 @@ import scala.reflect.BeanProperty
  * @author "Ilja Booij <ibooij@gmail.com>"
  * 
  */
-class LapType extends LoggerHelper {
+class LapType extends NotNull {
   private val tracksBuffer = new ListBuffer[TrackType]
   
   @BeanProperty  

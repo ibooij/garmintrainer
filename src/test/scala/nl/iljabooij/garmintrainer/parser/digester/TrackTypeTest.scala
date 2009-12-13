@@ -35,7 +35,7 @@ class TrackTypeTest extends JUnit3Suite with AssertionsForJUnit with MockitoSuga
   private val NR_OF_TRACK_POINTS = 100
   private val START_OF_TRACK = new DateTime(2009, 9, 24, 9, 11, 0, 0)
 	
-  private var testTrackType: TrackType = null
+  private var testTrackType: TrackType = _
 	
   override def setUp {
     val tptBuffer = new ListBuffer[TrackPointType]

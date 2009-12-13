@@ -30,9 +30,8 @@ import scala.reflect.BeanProperty
  * @author "Ilja Booij <ibooij@gmail.com>"
  * 
  */
-class TrackPointType {
+class TrackPointType extends NotNull {
   @BeanProperty var time:DateTime = null
-	
   @BeanProperty var heartRate: Int = 0
   @BeanProperty var altitude: Length = null
   @BeanProperty var distance: Length = null
