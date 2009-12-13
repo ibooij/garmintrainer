@@ -22,10 +22,13 @@ import org.joda.time.DateTime
 import scala.collection.mutable.ListBuffer
 import scala.reflect.BeanProperty
 
-class TrackType {
+/**
+ * A Track is a continuous line of track points.
+ * TrackType may never be initialised to null.
+ * 
+ */
+class TrackType extends NotNull {
   private val trackPointBuffer = new ListBuffer[TrackPointType]
-                                                
-  var startTime: DateTime = null
   
   def trackPointTypes = trackPointBuffer.toList
   
