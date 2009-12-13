@@ -36,6 +36,8 @@ class ApplicationStateImpl extends ApplicationState with LoggerHelper {
   
   private var currentActivityField: Option[Activity] = None
   private var errorMessageField = ""
+  private val activityListenersLock = new Object 
+  private var activityListeners = List[Option[Activity] => Unit]()
   
   override def currentActivity = {
     lock.synchronized {
@@ -61,6 +63,8 @@ class ApplicationStateImpl extends ApplicationState with LoggerHelper {
     }
   	propertyChangeSupport.firePropertyChange(Property.CurrentActivity.toString, oldActivity,
   			newCurrentActivity)
+    val listeners = activityListenersLock.synchronized {activityListeners}
+    listeners.foreach(_(newCurrentActivity))
   }  
 
   def errorMessage_=(message: String): Unit = {
@@ -75,5 +79,11 @@ class ApplicationStateImpl extends ApplicationState with LoggerHelper {
   
   def addPropertyChangeListener(property: Property.Property, listener: PropertyChangeListener) {
     propertyChangeSupport.addPropertyChangeListener(property.toString, listener)
+  }
+  
+  override def addActivityChangeListener(listener: Option[Activity] => Unit):Unit = {
+    activityListenersLock.synchronized {
+      activityListeners ::= listener
+    }
   }
 }
