@@ -15,6 +15,7 @@ class Build(info: ProjectInfo) extends DefaultProject(info)
 
     val scalaSwing = "org.scala-lang" % "scala-swing" % "2.7.7"
     val scalaTest = "org.scalatest" % "scalatest" % "1.0" % "test"
+    
     val slf4jApi = "org.slf4j" % "slf4j-api" % "1.5.8"
     val slf4jLog4j = "org.slf4j" % "slf4j-log4j12" % "1.5.8"
 }

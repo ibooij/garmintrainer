@@ -22,7 +22,6 @@ import org.joda.time.DateTime
 
 import com.google.common.base.Preconditions
 
-import net.jcip.annotations.Immutable
 import nl.iljabooij.garmintrainer.model.Length
 import nl.iljabooij.garmintrainer.model.MeasuredTrackPoint
 
@@ -32,7 +31,6 @@ import nl.iljabooij.garmintrainer.model.MeasuredTrackPoint
  * @author ilja
  *
  */
-@Immutable
 class DigesterMeasuredTrackPoint(delegate: TrackPointType) extends MeasuredTrackPoint {
   if (delegate == null) throw new NullPointerException
   
