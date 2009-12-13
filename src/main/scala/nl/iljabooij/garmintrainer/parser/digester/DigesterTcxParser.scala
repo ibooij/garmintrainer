@@ -11,7 +11,8 @@ import scala.collection.jcl.Conversions._
 import nl.iljabooij.garmintrainer.model.Activity
 import nl.iljabooij.garmintrainer.parser.ParseException
 
-class DigesterTcxParser @Inject() (digesterProvider: Provider[Digester]) extends TcxParser with LoggerHelper {
+class DigesterTcxParser @Inject() (digesterProvider: Provider[Digester])
+    extends TcxParser with LoggerHelper with NotNull {
   // initialization will be done by the DigesterTcxParser singleton.
   DigesterTcxParser.initialize
   

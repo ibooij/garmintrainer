@@ -31,9 +31,8 @@ import nl.iljabooij.garmintrainer.model.MeasuredTrackPoint
  * @author ilja
  *
  */
-class DigesterMeasuredTrackPoint(delegate: TrackPointType) extends MeasuredTrackPoint {
-  if (delegate == null) throw new NullPointerException
-  
+class DigesterMeasuredTrackPoint(delegate: TrackPointType) 
+     extends MeasuredTrackPoint with NotNull {
   override def heartRate = delegate.heartRate
   override def altitude = delegate.altitude
   override def distance = delegate.distance

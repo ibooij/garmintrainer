@@ -31,7 +31,7 @@ import nl.iljabooij.garmintrainer.model.Length
 class DigesterMeasuredTrackPointTest extends JUnit3Suite with MockitoSugar {
 	val DELTA_FOR_DOUBLE_EQUALITY = 0.0001
 	var trackPoint: TrackPointType = _
-	var dmtp: DigesterMeasuredTrackPoint = null
+	var dmtp: DigesterMeasuredTrackPoint = _
 	
 	override def setUp {
 	  trackPoint = mock[TrackPointType]

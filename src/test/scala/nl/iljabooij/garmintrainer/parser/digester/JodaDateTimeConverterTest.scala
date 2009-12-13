@@ -7,7 +7,7 @@ import junit.framework.Assert._
 
 class JodaDateTimeConverterTest extends JUnit3Suite {
   val TEST_STRING = "2009-02-21T12:57:25Z"
-  var converter:JodaDateTimeConverter = null
+  var converter:JodaDateTimeConverter = _
   var dateTime: DateTime = null
   
   override def setUp {
