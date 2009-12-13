@@ -29,8 +29,8 @@ class ScalaChartComponent @Inject()
 	g2d.clearRect(0, 0, size.width, size.height)
  
 	val currentActivity = applicationState.currentActivity
-	if (currentActivity != null) {
-	  drawChart(g2d, currentActivity)
+	if (currentActivity.isDefined) {
+	  drawChart(g2d, currentActivity.get)
 	}
   }
   

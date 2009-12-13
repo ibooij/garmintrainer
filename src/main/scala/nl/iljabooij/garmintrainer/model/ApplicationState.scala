@@ -22,10 +22,10 @@ import java.beans.PropertyChangeListener;
 
 trait ApplicationState {
     
-  def currentActivity: Activity
+  def currentActivity: Option[Activity]
   def errorMessage: String
   
-  def currentActivity_=(newCurrentActivity: Activity): Unit
+  def currentActivity_=(newCurrentActivity: Option[Activity]): Unit
   def errorMessage_=(message: String): Unit
 	
   /**

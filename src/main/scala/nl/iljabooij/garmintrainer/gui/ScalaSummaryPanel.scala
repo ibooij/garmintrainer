@@ -80,8 +80,8 @@ class ScalaSummaryPanel @Inject() (state:ApplicationState)
       
       def propertyChange(event: PropertyChangeEvent) {
         if (event.getNewValue != null) {
-          val activity = event.getNewValue.asInstanceOf[Activity]
-          inSwingWorker(doInBackground(activity), done)
+          val activity = event.getNewValue.asInstanceOf[Option[Activity]]
+          if (activity.isDefined) inSwingWorker(doInBackground(activity.get), done)
         }
       }
     } 

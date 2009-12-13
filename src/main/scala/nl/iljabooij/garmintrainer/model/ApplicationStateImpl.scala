@@ -34,23 +34,23 @@ class ApplicationStateImpl extends ApplicationState with LoggerHelper {
   protected val propertyChangeSupport = new PropertyChangeSupport(this)
   private val lock: AnyRef = new Object
   
-  private var currentActivityField: Activity = null
+  private var currentActivityField: Option[Activity] = None
   private var errorMessageField = ""
   
-  def currentActivity = {
+  override def currentActivity = {
     lock.synchronized {
       currentActivityField
     }
   }
   
-  def errorMessage = {
+  override def errorMessage = {
     lock.synchronized {
       errorMessageField
     }
   }
   
-  def currentActivity_=(newCurrentActivity: Activity): Unit = {
-    var oldActivity: Activity = null
+  override def currentActivity_=(newCurrentActivity: Option[Activity]): Unit = {
+    var oldActivity: Option[Activity] = None
     lock.synchronized {
       oldActivity = currentActivityField
       // take the short route out if nothing has changed!
