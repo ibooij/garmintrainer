@@ -18,10 +18,9 @@
  */
 package nl.iljabooij.garmintrainer.parser.digester
 
+import nl.iljabooij.garmintrainer.Preconditions._
 import nl.iljabooij.garmintrainer.model.Length
 import nl.iljabooij.garmintrainer.model.Length.{Meter}
-import com.google.common.base.Preconditions.checkArgument
-import com.google.common.base.Preconditions.checkNotNull
 
 import org.apache.commons.beanutils.Converter
 

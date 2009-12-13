@@ -18,7 +18,7 @@
  */
 package nl.iljabooij.garmintrainer.model
 
-import com.google.common.base.Preconditions
+import nl.iljabooij.garmintrainer.Preconditions._
 import org.joda.time.{DateTime,Duration}
 
 
@@ -28,8 +28,8 @@ import org.joda.time.{DateTime,Duration}
  * @author ilja
  */
 class Track(val trackPoints:List[TrackPoint]) {
-  Preconditions.checkNotNull(trackPoints)
-  Preconditions.checkArgument(!trackPoints.isEmpty)
+  checkNotNull(trackPoints)
+  checkArgument(!trackPoints.isEmpty)
   
   def startTime = trackPoints.head.time
   def endTime = trackPoints.last.time

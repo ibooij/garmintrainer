@@ -25,7 +25,7 @@ import org.joda.time.DateTime
  * @author ilja
  *
  */
-trait MeasuredTrackPoint {
+trait MeasuredTrackPoint extends NotNull {
   /**
    * Get measured heart rate.
    * @return the hear rate

@@ -27,9 +27,9 @@ import org.scalatest.junit.{JUnit3Suite,AssertionsForJUnit}
 import org.scalatest.mock.MockitoSugar
 
 class NonStartTrackPointTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
-	private var first:MeasuredTrackPoint = null
-	private var second:MeasuredTrackPoint = null	
-	private var nonStartTrackPoint:NonStartTrackPoint = null
+	private var first:MeasuredTrackPoint = _
+	private var second:MeasuredTrackPoint = _	
+	private var nonStartTrackPoint:NonStartTrackPoint = _
 
 	private val START_TIME = new DateTime()
 	private val SECOND_TIME = START_TIME.plusSeconds(10)
@@ -71,13 +71,7 @@ class NonStartTrackPointTest extends JUnit3Suite with AssertionsForJUnit with Mo
 		verify(second, times(1)).time
 	}
 
-	def testConstructorFailsWithNullPrevious() {
-	  intercept[NullPointerException] {
-	    new NonStartTrackPoint(null, second)
-      }
-	}
-	
-	def testGetAltitudeDelta() {
+    def testGetAltitudeDelta() {
 		val gain = SECOND_ALTITUDE - FIRST_ALTITUDE
 		assertEquals(gain, nonStartTrackPoint.altitudeDelta)
 	}

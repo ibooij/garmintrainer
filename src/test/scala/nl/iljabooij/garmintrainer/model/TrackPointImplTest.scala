@@ -55,10 +55,6 @@ class TrackPointImplTest extends JUnit3Suite with AssertionsForJUnit with Mockit
     measuredTrackPoint = mock[MeasuredTrackPoint]
 	trackPointImpl = new ConcreteTrackPointImpl(measuredTrackPoint)
   }
-
-  def testConstructorFailsWithNullMeasuredTrackPoint {
-    intercept[NullPointerException] (new ConcreteTrackPointImpl(null))
-  }
   
   def testAltitude {
     val altitude = new Length.Meter(100.0)

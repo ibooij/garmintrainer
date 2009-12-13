@@ -20,8 +20,6 @@ package nl.iljabooij.garmintrainer.parser.digester
 
 import org.joda.time.DateTime
 
-import com.google.common.base.Preconditions
-
 import nl.iljabooij.garmintrainer.model.Length
 import nl.iljabooij.garmintrainer.model.MeasuredTrackPoint
 

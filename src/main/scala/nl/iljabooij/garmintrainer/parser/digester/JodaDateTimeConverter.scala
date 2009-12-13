@@ -1,6 +1,6 @@
 package nl.iljabooij.garmintrainer.parser.digester
 
-import com.google.common.base.Preconditions._
+import nl.iljabooij.garmintrainer.Preconditions._
 import org.apache.commons.beanutils.Converter
 import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
@@ -18,6 +18,5 @@ class JodaDateTimeConverter extends Converter {
 }
 
 object JodaDateTimeConverter {
-//  private static DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTimeNoMillis();
   lazy val dateTimeFormatter = ISODateTimeFormat.dateTimeNoMillis
 }

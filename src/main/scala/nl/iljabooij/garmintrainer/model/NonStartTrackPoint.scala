@@ -19,11 +19,11 @@
 package nl.iljabooij.garmintrainer.model
 
 import org.joda.time.Duration
-import com.google.common.base.Preconditions
+import nl.iljabooij.garmintrainer.Preconditions._
 
 class NonStartTrackPoint(previous:MeasuredTrackPoint, measuredTrackPoint:MeasuredTrackPoint) 
     extends TrackPointImpl(measuredTrackPoint) {
-  Preconditions.checkNotNull(previous)
+  checkNotNull(previous)
 	
   override def speed = {
     val distanceTravelled = distance - previous.distance
