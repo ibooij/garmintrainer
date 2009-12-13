@@ -34,8 +34,8 @@ class StartTrackPointTest extends JUnit3Suite with AssertionsForJUnit with Mocki
 	private val TRACK_POINT_TIME = START_TIME.plusSeconds(10)
 	private val DISTANCE = new Length.Meter(100.0)
 	
-	private var startTrackPoint:StartTrackPoint = null
-	private var measuredTrackPoint:MeasuredTrackPoint = null
+	private var startTrackPoint:StartTrackPoint = _
+	private var measuredTrackPoint:MeasuredTrackPoint = _
 	
 	
 	override def setUp() {

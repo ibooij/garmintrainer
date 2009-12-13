@@ -18,7 +18,7 @@
  */
 package nl.iljabooij.garmintrainer.model
 
-import com.google.common.base.Preconditions
+import nl.iljabooij.garmintrainer.Preconditions._
 import org.joda.time.DateTime
 
 
@@ -29,8 +29,6 @@ import org.joda.time.DateTime
  *
  */
 abstract class TrackPointImpl(measuredTrackPoint:MeasuredTrackPoint) extends TrackPoint {
-  Preconditions.checkNotNull(measuredTrackPoint);
-	
   /**
    * {@inheritDoc}
    */

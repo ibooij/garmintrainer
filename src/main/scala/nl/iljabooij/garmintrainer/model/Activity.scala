@@ -20,8 +20,6 @@ package nl.iljabooij.garmintrainer.model
 
 import org.joda.time.{DateTime,Duration}
 
-//import com.google.common.collect.ImmutableList;
-
 trait Activity extends Comparable[Activity] {
   /**
    * Get start time of activity.

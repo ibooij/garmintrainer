@@ -18,9 +18,7 @@
  */
 package nl.iljabooij.garmintrainer.model
 
-import com.google.common.base.Preconditions.checkArgument
-import com.google.common.base.Preconditions.checkNotNull
-
+import nl.iljabooij.garmintrainer.Preconditions._
 import nl.iljabooij.garmintrainer.model.Length.Meter
 
 import org.apache.commons.lang.builder.{EqualsBuilder,HashCodeBuilder}

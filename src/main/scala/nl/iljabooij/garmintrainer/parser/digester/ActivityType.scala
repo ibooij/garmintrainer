@@ -78,7 +78,7 @@ class ActivityType extends NotNull {
     
     adjustForLateFix
   
-    var previousMeasuredTrackPoint:MeasuredTrackPoint = null;
+    var previousMeasuredTrackPoint:Option[MeasuredTrackPoint] = None
     var laps = new ListBuffer[Lap]
 
     lapTypes.foreach (lapType => {
@@ -91,9 +91,9 @@ class ActivityType extends NotNull {
             if (laps.isEmpty && tracks.isEmpty && trackPoints.isEmpty) 
               new StartTrackPoint(startTime, measuredTrackPoint)
             else
-              new NonStartTrackPoint(previousMeasuredTrackPoint, measuredTrackPoint)
+              new NonStartTrackPoint(previousMeasuredTrackPoint.get, measuredTrackPoint)
            trackPoints += newTrackPoint
-           previousMeasuredTrackPoint = measuredTrackPoint
+           previousMeasuredTrackPoint = Some(measuredTrackPoint)
     	})
         tracks += new Track(trackPoints.toList)
       })
