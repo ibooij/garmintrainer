@@ -17,7 +17,7 @@ import scala.collection.jcl.Conversions._
 
 class DigesterTcxParserTest extends JUnit3Suite with AssertionsForJUnit 
     with MockitoSugar {
-  var parser: DigesterTcxParser = null
+  var parser: DigesterTcxParser = _
   var digester: Digester = null
   var provider: Provider[Digester] = null
   
