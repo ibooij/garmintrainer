@@ -29,6 +29,11 @@ trait ApplicationState {
   def errorMessage_=(message: String): Unit
 	
   /**
+   * Add a function as a listener for changed activities
+   */
+  def addActivityChangeListener(listener: Option[Activity] => Unit):Unit
+  
+  /**
    * Add a {@link PropertyChangeListener} for a specific property.
    * @param property property to listen for
    * @param propertyChangeListener the listener to add

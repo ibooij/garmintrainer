@@ -38,7 +38,7 @@ class ScalaGui @Inject() (val overviewPanel:ScalaOverviewPanel,
 	  frame.contents = tabbedPane
 	  frame.peer.setTransferHandler(fileTransferHandler)
    
-      applicationState.addPropertyChangeListener(Property.CurrentActivity, titleChanger(frame))
+      applicationState.addActivityChangeListener(titleChanger(frame)_)
 	  applicationState.addPropertyChangeListener(Property.ErrorMessage, errorMessageShower(tabbedPane))
 	} 
  
@@ -46,17 +46,11 @@ class ScalaGui @Inject() (val overviewPanel:ScalaOverviewPanel,
       List(mapViewer)
     }
     
-    def titleChanger(frame:MainFrame): PropertyChangeListener = {
-      new PropertyChangeListener {
-        def propertyChange(event: PropertyChangeEvent) {
-          var id:String = ""
-          val activityOption = event.getNewValue.asInstanceOf[Option[Activity]]
-          if (activityOption.isDefined) {
-            id = activityOption.get.startTime.toString("yyyy-MM-dd")
-            onEdt(frame.title = id)
-          }  
-        }
-      }
+    def titleChanger(frame:MainFrame)(activityOption: Option[Activity]) {
+      var id:String = ""
+      if (activityOption.isDefined) 
+        id = activityOption.get.startTime.toString("yyyy-MM-dd")
+      onEdt(frame.title = id)    
     }
     
     def errorMessageShower(component:Component): PropertyChangeListener = {
