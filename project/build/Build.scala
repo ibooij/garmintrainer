@@ -7,7 +7,7 @@ class Build(info: ProjectInfo) extends DefaultProject(info)
     val commonsBeanUtils = "commons-beanutils" % "commons-beanutils" % "1.8.0"
     val commonsDigester = "commons-digester" % "commons-digester" % "2.0"
     val commonsLang = "commons-lang" % "commons-lang" % "2.4"
-    val googleCollections = "com.google.collections" % "google-collections" % "1.0-rc2"
+
     val guice = "com.google.inject" % "guice" % "2.0"
     val jodatime = "joda-time" % "joda-time" % "1.6"
     val junit = "junit" % "junit" % "4.6" % "test"
