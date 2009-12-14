@@ -1,16 +1,15 @@
 package nl.iljabooij.garmintrainer.gui
 
-import java.beans.{PropertyChangeEvent,PropertyChangeListener}
 import javax.swing.table.AbstractTableModel
 import com.google.inject.Inject
 import org.joda.time.{DateTime,DateTimeZone,Duration}
-import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState,Length,Property,Speed,TrackPoint}
+import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState,Length,Speed,TrackPoint}
 
 class ActivityTableModel @Inject() (private val applicationState:ApplicationState) 
     extends AbstractTableModel with SwingHelper {
   private val columns = List("Time", "Distance", "Altitude", 
                              "Altitude Gain", "Speed", "Heart Rate")
-  applicationState.addPropertyChangeListener(Property.CurrentActivity, activityChanger)
+  applicationState.addActivityChangeListener(updateTable)
   
   /**
    * Get the value for the cell at [RowwIndex, ColumnIndex] 
@@ -52,11 +51,7 @@ class ActivityTableModel @Inject() (private val applicationState:ApplicationStat
   /**
    * Creates a new PropertyChangeListener that updates the model when needed. 
    */
-  private def activityChanger: PropertyChangeListener = {
-    new PropertyChangeListener {
-      def propertyChange(event: PropertyChangeEvent) {
-        onEdt(fireTableDataChanged)
-      }
-    }
+  private def updateTable(activityOption: Option[Activity]) {
+    onEdt(fireTableDataChanged)
   }
 }

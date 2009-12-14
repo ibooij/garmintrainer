@@ -10,7 +10,6 @@ import scala.swing._
 import com.google.inject.Inject 
 
 import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState}
-import nl.iljabooij.garmintrainer.model.Property
 
 class ScalaGui @Inject() (val overviewPanel:ScalaOverviewPanel,
 		val mapViewer: ScalaMapViewer,
@@ -39,28 +38,23 @@ class ScalaGui @Inject() (val overviewPanel:ScalaOverviewPanel,
 	  frame.peer.setTransferHandler(fileTransferHandler)
    
       applicationState.addActivityChangeListener(titleChanger(frame)_)
-	  applicationState.addPropertyChangeListener(Property.ErrorMessage, errorMessageShower(tabbedPane))
+	  applicationState.addErrorChangeListener(
+	    errorMessageUpdated(tabbedPane)_)
 	} 
  
-    def panels : List[JPanel] = {
+    private def panels : List[JPanel] = {
       List(mapViewer)
     }
     
-    def titleChanger(frame:MainFrame)(activityOption: Option[Activity]) {
+    private def titleChanger(frame:MainFrame)(activityOption: Option[Activity]) {
       var id:String = ""
       if (activityOption.isDefined) 
         id = activityOption.get.startTime.toString("yyyy-MM-dd")
       onEdt(frame.title = id)    
     }
     
-    def errorMessageShower(component:Component): PropertyChangeListener = {
-      new PropertyChangeListener {
-        def propertyChange(event: PropertyChangeEvent) {
-          if (event.getNewValue != null) {
-            val message = event.getNewValue.asInstanceOf[String]
-            onEdt(Dialog.showMessage(component, message))
-          }
-        }
-      }
+    private def errorMessageUpdated(component:Component)(errorMessage:Option[String]) {
+      if (errorMessage.isDefined) 
+        onEdt(Dialog.showMessage(component,errorMessage.get))
     }
 }

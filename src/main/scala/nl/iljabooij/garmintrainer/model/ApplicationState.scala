@@ -18,15 +18,13 @@
  */
 package nl.iljabooij.garmintrainer.model
 
-import java.beans.PropertyChangeListener;
-
 trait ApplicationState {
     
   def currentActivity: Option[Activity]
-  def errorMessage: String
+  def errorMessage: Option[String]
   
   def currentActivity_=(newCurrentActivity: Option[Activity]): Unit
-  def errorMessage_=(message: String): Unit
+  def errorMessage_=(message: Option[String]): Unit
 	
   /**
    * Add a function as a listener for changed activities
@@ -34,10 +32,7 @@ trait ApplicationState {
   def addActivityChangeListener(listener: Option[Activity] => Unit):Unit
   
   /**
-   * Add a {@link PropertyChangeListener} for a specific property.
-   * @param property property to listen for
-   * @param propertyChangeListener the listener to add
+   * Add a function as a listener for new errors. 
    */
-   def addPropertyChangeListener(property: Property.Property,
-			listener: PropertyChangeListener): Unit
+  def addErrorChangeListener(listener: Option[String] => Unit):Unit
 }

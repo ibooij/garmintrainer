@@ -7,13 +7,14 @@ import com.google.inject.Inject
 
 import nl.iljabooij.garmintrainer.gui.chart.AltitudeDiagramPainter
 import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState}
-import nl.iljabooij.garmintrainer.model.Property
 
 class ScalaChartComponent @Inject() 
 	(val applicationState:ApplicationState,
 	 val altitudeDiagramPainter: AltitudeDiagramPainter) 
 	extends Component with LoggerHelper {
-  applicationState.addPropertyChangeListener(Property.CurrentActivity, reactToNewActivity)
+  applicationState.addActivityChangeListener(updateChart)
+  
+  private def updateChart(activityOption:Option[Activity]) = repaint
   
   def reactToNewActivity: PropertyChangeListener = {
 	new PropertyChangeListener {

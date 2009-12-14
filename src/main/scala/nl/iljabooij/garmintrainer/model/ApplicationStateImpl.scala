@@ -18,12 +18,6 @@
  */
 package nl.iljabooij.garmintrainer.model
 
-import java.beans.PropertyChangeListener
-import java.beans.PropertyChangeSupport
-
-import org.joda.time.DateTime
-import org.joda.time.Duration
-
 import com.google.inject.Singleton
 
 @Singleton
@@ -31,13 +25,14 @@ class ApplicationStateImpl extends ApplicationState with LoggerHelper {
   /**
    * Use {@link PropertyChangeSupport} for propagating changes in properties.
    */
-  protected val propertyChangeSupport = new PropertyChangeSupport(this)
   private val lock: AnyRef = new Object
   
   private var currentActivityField: Option[Activity] = None
-  private var errorMessageField = ""
+  private var errorMessageField:Option[String] = None
   private val activityListenersLock = new Object 
   private var activityListeners = List[Option[Activity] => Unit]()
+  private val errorListenersLock = new Object
+  private var errorListeners = List[Option[String] => Unit]()
   
   override def currentActivity = {
     lock.synchronized {
@@ -61,29 +56,33 @@ class ApplicationStateImpl extends ApplicationState with LoggerHelper {
       }
       currentActivityField = newCurrentActivity
     }
-  	propertyChangeSupport.firePropertyChange(Property.CurrentActivity.toString, oldActivity,
-  			newCurrentActivity)
     val listeners = activityListenersLock.synchronized {activityListeners}
     listeners.foreach(_(newCurrentActivity))
   }  
 
-  def errorMessage_=(message: String): Unit = {
-    var oldMessage:String = null
+  def errorMessage_=(message: Option[String]): Unit = {
+    var oldMessage:Option[String] = None
     lock.synchronized {
       oldMessage = errorMessageField
       errorMessageField = message
     }
-    propertyChangeSupport.firePropertyChange(Property.ErrorMessage.toString, oldMessage,
-                message)
+    val listeners = errorListenersLock.synchronized {errorListeners}
+    listeners.foreach(_(message))
   }
   
-  def addPropertyChangeListener(property: Property.Property, listener: PropertyChangeListener) {
-    propertyChangeSupport.addPropertyChangeListener(property.toString, listener)
-  }
+  //def addPropertyChangeListener(property: Property.Property, listener: PropertyChangeListener) {
+  //  propertyChangeSupport.addPropertyChangeListener(property.toString, listener)
+  //}
   
   override def addActivityChangeListener(listener: Option[Activity] => Unit):Unit = {
     activityListenersLock.synchronized {
       activityListeners ::= listener
     }
+  }
+  
+  override def addErrorChangeListener(listener: Option[String] => Unit) {
+    errorListenersLock.synchronized {
+      errorListeners ::= listener
+    } 
   }
 }
