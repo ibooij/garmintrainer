@@ -7,7 +7,7 @@ import scala.collection.jcl.Conversions._
 import com.google.inject.Inject
 import org.openstreetmap.gui.jmapviewer._
 
-import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState,Property,TrackPoint}
+import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState,TrackPoint}
 
 class ScalaMapViewer @Inject() (applicationState: ApplicationState)
     extends JMapViewer with SwingHelper {
@@ -16,16 +16,11 @@ class ScalaMapViewer @Inject() (applicationState: ApplicationState)
   setName("Map")
   setTileSource(new OsmTileSource.Mapnik)
   setTileLoader(new OsmFileCacheTileLoader(this, CACHE_DIR))
-  
-  ApplicationStateAdapter.addPropertyChangeListener(applicationState,
-                                                    Property.CurrentActivity,
-                                                    activityChanger)
+  applicationState.addActivityChangeListener(updateMap)
       
-  private def activityChanger(value: Any) {
-    val activity = value.asInstanceOf[Option[Activity]]
-   
+  private def updateMap(activityOption:Option[Activity]) {
     onEdt {
-      zoomToActivity(activity)
+      zoomToActivity(activityOption)
       repaint()
     }
   }
