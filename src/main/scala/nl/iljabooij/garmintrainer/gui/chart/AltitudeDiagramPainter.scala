@@ -11,8 +11,7 @@ import org.joda.time.Duration
 import nl.iljabooij.garmintrainer.LoggerHelper
 import nl.iljabooij.garmintrainer.model.{Activity,TrackPoint}
 
-
-class AltitudeDiagramPainter extends LoggerHelper {
+private object AltitudeDiagramPainter {
   private val LeftOffset = 30
   private val RightOffset = 30
   private val TopOffset = 10
@@ -22,6 +21,9 @@ class AltitudeDiagramPainter extends LoggerHelper {
   private val MaximumTicks = 10
   private val TickLength = 5
   private val MinimumPixelsPerTick = 100
+}
+class AltitudeDiagramPainter extends LoggerHelper {
+  import AltitudeDiagramPainter._
   
   def paintDiagram(activity: Activity, image: BufferedImage) = {
     val g2d = image.createGraphics
@@ -45,7 +47,7 @@ class AltitudeDiagramPainter extends LoggerHelper {
     val path = new Path2D.Double
     path.moveTo(LeftOffset, height - BottomOffset)
     
-    def xt = xForTrackPoint(activity, width, durationInSeconds)_
+    def xt = xForTrackPoint(activity, width)_
     def yt = yForTrackPoint(height, minAltitude, altitudeRange)_
     
     def nextPoint(trackPoint:TrackPoint) = {
@@ -107,10 +109,10 @@ class AltitudeDiagramPainter extends LoggerHelper {
     ys.map (y => y + heightMinusOffsets + TopOffset)
   }
     
-  private def xForTrackPoint(activity: Activity, width: Int, 
-                             durationInSeconds: Double)(trackPoint: TrackPoint): Double = {
-    val fromStart = new Duration(activity.startTime, trackPoint.time).toStandardSeconds
-    (width - LeftOffset - RightOffset) * (fromStart.getSeconds / durationInSeconds) + LeftOffset
+  private def xForTrackPoint(activity: Activity, width: Int)(trackPoint: TrackPoint): Double = {
+//    val ratio = trackPoint.distance / activity.distance
+//    val fromStart = new Duration(activity.startTime, trackPoint.time).toStandardSeconds
+    (width - LeftOffset - RightOffset) * (trackPoint.distance / activity.distance) + LeftOffset
   }
   
   private def yForTrackPoint(height: Int, minAltitude: Double, 

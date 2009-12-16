@@ -67,7 +67,8 @@ abstract class Length(value:Double) {
   def +(that: Length) = convert(siValue + that.siValue)
   def -(that: Length) = convert(siValue - that.siValue)
   def *(that: Double) = convert(siValue * that)
-  def /(that:Double) = convert(siValue / that)
+  def /(that:Double):Length = convert(siValue / that)
+  def /(that:Length):Double = siValue / that.siValue
   def <(that:Length) = siValue < that.siValue
   def >(that:Length) = siValue > that.siValue
   
