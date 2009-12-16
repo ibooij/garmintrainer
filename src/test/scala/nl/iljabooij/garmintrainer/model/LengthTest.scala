@@ -68,6 +68,8 @@ class LengthTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
   
   def testDivide {
     assertEquals(new Kilometer(5.3), new Kilometer(15.9) / 3.0)
+    assertEquals(5.0, new Kilometer(1.5) / new Meter(300), DELTA)
+    assertEquals(0.2, new Kilometer(0.3) / new Meter(1500), DELTA)
   }
   
   def testEquals {

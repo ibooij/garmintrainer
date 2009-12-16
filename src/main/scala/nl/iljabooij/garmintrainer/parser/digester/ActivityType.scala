@@ -21,6 +21,7 @@ package nl.iljabooij.garmintrainer.parser.digester
 import java.util.{ArrayList => JAList, List => JList}
 
 import nl.iljabooij.garmintrainer.model._
+import nl.iljabooij.garmintrainer.model.Length.Meter
 
 import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
@@ -62,10 +63,15 @@ class ActivityType extends NotNull {
                         else firstPointWithAltitude.get.altitude
     
     var lastAltitude = firstAltitude
+    var lastDistance:Length = new Meter(0)
     trackPointTypes.foreach (trackPointType => {
       val altitude = trackPointType.altitude
       if (altitude == null) trackPointType.altitude =lastAltitude
       else lastAltitude = altitude
+      
+      val distance = trackPointType.distance
+      if (distance == null) trackPointType.distance = lastDistance
+      else lastDistance = distance
     })
   }
     

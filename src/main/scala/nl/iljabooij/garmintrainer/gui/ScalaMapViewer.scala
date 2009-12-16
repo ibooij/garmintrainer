@@ -44,17 +44,17 @@ class ScalaMapViewer @Inject() (applicationState: ApplicationState)
   private def zoomToActivity(activity: Option[Activity]) {
     /** perform these computations in a background thread */
     def doInBackground = {
-      var northWest = new Coordinate(-180.0, 90.0)
-      var southEast = new Coordinate(180.0, -90.0)
+      val wholeMap = Pair(new Coordinate(-180.0, 90.0),new Coordinate(180.0, -90.0)) 
       if (activity.isDefined) {
         val coordinates = activity.get.trackPoints.filter(tp => tp.hasPosition).map(tp => new Coordinate(tp.latitude, tp.longitude))
-        
-        val bounds = boundingBox(coordinates)
-        northWest = bounds(0)
-        southEast = bounds(1)
-      }
-      Pair(northWest, southEast)
+        if (coordinates.isEmpty) wholeMap
+        else {
+          val bounds = boundingBox(coordinates)
+          Pair(bounds(0), bounds(1))
+        }
+      } else wholeMap
     }
+    
     /** zooming to bounding box has to happen on the EDT */
     def onEdt(bounds: Pair[Coordinate,Coordinate]) {
       val (northWest,southEast) = bounds
@@ -96,7 +96,8 @@ class ScalaMapViewer @Inject() (applicationState: ApplicationState)
     if (applicationState.currentActivity.isEmpty) return
     val activity = applicationState.currentActivity.get
     val mapPoints = activity.trackPoints.filter(tp => tp.hasPosition).map(tp => getMapPosition(tp.latitude, tp.longitude, false))
-    
+    if (mapPoints.isEmpty) return
+      
     val path = new Path2D.Double
     path.moveTo(mapPoints.head.x, mapPoints.head.y)
     mapPoints.tail.foreach {mapPoint => path.lineTo(mapPoint.x, mapPoint.y)}
