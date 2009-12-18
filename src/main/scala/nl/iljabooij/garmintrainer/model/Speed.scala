@@ -30,16 +30,18 @@ object Speed {
     new MetersPerSecond(length.siValue/ seconds)
   }
   
+  val ZERO:Speed = new MetersPerSecond(0)
+  
   val MPS_CONVERSION = 1.0
   val KMPH_CONVERSION = 1.0/3.6
   
-  class MetersPerSecond(val mps:Double) extends Speed(mps) {
+  case class MetersPerSecond(val mps:Double) extends Speed(mps) {
     override val conversionValue = Speed.MPS_CONVERSION
     override val suffix = "m/s"
     override val format = new DecimalFormat("##0.0")
   }
 
-  class KilometersPerHour(val kmph:Double) extends Speed(kmph) {
+  case class KilometersPerHour(val kmph:Double) extends Speed(kmph) {
     override val conversionValue = Speed.KMPH_CONVERSION
     override val suffix = "km/h"
     override val format = new DecimalFormat("##0.0")
@@ -64,8 +66,24 @@ abstract class Speed(value:Double) {
     else if (!that.isInstanceOf[Speed]) false
     else Math.abs(siValue - (that.asInstanceOf[Speed]).siValue) < EQUALITY_DELTA
   }
+  
   override def hashCode = siValue.hashCode
   override def toString = format.format(value) + " " + suffix
   
   def >(that:Speed) = siValue > that.siValue
+  def <(that:Speed) = siValue < that.siValue
+  
+  def max(that:Speed) = if (this > that) this else that
+  def min(that:Speed) = if (this < that) this else that
+  
+  /** Convert an si value to a new Speed object, which has the
+      same class as this Speed object */
+  private def convert(si: Double) = {
+    this match {
+      case Speed.MetersPerSecond(n) => new Speed.MetersPerSecond(si)
+      case Speed.KilometersPerHour(n) => new Speed.MetersPerSecond(si/Speed.KMPH_CONVERSION)
+    }
+  }
+  
+  
 }

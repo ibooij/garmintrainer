@@ -32,6 +32,8 @@ object Length {
   val KILOMETER = 1000.0
   
   val ZERO:Length = new Meter(0)
+  val MIN:Length = new Meter(Math.MIN_DOUBLE)
+  val MAX:Length = new Meter(Math.MAX_DOUBLE)
   
   case class Meter(val meters:Double) extends Length(meters) {
     override val conversionValue = Length.METER
@@ -72,8 +74,8 @@ abstract class Length(value:Double) {
   def <(that:Length) = siValue < that.siValue
   def >(that:Length) = siValue > that.siValue
   
-  def max(that:Length) = convert(siValue max that.siValue)
-  def min(that:Length) = convert(siValue min that.siValue)
+  def max(that:Length) = if (this > that) this else that
+  def min(that:Length) = if (this < that) this else that
   
   override def toString = format.format(value) + " " + suffix
   

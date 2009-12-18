@@ -264,7 +264,7 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
 	}
 
 	def testGetMaxAndMinAltitude() {
-	  val altitudes = List(1.0, 2.0, 3.0, 2.0)
+	  val altitudes = List(1.0, 2.0, 3.0, 2.0, 1.0, 0.5, -0.5)
       
       def mockTrackPointForAltitude(altitude:Double):TrackPoint = {
         val tp = mock[TrackPoint]
@@ -276,7 +276,25 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
       when(lap.trackPoints).thenReturn(tps)
       val activity = new ActivityImpl(START_TIME, List(lap))
       assertEquals(new Meter(3.0), activity.maximumAltitude)
-	  assertEquals(new Meter(1.0), activity.minimumAltitude)
+	  assertEquals(new Meter(-0.5), activity.minimumAltitude)
+	}
+ 
+	/** I found a bug where getting the max altitude when
+        there were only negative altitudes resulted in 
+        a max altitude of Length.ZERO (0 meters)*/
+    def testGetMaxAltitudeWithNegativeAltitudes {
+      val altitudes = List(-1.0, -2.0, -3.0, -2.0, -1.0, -0.5, -0.5)
+      
+      def mockTrackPointForAltitude(altitude:Double):TrackPoint = {
+        val tp = mock[TrackPoint]
+        when(tp.altitude).thenReturn(new Meter(altitude))
+        return tp
+      }
+      val lap = mock[Lap]
+      val tps = altitudes.map(mockTrackPointForAltitude(_)).toList
+      when(lap.trackPoints).thenReturn(tps)
+      val activity = new ActivityImpl(START_TIME, List(lap))
+	  assertEquals(new Meter(-0.5), activity.maximumAltitude)
 	}
 
 //	@Test
@@ -320,128 +338,4 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
       assertEquals(new MetersPerSecond(3.0), activity
 				.maximumSpeed)
 	}
-
-//	/**
-//	 * Test the compareTo method. It should compare by start time
-//	 */
-//	@Test
-//	public void compareTo() {
-//		Activity sameActivity = new ActivityImpl(activity.getStartTime(),
-//				activity.getLaps());
-//		assertEquals(0, activity.compareTo(sameActivity));
-//		assertEquals(0, sameActivity.compareTo(activity));
-//
-//		Activity laterActivity = new ActivityImpl(activity.getStartTime()
-//				.plusSeconds(1), activity.getLaps());
-//		assertTrue(activity.compareTo(laterActivity) < 0);
-//		assertTrue(laterActivity.compareTo(activity) > 0);
-//
-//		Activity earlierActivity = new ActivityImpl(activity.getStartTime()
-//				.minusSeconds(1), activity.getLaps());
-//		assertTrue(activity.compareTo(earlierActivity) > 0);
-//		assertTrue(earlierActivity.compareTo(activity) < 0);
-//	}
-//
-//	@Test(expected = NullPointerException.class)
-//	public void compareToShouldThrowNPE() {
-//		activity.compareTo(null);
-//	}
-//
-//	/**
-//	 * Some simple tests to check if class is really immutable. We have no way
-//	 * of actually really knowing of course, but we must at least test if the
-//	 * class doesn't have setters, and if return values are immutable as well.
-//	 */
-//	@SuppressWarnings("unchecked")
-//	@Test
-//	public void testIsImmutable() {
-//		assertTrue(ActivityImpl.class.isAnnotationPresent(Immutable.class));
-//
-//		for (Method method : ActivityImpl.class.getMethods()) {
-//			assertFalse("setters are not allowed on Immutable classes", method
-//					.getName().startsWith("set"));
-//
-//			// check if returned values are immutable
-//			Class returnType = method.getReturnType();
-//
-//			final Class[] allowedClasses = new Class[] { String.class,
-//					DateTime.class, Duration.class, ImmutableList.class,
-//					Class.class };
-//
-//			if (returnType.isPrimitive()) {
-//				continue;
-//			}
-//			if (returnType.isAnnotationPresent(Immutable.class)) {
-//				continue;
-//			}
-//			/*
-//			 * if the return type is an interface, we don't know for sure if the
-//			 * returned value is an immutable object.
-//			 */
-//			if (returnType.isInterface()) {
-//				continue;
-//			}
-//
-//			if (returnType.isEnum()) {
-//				continue;
-//			}
-//			
-//			boolean isKnownImmutableClass = false;
-//			for (Class clazz : allowedClasses) {
-//				isKnownImmutableClass = isKnownImmutableClass
-//						|| (clazz == returnType);
-//			}
-//			if (isKnownImmutableClass) {
-//				continue;
-//			}
-//
-//			fail("return types should be immutable: " + returnType);
-//		}
-//	}
-//
-//	@Test
-//	public void testGetTrackPointForTimeFirst() {
-//		TrackPoint returnedTrackPoint = activity.getTrackPointForTime(allTrackPoints.getFirst().getTime());
-//		assertEquals(allTrackPoints.getFirst(), returnedTrackPoint);
-//	}
-//	
-//	@Test
-//	public void testGetTrackPointForTimeLast() {
-//		TrackPoint returnedTrackPoint = activity.getTrackPointForTime(allTrackPoints.getLast().getTime());
-//		assertEquals(allTrackPoints.getLast(), returnedTrackPoint);
-//	}
-//	
-//	@Test
-//	public void testGetTrackPointForTime() {
-//		// check the exact times
-//		for (TrackPoint trackPoint : allTrackPoints.subList(1, allTrackPoints.size() - 1)) {
-//			TrackPoint returnedTrackPoint = activity.getTrackPointForTime(trackPoint.getTime());
-//			assertTrue(returnedTrackPoint instanceof InterpolatedTrackPoint);
-//			assertEquals(trackPoint.getTime(), returnedTrackPoint.getTime());
-//			
-//			DateTime nextTime = trackPoint.getTime().plus(Duration.standardSeconds(3));
-//			TrackPoint next = activity.getTrackPointForTime(nextTime);
-//			assertTrue(next instanceof InterpolatedTrackPoint);
-//			InterpolatedTrackPoint interpolatedTrackPoint =
-//				(InterpolatedTrackPoint) next;
-//			assertEquals(nextTime, interpolatedTrackPoint.getTime());
-//			assertEquals(trackPoint, interpolatedTrackPoint.getBegin());
-//		}
-//	}
-//	
-//	@Test
-//	public void testGetTrackPointForTimeWithTimeBeforeActivity() {
-//		// too early a time should just return the first track point.
-//		assertEquals(allTrackPoints.getFirst(), activity
-//				.getTrackPointForTime(START_TIME.minusHours(1)));
-//
-//	}
-//	
-//	@Test
-//	public void testGetTrackPointForTimeWithTimeAfterActivity() {
-//		// too early a time should just return the first track point.
-//		assertEquals(allTrackPoints.getLast(), activity
-//				.getTrackPointForTime(activity.getEndTime().plusHours(1)));
-//
-//	}
 }

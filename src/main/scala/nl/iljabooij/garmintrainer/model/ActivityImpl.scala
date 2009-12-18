@@ -40,20 +40,24 @@ class ActivityImpl(val startTime:DateTime, val laps:List[Lap])
   checkArgument(!laps.isEmpty)
   
   override def endTime = trackPoints.last.time
-  override lazy val maximumAltitude = altitudesInOrder.last
-  override lazy val minimumAltitude = altitudesInOrder.head
+  override lazy val maximumAltitude = trackPoints
+    .map(_.altitude)
+    .foldLeft(Length.MIN)(_ max _)
   
-  private def altitudesInOrder = trackPoints.map(_.altitude).sort((a,b) => a < b)
+  override lazy val minimumAltitude = trackPoints
+    .map(_.altitude)
+    .foldLeft(Length.MAX)(_ min _) 
   
-  override lazy val maximumSpeed = trackPoints.map(_.speed).sort((a,b) => a > b).head 
+  override lazy val maximumSpeed = trackPoints
+  	.map(_.speed)
+    .foldLeft(Speed.ZERO)(_ max _)
 
   override def grossDuration = new Duration(startTime, trackPoints.last.time)
 
-  override def netDuration = {
-    var netDuration = new Duration(startTime, laps.head.startTime)
-    laps.foldLeft(netDuration)((duration,lap) => duration.plus(lap.netDuration))
-  }
-
+  private def durationToFirstLap = new Duration(startTime, laps.head.startTime) 
+  override def netDuration = laps
+    .foldLeft(durationToFirstLap)(_ plus _.netDuration)
+    
   override lazy val trackPoints = {
     var buffer = new ListBuffer[TrackPoint]
     laps.foreach(buffer ++= _.trackPoints)
