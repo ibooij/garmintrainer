@@ -72,6 +72,9 @@ abstract class Length(value:Double) {
   def <(that:Length) = siValue < that.siValue
   def >(that:Length) = siValue > that.siValue
   
+  def max(that:Length) = convert(siValue max that.siValue)
+  def min(that:Length) = convert(siValue min that.siValue)
+  
   override def toString = format.format(value) + " " + suffix
   
   /** {@inheritDoc} */
