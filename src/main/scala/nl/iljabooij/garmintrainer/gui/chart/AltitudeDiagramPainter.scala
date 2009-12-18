@@ -9,7 +9,7 @@ import scala.collection.jcl.Conversions
 import org.joda.time.Duration
 
 import nl.iljabooij.garmintrainer.LoggerHelper
-import nl.iljabooij.garmintrainer.model.{Activity,TrackPoint}
+import nl.iljabooij.garmintrainer.model.{Activity,Length,TrackPoint}
 
 private object AltitudeDiagramPainter {
   private val LeftOffset = 30
@@ -38,8 +38,9 @@ class AltitudeDiagramPainter extends LoggerHelper {
 	
   private def paintAltitude(activity: Activity, g2d: Graphics2D,
                             width: Int, height: Int) = {
-    val minAltitude = Math.min(0.0, activity.minimumAltitude.siValue)
-    val maxAltitude = activity.maximumAltitude.siValue
+    val minAltitude = Length.ZERO min activity.minimumAltitude
+    //val minAltitude = 0.0 min activity.minimumAltitude.siValue
+    val maxAltitude = activity.maximumAltitude
     
     val altitudeRange = maxAltitude - minAltitude
     val durationInSeconds = activity.grossDuration.toStandardSeconds.getSeconds.asInstanceOf[Double]
@@ -95,7 +96,7 @@ class AltitudeDiagramPainter extends LoggerHelper {
   
   private def determineYsOfTicks(height: Int): List[Int] = {
     val heightMinusOffsets = height - TopOffset - BottomOffset
-    val nrOfTicks = Math.max(MaximumTicks, heightMinusOffsets / MinimumPixelsPerTick)
+    val nrOfTicks = MaximumTicks max (heightMinusOffsets / MinimumPixelsPerTick)
 	val pixelsPerTick = heightMinusOffsets.asInstanceOf[Double] / (nrOfTicks - 1)
     
     var ys: List[Int] = List[Int]()
@@ -110,15 +111,13 @@ class AltitudeDiagramPainter extends LoggerHelper {
   }
     
   private def xForTrackPoint(activity: Activity, width: Int)(trackPoint: TrackPoint): Double = {
-//    val ratio = trackPoint.distance / activity.distance
-//    val fromStart = new Duration(activity.startTime, trackPoint.time).toStandardSeconds
     (width - LeftOffset - RightOffset) * (trackPoint.distance / activity.distance) + LeftOffset
   }
   
-  private def yForTrackPoint(height: Int, minAltitude: Double, 
-                             altitudeRange: Double)
+  private def yForTrackPoint(height: Int, minAltitude: Length, 
+                             altitudeRange: Length)
   							(trackPoint: TrackPoint): Double = {
-    val relativeAltitude= (trackPoint.altitude.siValue - minAltitude) / altitudeRange 
+    val relativeAltitude= (trackPoint.altitude - minAltitude) / altitudeRange 
     height - relativeAltitude * (height - BottomOffset - TopOffset) - BottomOffset
   }
 }

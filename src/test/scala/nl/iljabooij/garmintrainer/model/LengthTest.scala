@@ -104,4 +104,18 @@ class LengthTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
     assertTrue(new Kilometer(1) < new Meter(1001))
     assertTrue(new Meter(1.1) < new Meter(1.2))
   }
+  
+  def testMax {
+    val _1001m = new Meter(1001)
+    val _1km = new Kilometer(1)
+    assertEquals(_1001m, _1001m max _1km)
+    assertEquals(_1001m, _1km max _1001m)
+  }
+  
+  def testMin {
+    val _1001m = new Meter(1001)
+    val _1km = new Kilometer(1)
+    assertEquals(_1km, _1001m min _1km)
+    assertEquals(_1km, _1km min _1001m)
+  }
 }
