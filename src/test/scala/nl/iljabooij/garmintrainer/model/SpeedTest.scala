@@ -72,4 +72,32 @@ class SpeedTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
     assertEquals("-10.0 km/h", new KilometersPerHour(-10.0).toString)
     assertEquals("0.2 km/h", new KilometersPerHour(0.23).toString)
   }
+  
+  def testSmallerThan {
+    val _10_1mps = new MetersPerSecond(10.1)
+    val _36kmph = new KilometersPerHour(36.0)
+    assertFalse(_10_1mps < _36kmph)
+    assertTrue(_36kmph < _10_1mps)	
+  }
+  
+  def testGreaterThan {
+    val _10_1mps = new MetersPerSecond(10.1)
+    val _36kmph = new KilometersPerHour(36.0)
+    assertTrue(_10_1mps > _36kmph)
+    assertFalse(_36kmph > _10_1mps)	
+  }
+  
+  def testMax {
+    val _10_1mps = new MetersPerSecond(10.1)
+    val _36kmph = new KilometersPerHour(36.0)
+    assertEquals(_10_1mps, _10_1mps max _36kmph)
+    assertEquals(_10_1mps, _36kmph max _10_1mps)
+  }
+  
+  def testMin {
+    val _10_1mps = new MetersPerSecond(10.1)
+    val _36kmph = new KilometersPerHour(36.0)
+    assertEquals(_36kmph, _10_1mps min _36kmph)
+    assertEquals(_36kmph, _36kmph min _10_1mps)
+  }
 }
