@@ -55,6 +55,39 @@ class ActivityType extends NotNull {
     trackPoints.toList
   }
   
+  /**
+   * Generic function which can be used to make sure
+   * all track points have values for some properties, e.g.
+   * altitude and distance.
+   * 
+   * @param previous initial value
+   * @param trackPoints list of all trackpoints
+   * @param getT getter function for the property
+   * @param setT setter function for the property
+   */
+  private def fix[T](previous:T, trackPoints: List[TrackPointType], 
+                     getT: TrackPointType => T,
+                     setT: (TrackPointType, T) => Unit) {
+    // function to replace value if needed. Returns the
+    // value which is set or the value the track point
+    // already had.
+    def replaceIfNeeded(tp: TrackPointType, replacement: T,
+                        getT: TrackPointType => T, 
+                        setT: (TrackPointType, T) => Unit): T = {
+      if (getT(tp) == null) setT(tp, replacement)
+      getT(tp)
+    }
+    
+    trackPoints match {
+      case Nil => return
+      case current :: Nil =>
+        replaceIfNeeded(current, previous, getT, setT)
+      case current :: rest =>
+        val next = replaceIfNeeded(current, previous, getT, setT)
+        fix(next, rest, getT, setT)
+    }
+  }
+  
   private def adjustForLateFix {
     val trackPointTypes = extractTrackPointTypes
     
@@ -62,17 +95,10 @@ class ActivityType extends NotNull {
     val firstAltitude = if (firstPointWithAltitude.isEmpty) Length.ZERO 
                         else firstPointWithAltitude.get.altitude
     
-    var lastAltitude = firstAltitude
-    var lastDistance:Length = new Meter(0)
-    trackPointTypes.foreach (trackPointType => {
-      val altitude = trackPointType.altitude
-      if (altitude == null) trackPointType.altitude =lastAltitude
-      else lastAltitude = altitude
-      
-      val distance = trackPointType.distance
-      if (distance == null) trackPointType.distance = lastDistance
-      else lastDistance = distance
-    })
+    fix(firstAltitude, trackPointTypes, (t:TrackPointType) => t.altitude,
+        (t:TrackPointType, a: Length) => t.altitude = a)
+    fix(Length.ZERO, trackPointTypes, (t:TrackPointType) => t.distance,
+        (t:TrackPointType, d: Length) => t.distance = d)
   }
     
   /**
