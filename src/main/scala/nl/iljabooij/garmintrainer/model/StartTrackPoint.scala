@@ -21,7 +21,8 @@ package nl.iljabooij.garmintrainer.model
 import org.joda.time.{DateTime,Duration}
 
 /**
- * First track point in the Activity
+ * First track point in the Activity. Because the real start point
+ * is not noted, this is the first point recorded after the start.
  * 
  * @author ilja
  * @param startTime start time of the {@link Activity}.
@@ -29,10 +30,9 @@ import org.joda.time.{DateTime,Duration}
  */
 class StartTrackPoint(startTime: DateTime, measuredTrackPoint: MeasuredTrackPoint) 
 	extends TrackPointImpl(measuredTrackPoint) {
-  override def speed = {
-    val timeTravelled = new Duration(startTime, time)
-    Speed.speed(distance, timeTravelled)
-  }
-
+	
+  /** speed travelled between the start and this point. */
+  override def speed = distance / new Duration(startTime, time)
+    
   override def altitudeDelta = Length.ZERO
 }

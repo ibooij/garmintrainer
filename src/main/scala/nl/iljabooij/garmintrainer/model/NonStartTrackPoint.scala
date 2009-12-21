@@ -25,13 +25,14 @@ class NonStartTrackPoint(previous:MeasuredTrackPoint, measuredTrackPoint:Measure
     extends TrackPointImpl(measuredTrackPoint) {
   checkNotNull(previous)
 	
-  override def speed = {
-    val distanceTravelled = distance - previous.distance
-    val timeTravelled = new Duration(previous.time, time)
-
-    Speed.speed(distanceTravelled, timeTravelled)
-  }
-	
+  /** time since last track point */
+  private lazy val timeTravelled = new Duration(previous.time, time)
+  /** distance travelled from last track point */
+  private lazy val distanceTravelled = distance - previous.distance
+  
+  /** speed of interval from previous point to this point */
+  override def speed = distanceTravelled / timeTravelled
+  
   override def altitudeDelta = {
     altitude - previous.altitude
   }

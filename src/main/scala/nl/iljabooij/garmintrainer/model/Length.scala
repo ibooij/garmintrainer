@@ -19,8 +19,9 @@
 package nl.iljabooij.garmintrainer.model
 
 import java.text.{DecimalFormat,NumberFormat}
-
+import nl.iljabooij.garmintrainer.model.Speed.MetersPerSecond
 import org.apache.commons.lang.builder.HashCodeBuilder
+import org.joda.time.Duration
 
 /**
  * Implements a measurement of Length. A Length object is immutable.
@@ -71,6 +72,9 @@ abstract class Length(value:Double) {
   def *(that: Double) = convert(siValue * that)
   def /(that:Double):Length = convert(siValue / that)
   def /(that:Length):Double = siValue / that.siValue
+  /** Divide length by duration. Will result in a Speed. */
+  def /(that:Duration):Speed = new MetersPerSecond(siValue / (that.getMillis / 1000.0))
+  
   def <(that:Length) = siValue < that.siValue
   def >(that:Length) = siValue > that.siValue
   
