@@ -19,6 +19,7 @@
 package nl.iljabooij.garmintrainer.model
 
 import nl.iljabooij.garmintrainer.model.Length.{Kilometer,Meter}
+import nl.iljabooij.garmintrainer.model.Speed.MetersPerSecond
 import org.junit.Assert._
 import org.mockito.Mockito._
 import org.joda.time.{DateTime,Duration}
@@ -70,6 +71,12 @@ class LengthTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
     assertEquals(new Kilometer(5.3), new Kilometer(15.9) / 3.0)
     assertEquals(5.0, new Kilometer(1.5) / new Meter(300), DELTA)
     assertEquals(0.2, new Kilometer(0.3) / new Meter(1500), DELTA)
+  }
+  
+  def testDivideByDuration {
+    assertEquals(new MetersPerSecond(10), new Meter(10) / Duration.standardSeconds(1))
+    assertEquals(new MetersPerSecond(10), new Kilometer(36) / Duration.standardHours(1))
+	  
   }
   
   def testEquals {
