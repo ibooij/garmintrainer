@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with GarminTrainer.  If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.iljabooij.garmintrainer.model;
+package nl.iljabooij.garmintrainer.model
 
+import nl.iljabooij.garmintrainer.model.Duration._
 import nl.iljabooij.garmintrainer.model.Length.{Meter}
 import nl.iljabooij.garmintrainer.model.Speed.MetersPerSecond
 
 import org.junit.Assert._
 import org.mockito.Mockito._
-import org.joda.time.{DateTime,Duration}
 import org.scalatest.junit.{JUnit3Suite,AssertionsForJUnit}
 import org.scalatest.mock.MockitoSugar
 import scala.collection.mutable.ListBuffer
@@ -32,10 +32,10 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
   private var activity:ActivityImpl = _
   private var laps:List[Lap] = _
   private var allTrackPoints: List[TrackPoint] = _
-  private val START_TIME = new DateTime(2009, 9, 17, 14, 45, 36, 0)
+  private val START_TIME = new DateTime
   
   private val NR_OF_LAPS = 4
-  private val SECONDS_PER_LAP = 100;
+  private val SECONDS_PER_LAP = second * 100;
   private val distances = List(100.0, 200.0, 300.0, 400.0)
   private val SECONDS_PER_POINT = SECONDS_PER_LAP / distances.size
 
@@ -45,7 +45,7 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
 	  for (lapNr <- 0 until NR_OF_LAPS) {
 	    val lap = mock[Lap]
 		val lapStartDistance = new Meter(distances(distances.length - 1) * lapNr)
-  		val lapStartTime = START_TIME.plusSeconds(SECONDS_PER_LAP * lapNr)
+  		val lapStartTime = START_TIME + (SECONDS_PER_LAP * lapNr)
 			
   		when(lap.startTime).thenReturn(lapStartTime);
         val lapTrackPoints = new ListBuffer[TrackPoint]
@@ -53,7 +53,8 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
           val trackPoint = mock[TrackPoint]
           val tpDistance = new Meter(distances(tpNr))
           when(trackPoint.distance).thenReturn(lapStartDistance + tpDistance)
-          when(trackPoint.time).thenReturn(lapStartTime.plusSeconds(tpNr * SECONDS_PER_POINT))
+          when(trackPoint.time).thenReturn(
+            lapStartTime + (SECONDS_PER_POINT * tpNr))
           
           lapTrackPoints += trackPoint
         }
@@ -80,16 +81,16 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
 	  val laps = new ListBuffer[Lap]
       val startTime = new DateTime()
       // 10 minutes net riding time per lap
-      val netDurationPerLap = Duration.standardMinutes(10)
+      val netDurationPerLap = minute * 10 
       // 11 minutes gross riding time per lap
-      val grossDurationPerLap = Duration.standardMinutes(11)
+      val grossDurationPerLap = minute * 11
       
       // first lap starts 1 second after activity starts!
-	  var lapStartTime = startTime.plus(Duration.standardSeconds(1))
+	  var lapStartTime = startTime + second * 1
 	  // 10 laps
       for(i <- 0 until 10) {
         if (i > 0) {
-          lapStartTime = lapStartTime.plus(grossDurationPerLap)
+          lapStartTime = lapStartTime + grossDurationPerLap
         }
         val lap = mock[Lap]
         when(lap.startTime).thenReturn(lapStartTime)
@@ -99,7 +100,7 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
 		val tp1 = mock[TrackPoint]
         when(tp1.time).thenReturn(lapStartTime)
         val tp2 = mock[TrackPoint]
-        when(tp2.time).thenReturn(lapStartTime.plus(grossDurationPerLap))
+        when(tp2.time).thenReturn(lapStartTime + grossDurationPerLap)
         when(lap.trackPoints).thenReturn(List(tp1, tp2))
 
         laps += lap
@@ -110,9 +111,7 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
       // we have 10 laps of 10 minutes riding time per lap, so there should be
 	  // 100 minutes of riding time, plus the first second (difference between
 	  // Activity start time and the start of the first lap
-      assertEquals(Duration.standardMinutes(100).plus(
-				Duration.standardSeconds(1)), activity.netDuration)
-
+      assertEquals((minute * 100) + second, activity.netDuration)
    }
 	
    /**
@@ -140,7 +139,7 @@ class ActivityImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoS
 
 		/* differently filled objects, should all differ */
 		assertFalse("different date time", activity.equals(new ActivityImpl(
-				START_TIME.plusMinutes(1), laps)))
+				START_TIME + minute, laps)))
 		val oneLess = laps.slice(0, 2)
 		assertFalse("different laps", activity.equals(new ActivityImpl(
 				START_TIME, oneLess)))

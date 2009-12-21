@@ -19,9 +19,6 @@
 package nl.iljabooij.garmintrainer.model
 
 import nl.iljabooij.garmintrainer.Preconditions._
-import org.joda.time.{DateTime,Duration}
-
-
 
 /**
  * a Track is a stretch of a Lap that is recorded without interruption.

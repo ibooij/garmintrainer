@@ -18,9 +18,9 @@
  */
 package nl.iljabooij.garmintrainer.model
 
+import nl.iljabooij.garmintrainer.model.Duration._
 import org.junit.Assert._
 import org.mockito.Mockito._
-import org.joda.time.{DateTime,Duration,Minutes}
 import org.scalatest.junit.{JUnit3Suite,AssertionsForJUnit}
 import org.scalatest.mock.MockitoSugar
 import scala.collection.jcl.Conversions._
@@ -43,7 +43,7 @@ class LapTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
       val trackPoints = new ListBuffer[TrackPoint]
       for (tpNr <- 0 until NR_OF_TRACK_POINTS) {
         val trackPoint = mock[TrackPoint]
-        when(trackPoint.time).thenReturn(START_TIME.plusSeconds(tpNr + 1))
+        when(trackPoint.time).thenReturn(START_TIME + (second * (tpNr + 1)))
         trackPoints += trackPoint
       }
       trackPointsBuffer ++= trackPoints
@@ -80,11 +80,11 @@ class LapTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
     val tracks = List(mock[Track],mock[Track],mock[Track])
     
     when(tracks(0).startTime).thenReturn(START_TIME)
-    when(tracks(0).endTime).thenReturn(START_TIME.plusMinutes(1))
-    when(tracks(1).startTime).thenReturn(START_TIME.plusMinutes(2))
-    when(tracks(1).endTime).thenReturn(START_TIME.plusMinutes(3))
-    when(tracks(2).startTime).thenReturn(START_TIME.plusMinutes(4))
-    when(tracks(2).endTime).thenReturn(START_TIME.plusMinutes(5))
+    when(tracks(0).endTime).thenReturn(START_TIME + minute)
+    when(tracks(1).startTime).thenReturn(START_TIME + (minute * 2))
+    when(tracks(1).endTime).thenReturn(START_TIME + (minute * 3))
+    when(tracks(2).startTime).thenReturn(START_TIME + (minute * 4))
+    when(tracks(2).endTime).thenReturn(START_TIME + (minute * 5))
     
     val lap = new Lap(START_TIME, tracks)
     
@@ -93,29 +93,29 @@ class LapTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
   }
   
   def testNetDuration {
-    val GAP = Minutes.ONE
-    val TRACK_TIME = Minutes.TWO
+    val GAP = minute
+    val TRACK_TIME = minute * 2
   
     def startTime(trackNr: Int) = {
-      START_TIME.plus(GAP.plus(TRACK_TIME).multipliedBy(trackNr))
+      START_TIME + (GAP + TRACK_TIME) * trackNr
     }
     	
     def endTime(trackNr: Int) = {
-      startTime(trackNr + 1).minus(GAP)
+      startTime(trackNr + 1) - GAP
     }
     
     val tracks = (0 to 1).map(trackNr => {
       val track = mock[Track]
       when(track.startTime).thenReturn(startTime(trackNr))
       when(track.endTime).thenReturn(endTime(trackNr))
-      when(track.duration).thenReturn(TRACK_TIME.toStandardDuration)
+      when(track.duration).thenReturn(TRACK_TIME)
       
       track
     }).toList
     
     val lap = new Lap(START_TIME, tracks)
     
-    val netDuration = TRACK_TIME.multipliedBy(tracks.size).toStandardDuration
+    val netDuration = TRACK_TIME * tracks.size
     
     assertEquals(netDuration, lap.netDuration)
   }
@@ -124,9 +124,9 @@ class LapTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
       the start of the lap and start of the first track within that lap. */
   def testNetDurationWithDelayedRecording {
     val startTime = new DateTime
-    val delay = Duration.standardSeconds(5)
-    val startOfTrack = startTime.plus(delay)
-    val trackDuration = Duration.standardMinutes(5)
+    val delay = second * 5
+    val startOfTrack = startTime + delay
+    val trackDuration = minute * 5
     
     val track = mock[Track]
     when(track.startTime).thenReturn(startOfTrack)

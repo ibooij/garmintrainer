@@ -18,8 +18,6 @@
  */
 package nl.iljabooij.garmintrainer.model
 
-import org.joda.time.{DateTime,Duration}
-
 trait Activity extends NotNull {
   /**
    * Get start time of activity.

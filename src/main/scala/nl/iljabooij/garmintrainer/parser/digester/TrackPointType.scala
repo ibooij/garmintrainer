@@ -18,9 +18,10 @@
  */
 package nl.iljabooij.garmintrainer.parser.digester
 
+import nl.iljabooij.garmintrainer.model.DateTime
 import nl.iljabooij.garmintrainer.model.Length
 import nl.iljabooij.garmintrainer.model.TrackPointImpl
-import org.joda.time.DateTime
+
 import scala.reflect.BeanProperty
 /**
  * Builder for {@link TrackPointImpl}. Because {@link TrackPointImpl} is an unmodifiable

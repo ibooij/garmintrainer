@@ -22,7 +22,6 @@ import nl.iljabooij.garmintrainer.Preconditions._
 import nl.iljabooij.garmintrainer.model.Length.Meter
 
 import org.apache.commons.lang.builder.{EqualsBuilder,HashCodeBuilder}
-import org.joda.time.{DateTime,Duration}
 
 import scala.collection.jcl.Conversions._
 import scala.collection.mutable.ListBuffer
@@ -35,7 +34,7 @@ import scala.collection.mutable.ListBuffer
  */
 
 class ActivityImpl(val startTime:DateTime, val laps:List[Lap]) 
-    extends Activity with Comparable[Activity] {
+    extends Activity {
   checkNotNull(startTime)
   checkArgument(!laps.isEmpty)
   
@@ -56,7 +55,7 @@ class ActivityImpl(val startTime:DateTime, val laps:List[Lap])
 
   private def durationToFirstLap = new Duration(startTime, laps.head.startTime) 
   override def netDuration = laps
-    .foldLeft(durationToFirstLap)(_ plus _.netDuration)
+    .foldLeft(durationToFirstLap)(_ + _.netDuration)
     
   override lazy val trackPoints = {
     var buffer = new ListBuffer[TrackPoint]
@@ -123,12 +122,5 @@ class ActivityImpl(val startTime:DateTime, val laps:List[Lap])
   override def  hashCode = {
     new HashCodeBuilder(HASH_CODE_SEEDS(0), HASH_CODE_SEEDS(1))
       .append(startTime).append(laps).toHashCode()
-  }
-
-  /** {@inheritDoc} */
-  override def compareTo(o: Activity) = {
-    checkNotNull(o)
-    
-    startTime.compareTo(o.startTime);
   }
 }

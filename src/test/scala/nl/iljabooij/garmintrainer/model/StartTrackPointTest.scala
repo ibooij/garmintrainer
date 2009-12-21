@@ -18,9 +18,10 @@
  */
 package nl.iljabooij.garmintrainer.model
 
+import nl.iljabooij.garmintrainer.model.Duration._
+
 import org.junit.Assert._
 import org.mockito.Mockito._
-import org.joda.time.{DateTime,Duration}
 import org.scalatest.junit.{JUnit3Suite,AssertionsForJUnit}
 import org.scalatest.mock.MockitoSugar
 
@@ -30,8 +31,8 @@ import org.scalatest.mock.MockitoSugar
  *
  */
 class StartTrackPointTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
-	private val START_TIME = new DateTime()
-	private val TRACK_POINT_TIME = START_TIME.plusSeconds(10)
+	private val START_TIME = new DateTime
+	private val TRACK_POINT_TIME = START_TIME + second * 10
 	private val DISTANCE = new Length.Meter(100.0)
 	
 	private var startTrackPoint:StartTrackPoint = _

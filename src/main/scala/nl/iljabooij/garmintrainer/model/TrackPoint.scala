@@ -1,6 +1,4 @@
-package nl.iljabooij.garmintrainer.model;
-
-import org.joda.time.DateTime
+package nl.iljabooij.garmintrainer.model
 
 /**
  TrackPoint as it is used throughout the application. It adds some

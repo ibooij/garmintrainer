@@ -18,14 +18,10 @@
  */
 package nl.iljabooij.garmintrainer.model
 
-
 import org.junit.Assert._
 import org.mockito.Mockito._
-import org.joda.time.{DateTime,Duration}
 import org.scalatest.junit.{JUnit3Suite,AssertionsForJUnit}
 import org.scalatest.mock.MockitoSugar
-
-import org.joda.time.DateTime
 
 class TrackPointImplTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
   private val DELTA_FOR_DOUBLE_EQUALITY = 0.0001

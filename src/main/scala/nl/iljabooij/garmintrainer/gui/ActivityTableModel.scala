@@ -2,8 +2,10 @@ package nl.iljabooij.garmintrainer.gui
 
 import javax.swing.table.AbstractTableModel
 import com.google.inject.Inject
-import org.joda.time.{DateTime,DateTimeZone,Duration}
-import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState,Length,Speed,TrackPoint}
+import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState,
+                                         DateTime, Duration,
+                                         Length,Speed,TrackPoint}
+import nl.iljabooij.garmintrainer.model.DateTime.EPOCH
 
 class ActivityTableModel @Inject() (private val applicationState:ApplicationState) 
     extends AbstractTableModel with SwingHelper {
@@ -22,9 +24,8 @@ class ActivityTableModel @Inject() (private val applicationState:ApplicationStat
         val column = columns(columnIndex)
         column match {
           case "Time" => 
-            val dateTime = new DateTime(0L, DateTimeZone.UTC)
             val fromStart = new Duration(activity.startTime, trackPoint.time)
-            val timeFromStart = dateTime.plus(fromStart)
+            val timeFromStart = EPOCH + fromStart
             timeFromStart.toString("HH:mm:ss")
           case "Distance" => trackPoint.distance.toKilometers
           case "Altitude" => trackPoint.altitude.toMeters

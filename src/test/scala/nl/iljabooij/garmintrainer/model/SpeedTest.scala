@@ -18,12 +18,12 @@
  */
 package nl.iljabooij.garmintrainer.model
 
+import nl.iljabooij.garmintrainer.model.Duration._
 import nl.iljabooij.garmintrainer.model.Length.{Kilometer,Meter}
 import nl.iljabooij.garmintrainer.model.Speed.{KilometersPerHour,MetersPerSecond}
 
 import org.junit.Assert._
 import org.mockito.Mockito._
-import org.joda.time.{DateTime,Duration,Hours,Seconds}
 import org.scalatest.junit.{JUnit3Suite,AssertionsForJUnit}
 import org.scalatest.mock.MockitoSugar
 
@@ -41,15 +41,15 @@ class SpeedTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
   }
   
   def testCalculateSpeed {
-    val speed = Speed.speed(new Meter(10), Seconds.seconds(1).toStandardDuration)
+    val speed = Speed.speed(new Meter(10), second)
     assertEquals(new MetersPerSecond(10), speed)
     assertEquals(new MetersPerSecond(10), Speed.
-    	speed(new Kilometer(36), Hours.hours(1).toStandardDuration))
+    	speed(new Kilometer(36), hour))
   }
   
   def testHashCode {
     assertEquals(new MetersPerSecond(10).hashCode, Speed.
-    	speed(new Kilometer(36), Hours.hours(1).toStandardDuration).hashCode)
+    	speed(new Kilometer(36), hour).hashCode)
   }
   
   def testToMetersPerSecond {

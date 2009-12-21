@@ -19,16 +19,11 @@
 package nl.iljabooij.garmintrainer.model
 
 import java.text.{DecimalFormat,NumberFormat}
-import org.joda.time.Duration
-
 
 /** Some "static functions in here" */
 object Speed {
-  def speed(length:Length, duration:Duration) = {
-    val seconds = duration.getMillis * 0.001
-    
-    new MetersPerSecond(length.siValue/ seconds)
-  }
+  def speed(length:Length, duration:Duration) = 
+    new MetersPerSecond(length.siValue/ duration.seconds)
   
   val ZERO:Speed = new MetersPerSecond(0)
   

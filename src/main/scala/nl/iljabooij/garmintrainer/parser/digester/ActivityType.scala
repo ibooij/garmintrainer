@@ -21,9 +21,9 @@ package nl.iljabooij.garmintrainer.parser.digester
 import java.util.{ArrayList => JAList, List => JList}
 
 import nl.iljabooij.garmintrainer.model._
+import nl.iljabooij.garmintrainer.model.DateTime._
 import nl.iljabooij.garmintrainer.model.Length.Meter
 
-import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
 import scala.collection.jcl.Conversions._
 import scala.collection.mutable.ListBuffer
@@ -40,7 +40,6 @@ class ActivityType extends NotNull {
   var id: String = null
   
   private var lapTypes = List[LapType]()
-  private val dateTimeFormatter = ISODateTimeFormat.dateTimeNoMillis()
   
   /**
    * extract all TrackPointType objects from all laps of the activity.
@@ -106,7 +105,7 @@ class ActivityType extends NotNull {
    * @return a new Activity
    */
   def build: Activity = {
-    val startTime = dateTimeFormatter.parseDateTime(id)
+    val startTime = DateTime.fromIsoNoMillis(id)
     
     adjustForLateFix
   
