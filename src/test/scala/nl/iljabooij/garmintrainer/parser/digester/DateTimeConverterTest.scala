@@ -1,19 +1,17 @@
 package nl.iljabooij.garmintrainer.parser.digester
 
-import org.joda.time.DateTime
-import org.joda.time.format.ISODateTimeFormat
+import nl.iljabooij.garmintrainer.model.DateTime
 import org.scalatest.junit.{JUnit3Suite,AssertionsForJUnit}
 import junit.framework.Assert._
 
-class JodaDateTimeConverterTest extends JUnit3Suite {
+class DateTimeConverterTest extends JUnit3Suite {
   val TEST_STRING = "2009-02-21T12:57:25Z"
-  var converter:JodaDateTimeConverter = _
+  var converter:DateTimeConverter = _
   var dateTime: DateTime = null
   
   override def setUp {
-    converter = new JodaDateTimeConverter
-    val dateTimeFormatter = ISODateTimeFormat.dateTimeNoMillis()
-    dateTime = dateTimeFormatter.parseDateTime(TEST_STRING); 
+    converter = new DateTimeConverter
+    dateTime = DateTime.fromIsoNoMillis(TEST_STRING)
   }
   
   def testHappy {

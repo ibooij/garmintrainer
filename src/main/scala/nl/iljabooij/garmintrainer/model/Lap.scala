@@ -18,7 +18,6 @@
  */
 package nl.iljabooij.garmintrainer.model
 
-import org.joda.time.{DateTime,Duration}
 import scala.collection.mutable.ListBuffer
 import scala.collection.jcl.Conversions.convertList
 
@@ -50,6 +49,6 @@ class Lap(val startTime:DateTime, val tracks:List[Track]) {
    * @return net duration of lap.
    */
   def netDuration = {
-    tracks.foldLeft(new Duration(0l))((duration,track) => duration.plus(track.duration))
+    tracks.foldLeft(new Duration)((duration,track) => duration + track.duration)
   }
 }

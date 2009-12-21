@@ -18,21 +18,19 @@
  */
 package nl.iljabooij.garmintrainer.model;
 
-
-
-import org.joda.time.{DateTime,Duration}
+import nl.iljabooij.garmintrainer.model.Duration._
 import org.junit.Assert._
 import org.mockito.Mockito._
 import org.scalatest.junit.{JUnit3Suite,AssertionsForJUnit}
 import org.scalatest.mock.MockitoSugar
 
 class NonStartTrackPointTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
-	private var first:MeasuredTrackPoint = _
-	private var second:MeasuredTrackPoint = _	
+	private var firstPoint:MeasuredTrackPoint = _
+	private var secondPoint:MeasuredTrackPoint = _	
 	private var nonStartTrackPoint:NonStartTrackPoint = _
 
-	private val START_TIME = new DateTime()
-	private val SECOND_TIME = START_TIME.plusSeconds(10)
+	private val START_TIME = new DateTime
+	private val SECOND_TIME = START_TIME + second * 10
 	private val FIRST_ALTITUDE = new Length.Meter(150.0)
 	private val SECOND_ALTITUDE = Length.Meter(151.0)
 	private val SECOND_DISTANCE = Length.Meter(20.0)
@@ -42,21 +40,21 @@ class NonStartTrackPointTest extends JUnit3Suite with AssertionsForJUnit with Mo
 	 */
 
 	override def setUp {
-		first = mock[MeasuredTrackPoint]
-		when(first.time).thenReturn(START_TIME)
-		when(first.distance).thenReturn(Length.ZERO)
-		when(first.altitude).thenReturn(FIRST_ALTITUDE)
+		firstPoint = mock[MeasuredTrackPoint]
+		when(firstPoint.time).thenReturn(START_TIME)
+		when(firstPoint.distance).thenReturn(Length.ZERO)
+		when(firstPoint.altitude).thenReturn(FIRST_ALTITUDE)
 		
-		second = mock[MeasuredTrackPoint]
-		when(second.time).thenReturn(SECOND_TIME)
-		when(second.distance).thenReturn(SECOND_DISTANCE)
-		when(second.altitude).thenReturn(SECOND_ALTITUDE)
+		secondPoint = mock[MeasuredTrackPoint]
+		when(secondPoint.time).thenReturn(SECOND_TIME)
+		when(secondPoint.distance).thenReturn(SECOND_DISTANCE)
+		when(secondPoint.altitude).thenReturn(SECOND_ALTITUDE)
 		
-		nonStartTrackPoint = new NonStartTrackPoint(first, second)
+		nonStartTrackPoint = new NonStartTrackPoint(firstPoint, secondPoint)
 	}
 
 	/**
-	 * Test speed for second trackpoint.
+	 * Test speed for secondPoint trackpoint.
 	 */
 	def testSpeedInSecondSample() {
 		val duration = new Duration(START_TIME, SECOND_TIME)
@@ -65,10 +63,10 @@ class NonStartTrackPointTest extends JUnit3Suite with AssertionsForJUnit with Mo
 
 		assertEquals(speed, nonStartTrackPoint.speed)
 		
-		verify(first, times(1)).distance
-		verify(first, times(1)).time
-		verify(second, times(1)).distance
-		verify(second, times(1)).time
+		verify(firstPoint, times(1)).distance
+		verify(firstPoint, times(1)).time
+		verify(secondPoint, times(1)).distance
+		verify(secondPoint, times(1)).time
 	}
 
     def testGetAltitudeDelta() {

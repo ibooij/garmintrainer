@@ -17,10 +17,9 @@
  * along with GarminTrainer.  If not, see <http://www.gnu.org/licenses/>.
  */
 package nl.iljabooij.garmintrainer.parser.digester
+import nl.iljabooij.garmintrainer.model.DateTime
+import nl.iljabooij.garmintrainer.model.Length.Meter
 
-import nl.iljabooij.garmintrainer.model.Length.{Meter}
-
-import org.joda.time.DateTime
 import org.junit.Assert._
 import org.mockito.Mockito._
 import org.scalatest.junit.{JUnit3Suite,AssertionsForJUnit}
@@ -78,7 +77,7 @@ class DigesterMeasuredTrackPointTest extends JUnit3Suite with MockitoSugar {
 	}
 
 	def testGetTime {
-		val time = new DateTime()
+		val time = new DateTime
 		when(trackPoint.time).thenReturn(time)
 		
 		assertEquals(time, dmtp.time)

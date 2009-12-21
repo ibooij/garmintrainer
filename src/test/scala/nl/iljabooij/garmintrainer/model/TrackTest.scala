@@ -18,7 +18,8 @@
  */
 package nl.iljabooij.garmintrainer.model
 
-import org.joda.time.{DateTime,Duration}
+import nl.iljabooij.garmintrainer.model.Duration._
+
 import org.junit.Assert._
 import org.mockito.Mockito._
 import org.scalatest.junit.{JUnit3Suite,AssertionsForJUnit}
@@ -41,7 +42,7 @@ class TrackTest extends JUnit3Suite with AssertionsForJUnit with MockitoSugar {
   override def setUp {
     trackPoints = (0 until NR_OF_TRACK_POINTS).map(tpNr => {
       val trackPoint = mock[TrackPoint]
-      when(trackPoint.time).thenReturn(START_TIME.plusSeconds(tpNr))
+      when(trackPoint.time).thenReturn(START_TIME + second * tpNr)
       
       trackPoint
     }).toList

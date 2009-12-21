@@ -18,8 +18,6 @@
  */
 package nl.iljabooij.garmintrainer.model
 
-import org.joda.time.{DateTime,Duration}
-
 /**
  * First track point in the Activity. Because the real start point
  * is not noted, this is the first point recorded after the start.

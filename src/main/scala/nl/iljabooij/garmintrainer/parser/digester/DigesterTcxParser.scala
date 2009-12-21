@@ -76,7 +76,7 @@ object DigesterTcxParser {
    * run the initialize block only once.
    */
   private lazy val initialize = {
-    ConvertUtils.register(new JodaDateTimeConverter, classOf[DateTime])
+    ConvertUtils.register(new DateTimeConverter, classOf[DateTime])
     ConvertUtils.register(new LengthConverter, classOf[Length])
   }
 }

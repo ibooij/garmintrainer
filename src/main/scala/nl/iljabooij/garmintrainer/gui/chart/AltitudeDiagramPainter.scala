@@ -43,7 +43,7 @@ class AltitudeDiagramPainter extends LoggerHelper {
     val maxAltitude = activity.maximumAltitude
     
     val altitudeRange = maxAltitude - minAltitude
-    val durationInSeconds = activity.grossDuration.toStandardSeconds.getSeconds.asInstanceOf[Double]
+    val durationInSeconds = activity.grossDuration.seconds
     
     val path = new Path2D.Double
     path.moveTo(LeftOffset, height - BottomOffset)

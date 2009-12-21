@@ -19,9 +19,6 @@
 package nl.iljabooij.garmintrainer.model
 
 import nl.iljabooij.garmintrainer.Preconditions._
-import org.joda.time.DateTime
-
-
 
 /**
  * Represents a single track point sample.

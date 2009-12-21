@@ -18,7 +18,6 @@ package nl.iljabooij.garmintrainer.model
  * You should have received a copy of the GNU General Public License
  * along with GarminTrainer.  If not, see <http://www.gnu.org/licenses/>.
  */
-import org.joda.time.DateTime
 
 /**
  * Track point as measured by the GPS device.

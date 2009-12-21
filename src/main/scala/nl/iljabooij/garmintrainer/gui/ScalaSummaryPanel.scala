@@ -3,8 +3,8 @@ package nl.iljabooij.garmintrainer.gui
 import javax.swing.{JLabel,JPanel,SpringLayout}
 import scala.swing.{Label,LayoutContainer,Panel}
 import com.google.inject.Inject
-import org.joda.time.Duration
-import nl.iljabooij.garmintrainer.model.{Activity,ApplicationState,Length}
+import nl.iljabooij.garmintrainer.model.{
+  Activity,ApplicationState,Duration,Length}
 
 class ScalaSummaryPanel @Inject() (state:ApplicationState) 
 	extends JPanel with SwingHelper {
@@ -36,10 +36,10 @@ class ScalaSummaryPanel @Inject() (state:ApplicationState)
   
   private def updateSummary(activity:Option[Activity]) {
     def durationToString(duration:Duration) = {
-      val period = duration.toPeriod();
-	  String.format("%d:%02d:%02d", Integer.valueOf(period.getHours), 
-                 Integer.valueOf(period.getMinutes), 
-                 Integer.valueOf(period.getSeconds))
+      val period = duration.toPeriod;
+	  String.format("%d:%02d:%02d", Integer.valueOf(period.hours), 
+                 Integer.valueOf(period.minutes), 
+                 Integer.valueOf(period.seconds))
     }
     
     def doInBackground(activity: Activity):Map[String,String] = {
