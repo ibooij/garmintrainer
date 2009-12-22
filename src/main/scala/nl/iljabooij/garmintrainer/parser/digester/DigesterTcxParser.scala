@@ -67,8 +67,7 @@ class DigesterTcxParser @Inject() (digesterProvider: Provider[Digester])
 }
 
 object DigesterTcxParser {
-  import org.joda.time.DateTime
-  import nl.iljabooij.garmintrainer.model.Length
+  import nl.iljabooij.garmintrainer.model.{DateTime,Length}
   
   /**
    * initialize is evaluated only once. We'll just need to call initialize from
